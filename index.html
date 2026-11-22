@@ -14728,6 +14728,42 @@ Object.assign(ACT,{copyto(id){copyTo(id)},copycancel(){V.copySrc=null;render()}}
 const _wp3=waPrompt;
 waPrompt=function(id){_wp3(id);const r=$('#modal .row');if(r&&!r.querySelector('[data-act=copyto]')){const b=document.createElement('button');b.dataset.act='copyto';b.dataset.arg=id;b.textContent='Same order for another customer';r.appendChild(b)}};
 
+
+/* ---------- ADMIN FACE ID / FINGERPRINT SIGN-IN (v0.13) ---------- */
+const BIOK='afox_bio';
+const bioGet=()=>{try{return JSON.parse(localStorage.getItem(BIOK)||'null')}catch(e){return null}};
+const b64u=b=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const unb64u=s=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
+const bioOK=()=>!!(window.PublicKeyCredential&&navigator.credentials&&navigator.credentials.create);
+async function bioPlatform(){try{return bioOK()&&await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()}catch(e){return false}}
+async function bioEnable(){
+ if(!isAdmin()||!V.tok)return toast('Sign in as an admin first',3000);
+ if(!await bioPlatform())return toast('This phone has no Face ID or fingerprint set up for the browser',4200);
+ let cred;try{cred=await navigator.credentials.create({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),rp:{name:'AFOX Orders',id:location.hostname},
+  user:{id:new TextEncoder().encode(V.me.id||V.me.name),name:V.me.name,displayName:V.me.name},pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],
+  authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'preferred'},timeout:60000,attestation:'none'}})}
+ catch(e){return toast(e&&e.name==='NotAllowedError'?'Cancelled':'Could not set up Face ID on this phone',3500)}
+ let r;try{r=await cloudCall('bio_enrol',{label:(navigator.userAgent||'').slice(0,60)})}catch(e){return toast('Need an internet connection to turn this on',3500)}
+ if(!r.ok)return toast('Only an admin can turn this on',3500);
+ try{localStorage.setItem(BIOK,JSON.stringify({name:V.me.name,sid:V.me.id,role:'admin',did:r.did,secret:r.secret,cid:b64u(cred.rawId)}))}catch(e){return toast('This browser blocked saving it',3500)}
+ logA('face id on',V.me.name,'');toast('Face ID sign-in is on for this phone',3800);render()}
+async function bioDisable(){const b=bioGet();try{if(b&&V.tok)await cloudCall('bio_revoke',{did:b.did})}catch(e){}try{localStorage.removeItem(BIOK)}catch(e){}logA('face id off',byName(),'');toast('Face ID sign-in turned off on this phone',3200);render()}
+async function bioSignIn(){const b=bioGet();if(!b)return;
+ try{await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),rpId:location.hostname,allowCredentials:[{type:'public-key',id:unb64u(b.cid),transports:['internal']}],userVerification:'required',timeout:60000}})}
+ catch(e){if(e&&e.name==='NotAllowedError')return toast('Cancelled – use your username and PIN instead',3200);return toast('Face ID did not work – use your PIN',3500)}
+ let r;try{r=await cloudCall('bio_login',{did:b.did,secret:b.secret},null)}
+ catch(e){/* no connection: the phone itself verified the face, so open it offline like a PIN sign-in */
+  V.me={id:b.sid,name:b.name,role:'admin'};V.tok=null;V.needRelogin=false;logA('sign in (face id, offline)',b.name,'');V.tab='book';V.cur=null;save();render();return toast('Signed in offline – changes upload when you are back online',4000)}
+ if(!r.ok){if(r.error==='locked')return toast('Too many tries – wait 10 minutes',3500);try{localStorage.removeItem(BIOK)}catch(e){}render();return toast('Face ID sign-in is no longer valid on this phone. Sign in with your PIN and turn it on again.',5000)}
+ cloudSession(r);logA('sign in (face id)',r.name,'');V.tab='book';V.cur=null;save();render();cloudStart()}
+const _vcl=viewCloudLogin;
+viewCloudLogin=function(){const h=_vcl(),b=bioGet();if(!b||!bioOK())return h;
+ return h.replace('<div class="card" style="max-width:460px">','<div class="card" style="max-width:460px"><button class="p" data-act="biosign" style="width:100%;min-height:56px;font-size:15px">Sign in as '+esc(b.name)+' with Face ID</button><p class="muted" style="text-align:center;margin:8px 0 14px">or use your username and PIN below</p>')};
+const _cc4=cloudCard;
+cloudCard=function(){let h=_cc4();if(!cloudOn()||!isAdmin()||!bioOK())return h;const b=bioGet(),mine=b&&V.me&&b.name===V.me.name;
+ return h+`<div class="card"><h3>Face ID sign-in <span class="tag ${mine?'ok':'warn'}">${mine?'on for this phone':'off'}</span></h3><p class="muted">Admins only. After this, you can open the app on this phone with Face ID or your fingerprint instead of typing your PIN. Staff still use their PIN. Resetting or switching off an admin's PIN under Staff turns Face ID off on every phone for that person.</p><div class="row">${mine?'<button class="d" data-act="biooff">Turn off on this phone</button>':'<button class="p" data-act="bioon">Turn on Face ID for this phone</button>'}</div></div>`};
+Object.assign(ACT,{bioon(){bioEnable()},biooff(){bioDisable()},biosign(){bioSignIn()}});
+
 (async()=>{
  try{S=await DB.get('state')}catch(e){}
  if(!S){try{S=JSON.parse(localStorage.getItem('afox_state'))}catch(e){}}
