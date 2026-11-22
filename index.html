@@ -303,6 +303,36 @@ header#top button.on{border-bottom-color:var(--acc);color:var(--acc)}
 @media(max-width:700px){#mbox{border-radius:24px 24px 0 0}}
 .dsp.need{border-color:var(--acc);background:#fbf3e8}
 .dsp .chip{padding:9px 14px;min-height:40px}
+/* ---- v0.10 peach glass home + dock ---- */
+.cdot{display:inline-block;width:26px;height:26px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.lr .cdot{width:34px;height:34px}
+.findbar{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:56px;border-radius:28px;border:0;background:rgba(255,250,246,.88);padding:0 8px 0 22px;font-size:15px;color:#6d4a3d;text-align:left;margin:4px 0 12px}
+.findbar i{width:42px;height:42px;border-radius:50%;background:#c4501d;display:flex;align-items:center;justify-content:center}
+.findbar i svg{width:20px;height:20px;stroke:#fff}
+.herocard .dots{position:absolute;right:18px;bottom:16px;display:flex;gap:6px}
+.mini2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.mc,.recent{background:rgba(255,250,246,.8);border-radius:20px;padding:12px 16px}
+.mc .lb,.recent .lb{font-size:12px;font-weight:500;color:#6d4a3d}
+.mc .mv{font-family:var(--serif);font-size:26px;line-height:1.15}
+.mc .st{font-size:12px;color:#6d4a3d}
+.recent{margin-bottom:12px}.recent .li{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-top:1px solid rgba(109,74,61,.18)}.recent .li b{font-weight:500}
+.qa2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}.qa2 button{min-height:48px;border-radius:24px}
+@media(max-width:700px){
+ .homehead .gm{font-family:var(--serif);font-weight:600;font-size:46px;line-height:1.02;color:var(--ink);margin:4px 0 8px}
+ .homehead .sb{font-size:12px;color:#6d4a3d}
+ body.homebg{background:radial-gradient(ellipse at 50% 100%,#d9826e 0%,#ebaa94 30%,transparent 62%),linear-gradient(#f6dfd2,#f1bba5 55%,#e79a83) fixed}
+ body.homebg .herocard{background:rgba(255,250,246,.82);color:var(--ink)}
+ body.homebg .herocard .lb,body.homebg .herocard .st{color:#6d4a3d}
+ #tabbar{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;left:10px;right:10px;bottom:calc(12px + env(safe-area-inset-bottom));border:0;border-radius:30px;padding:8px;background:rgba(255,250,246,.94);box-shadow:0 8px 24px rgba(80,40,20,.18)}
+ #tabbar button{min-height:50px;border-radius:24px;justify-content:center;font-size:12px;color:var(--ink);font-weight:500}
+ #tabbar button.on{background:var(--blk);color:#fff;font-weight:600}
+ body.inorder #tabbar{display:none}
+ .obar{bottom:calc(12px + env(safe-area-inset-bottom))}
+ body.hasobar{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
+ #toast{bottom:calc(100px + env(safe-area-inset-bottom))}
+}
+.findbar{text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;line-height:1.2}
+.findbar span{text-transform:none;letter-spacing:0}
 </style>
 </head>
 <body>
@@ -14295,7 +14325,7 @@ function linesCard(w){
  const gs=groups(w.lines);
  if(!gs.length)return'<div class="card muted" style="text-align:center">No colours booked yet. Scan an article, then choose colours and size sets.</div>';
  return gs.map(g=>{const a=artOf(g.art);return`<div class="card lc"><div class="lch"><b>${esc(g.art)}</b> <span class="muted">MRP ${a?a.mrp:''} — <span id="at-${esc(g.art)}">0</span> pcs</span></div>`+
-  g.lines.map(l=>{const n=sumQ(l.q),br=l.sets&&l.sets.length?l.sets.map(s=>setLbl(s.q)+' × '+s.n+(s.n===1?' set':' sets')).join(' · '):(n?'exact pieces':'no pieces');return`<div class="lr"><div class="ld" data-act="editline" data-arg="${esc(key(l))}"><b>${esc(l.colName)} <small class="muted">${esc(l.col)}</small></b><span class="muted">${esc(br)}</span></div><b class="ln" data-lt="${esc(key(l))}">${n}</b><button class="sm d" data-act="rm" data-arg="${esc(key(l))}" aria-label="Remove ${esc(l.colName)}">✕</button></div>`}).join('')+`</div>`}).join('')}
+  g.lines.map(l=>{const n=sumQ(l.q),br=l.sets&&l.sets.length?l.sets.map(s=>setLbl(s.q)+' × '+s.n+(s.n===1?' set':' sets')).join(' · '):(n?'exact pieces':'no pieces');return`<div class="lr"><span class="cdot" style="background:${colHex(l.colName||l.col)}"></span><div class="ld" data-act="editline" data-arg="${esc(key(l))}"><b>${esc(l.colName)} <small class="muted">${esc(l.col)}</small></b><span class="muted">${esc(br)}</span></div><b class="ln" data-lt="${esc(key(l))}">${n}</b><button class="sm d" data-act="rm" data-arg="${esc(key(l))}" aria-label="Remove ${esc(l.colName)}">✕</button></div>`}).join('')+`</div>`}).join('')}
 function viewOrder(){
  syncManual();
  const o=ord(),w=o.work,ex=exhOf(o),p=w.party,rev=o.status==='confirmed';
@@ -14388,24 +14418,36 @@ const IC={
  find:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>',
  user:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4.2 4-6 8-6s7.2 1.8 8 6M18 3v4M16 5h4"/></svg>',
  visitor:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>'};
-const MORE_TABS=['qr','dists','rep','setup'];
+const MORE_TABS=['products','qr','dists','rep','setup'];
 function tabbar(){
  let t=$('#tabbar');if(!t){t=document.createElement('nav');t.id='tabbar';document.body.appendChild(t)}
  const gate=typeof needLogin==='function'&&needLogin();document.body.classList.toggle('nologin',!!gate);
- const on=x=>V.tab===x?' on':'',b=(tab,ic,lb)=>`<button class="${on(tab).trim()}" data-tab="${tab}">${IC[ic]}<span>${lb}</span></button>`;
- t.innerHTML=b('orders','orders','Orders')+b('products','products','Products')+`<button class="plus${on('book')}" data-tab="book" aria-label="Booking"><span class="c">${IC.plus}</span><span>Book</span></button>`+b('customers','customers','Customers')+`<button class="${MORE_TABS.includes(V.tab)?'on':''}" data-act="moremenu">${IC.more}<span>More</span></button>`}
+ const on=x=>V.tab===x?' on':'',b=(tab,lb)=>`<button class="${on(tab).trim()}" data-tab="${tab}">${lb}</button>`;
+ t.innerHTML=b('book','Book')+b('orders','Orders')+b('customers','Customers')+`<button class="${MORE_TABS.includes(V.tab)?'on':''}" data-act="moremenu">More</button>`}
 function moreMenu(){
- const it=[['qr','QR codes'],['dists','Distributors'],['rep','Reports']];if(isAdmin())it.push(['setup','Setup']);
+ const it=[['products','Products'],['qr','QR codes'],['dists','Distributors'],['rep','Reports']];if(isAdmin())it.push(['setup','Setup']);
  modal(`<h3 style="margin-top:0">More</h3><div style="display:flex;flex-direction:column;gap:10px">${it.map(([k,l])=>`<button data-act="gotab" data-arg="${k}" style="justify-content:flex-start;min-height:52px;font-size:13px">${l}</button>`).join('')}</div><div class="row" style="margin-top:16px"><button data-act="closemodal">Close</button></div>`)}
 Object.assign(ACT,{moremenu:moreMenu,gotab(k){closeModal();V.tab=k;render()}});
-function greet(){const h=new Date().getHours();return h<12?'Good morning,':h<17?'Good afternoon,':'Good evening,'}
+const CH={beige:'#d8c7a8',wood:'#7a5a3c',mouse:'#9a948c',pista:'#9aa77f',navy:'#2f3d5a',black:'#1f1f1f',white:'#f4f2ee',grey:'#9a9a9a',gray:'#9a9a9a',olive:'#6b6b3a',brown:'#6b4a32',khaki:'#b5a577',cream:'#efe4cc',blue:'#3b5f8a',green:'#4f7a52',maroon:'#6e2a35',charcoal:'#3d3d3d',sand:'#d4bf99',coffee:'#5a4030',tan:'#b89868',stone:'#b9b2a4',steel:'#7d8791',sky:'#9dc0dc',rust:'#a24e2c',mustard:'#c9a227',peach:'#eab69f',pink:'#e5aeb7',red:'#a63030',teal:'#3f7f7a',wine:'#5e2531',mint:'#b9d8c4',lavender:'#b9a9d0',ivory:'#f1ead6',silver:'#b8b8b8',taupe:'#8b7b6b',camel:'#b88a55',denim:'#41597f',coal:'#2b2b2b',ash:'#aaa8a2',lemon:'#e9dc8a',orange:'#d9803a',purple:'#6d4a7c',yellow:'#d9bf4a'};
+function colHex(n){const k=String(n||'').toLowerCase();if(CH[k])return CH[k];for(const w in CH)if(k.includes(w))return CH[w];let h=0;for(const c of k)h=(h*31+c.charCodeAt(0))%360;return'hsl('+(20+h%40)+',18%,'+(55+h%20)+'%)'}
+function greet(){const h=new Date().getHours();return h<12?'Good morning.':h<17?'Good afternoon.':'Good evening.'}
 function homeHead(){
  const ex=S.exhibitions.find(e=>e.id===(V.np&&V.np.exh))||S.exhibitions[0];if(!ex)return'';
- const os=S.orders.filter(o=>o.exhId===ex.id&&o.status==='confirmed'),pcs=os.reduce((a,o)=>a+linesPcs(o.lines),0),dr=S.orders.filter(o=>o.exhId===ex.id&&o.status==='draft').length;
- const nm=(typeof byName==='function'&&byName())||'';
- return`<div class="homehead"><p class="gm">${greet()}</p><p class="nm">${esc(nm||'Exhibition desk')}</p><p class="sb">${esc(ex.name)} · ${esc(ex.city)}${ex.venue?' · '+esc(ex.venue):''}</p></div>
- <div class="herocard"><div class="lb">Orders taken</div><div class="bg">${os.length}<small>${pcs.toLocaleString('en-IN')} pcs</small></div><div class="st"><span><b>${dr}</b> in progress</span><span><b>${new Set(os.map(o=>o.party&&o.party.id)).size}</b> customers</span></div></div>
- <div class="qa"><button data-act="qafind"><span class="ic">${IC.find}</span>Find customer</button><button data-act="newparty"><span class="ic">${IC.user}</span>New customer</button><button data-act="visitor"><span class="ic">${IC.visitor}</span>Quick visitor</button></div>`}
+ const all=S.orders.filter(o=>o.exhId===ex.id&&o.status==='confirmed'),td=today(),os=all.filter(o=>(o.signedAt||o.date||'').slice(0,10)===td||o.date===td);
+ const pcs=os.reduce((a,o)=>a+linesPcs(o.lines),0),dr=S.orders.filter(o=>o.exhId===ex.id&&o.status==='draft').length;
+ const cols=[];all.forEach(o=>o.lines.forEach(l=>{if(l.colName&&!cols.includes(l.colName))cols.push(l.colName)}));
+ const pend=all.filter(o=>o.dispatch&&o.dispatch>=td).sort((a,b)=>a.dispatch.localeCompare(b.dispatch));
+ const sc={};all.forEach(o=>o.lines.forEach(l=>(l.sets||[]).forEach(x=>{const k=setLbl(x.q);sc[k]=(sc[k]||0)+x.n*Object.keys(x.q).reduce((a,z)=>a+(+x.q[z]||0),0)})));
+ const tot=Object.values(sc).reduce((a,b)=>a+b,0),top=Object.keys(sc).sort((a,b)=>sc[b]-sc[a])[0];
+ const rec=[...all].sort((a,b)=>(b.signedAt||'').localeCompare(a.signedAt||'')).slice(0,2);
+ const dots=cols.slice(0,5).map(c=>`<span class="cdot" style="background:${colHex(c)}"></span>`).join('');
+ return`<div class="homehead"><p class="sb">${fmtDate(td)} · ${esc(ex.name)} · ${esc(ex.city)}${ex.venue?' · '+esc(ex.venue):''}</p><h1 class="gm">${greet()}</h1></div>
+ <button class="findbar" data-act="qafind"><span>Find a customer to start an order</span><i>${IC.plus}</i></button>
+ <div class="herocard"><div><div class="lb">Orders today</div><div class="bg">${os.length}</div><div class="st">${pcs.toLocaleString('en-IN')} pcs · ${new Set(os.map(o=>o.party&&o.party.id)).size} customers${dr?' · '+dr+' in progress':''}</div></div><div class="dots">${dots}</div></div>
+ <div class="mini2"><div class="mc"><div class="lb">Dispatch pending</div><div class="mv">${pend.length} order${pend.length===1?'':'s'}</div><div class="st">${pend.length?'Next: '+fmtDate(pend[0].dispatch):'None set'}</div></div>
+ <div class="mc"><div class="lb">Top size set</div><div class="mv">${top||'—'}</div><div class="st">${top?Math.round(sc[top]*100/tot)+'% of set pieces':'No sets booked yet'}</div></div></div>
+ ${rec.length?`<div class="recent"><div class="lb">Recent orders</div>${rec.map(o=>`<div class="li"><span>${esc(o.party.name)}</span><b>${linesPcs(o.lines)} pcs</b></div>`).join('')}</div>`:''}
+ <div class="qa2"><button data-act="newparty">＋ New customer</button><button data-act="visitor">＋ Quick visitor</button></div>`}
 Object.assign(ACT,{qafind(){const i=$('#np-q');if(i){i.focus();i.scrollIntoView({block:'center',behavior:'smooth'})}}});
 const _vStart=viewStart;
 viewStart=function(){let h=_vStart();const hd=homeHead();if(!hd||h.includes('data-act="demo"'))return h;
@@ -14415,7 +14457,7 @@ viewOrder=function(){const h=_viewOrder();const o=ord();if(!o||!o.work)return h;
  const n=linesPcs(o.work.lines.filter(l=>sumQ(l.q)>0));
  return h+`<div class="obar"><div class="t"><small>Order total</small><b>${n} pcs</b></div><button class="p" data-act="close" style="background:#fff;color:#1f1a17">Review &amp; close →</button></div>`};
 const _render=render;
-render=function(){_render();tabbar();document.body.classList.toggle('hasobar',!!$('.obar'));document.body.classList.toggle('sheetopen',!!$('.sheet'))};
+render=function(){_render();tabbar();document.body.classList.toggle('hasobar',!!$('.obar'));document.body.classList.toggle('inorder',V.tab==='book'&&!!V.cur);document.body.classList.toggle('homebg',V.tab==='book'&&!V.cur&&!needLogin());document.body.classList.toggle('sheetopen',!!$('.sheet'))};
 const _ut2=updTotals;
 updTotals=function(){_ut2();const b=$('.obar .t b'),o=ord();if(b&&o&&o.work)b.textContent=linesPcs(o.work.lines.filter(l=>sumQ(l.q)>0))+' pcs'};
 
