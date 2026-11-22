@@ -482,6 +482,16 @@ html[data-theme=dark] header#top img.lg,html[data-theme=dark] header#top .brand 
 html[data-theme=dark] .announce{background:#10151b;color:#c9d0da}
 html[data-theme=dark] #toast{background:#10151b;color:#eef1f5}
 @media(min-width:701px){.sbrow .themebtn{display:none}}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:8px}
+.tile{flex-direction:column;gap:12px;min-height:118px;border-radius:22px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;background:var(--bg);color:var(--ink);box-shadow:var(--rs)}
+.tile .ic{width:34px;height:34px}.tile .ic svg{width:34px;height:34px}
+.tile.wide{grid-column:1/-1;min-height:96px;flex-direction:row;background:var(--acc);color:var(--onacc,#fff)}
+.tile.wide .ic svg{width:30px;height:30px}
+@media(min-width:701px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr));max-width:960px;margin-left:auto;margin-right:auto}.tile.wide{grid-column:span 2}}
+.dinfo{display:flex;flex-wrap:wrap;gap:22px;align-items:center;padding:20px}
+.dinfo .dl2{width:110px;height:90px;display:flex;align-items:center;justify-content:center;background:var(--cut);border-radius:14px}.dinfo .dl2 img{max-width:80%;max-height:70px}
+.dinfo .dtext{flex:1;min-width:200px}.dinfo .drow{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}.dinfo .drow span{color:var(--mut)}
+.dinfo .dm{display:flex;gap:26px}.dinfo .dm b{display:block;font-size:26px;font-weight:800;line-height:1}.dinfo .dm span{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut)}
 </style>
 </head>
 <body>
@@ -14948,6 +14958,51 @@ ACT.theme=themeToggle;
 const _vcl2=viewCloudLogin;viewCloudLogin=function(){return _vcl2()+'<div class="row" style="margin-top:12px"><button class="themebtn wide" data-act="theme" data-label="1"></button></div>'};
 if(typeof viewLogin==='function'){const _vl2=viewLogin;viewLogin=function(){return _vl2()+'<div class="row" style="margin-top:12px"><button class="themebtn wide" data-act="theme" data-label="1"></button></div>'}}
 themeApply(themeGet());
+
+
+/* ---------- v0.17: plain home (navigation tiles) + distributor detail page ---------- */
+V.hm=true;V.dd='';
+ICA.dback='back';ICA.dopen='truck';ICA.dcadd='userplus';ICA.dstart='arrow';ICA.neworder='plus';ICA.hback='home';
+function homeTiles(){
+ const ex=S.exhibitions[0],adm=isAdmin();
+ const t=(act,arg,ic,lb,cls)=>`<button class="tile ${cls||''}" data-act="${act}"${arg?` data-arg="${arg}"`:''}>${icSVG(ic)}<span>${lb}</span></button>`;
+ return`<div class="homehead"><div class="sbrow"><p class="sb">${ex?esc(ex.name)+' · '+esc(ex.city):'AFOX exhibition order desk'}</p><button class="themebtn" data-act="theme"></button></div></div>
+ <div class="tiles">${t('neworder','','plus','New order','wide')}${t('gotab','orders','orders','Orders')}${t('gotab','customers','users','Customers')}${t('gotab','dists','truck','Distributors')}${t('gotab','products','trousers','Products')}${t('gotab','qr','qr','QR codes')}${t('gotab','rep','report','Reports')}${adm?t('gotab','an','chart','Analysis')+t('gotab','setup','sliders','Setup'):''}</div>`}
+const _vStart2=viewStart;
+viewStart=function(){
+ const h=_vStart2();
+ if(h.includes('data-act="demo"'))return h;
+ if(V.hm!==false&&!(V.np&&V.np.form))return homeTiles();
+ return`<div class="row" style="margin:0 0 10px"><button data-act="hback">← Home</button><button data-act="newparty">＋ New customer</button><button data-act="visitor">＋ Quick visitor</button></div>`+h.replace(/<div class="homehead">[\s\S]*?<\/div>\s*<button class="findbar"[\s\S]*?<\/button>\s*<div class="herocard">[\s\S]*?<div class="qa2">[\s\S]*?<\/div>/,'')};
+Object.assign(ACT,{neworder(){V.tab='book';V.hm=false;V.cur=null;render()},hback(){V.hm=true;V.np=null;render()}});
+/* tapping Booking (tab or dock) with no open order goes to home tiles */
+document.addEventListener('click',e=>{const tb=e.target.closest('[data-tab]');if(tb&&tb.dataset.tab==='book'&&!V.cur){V.hm=true;V.np=null}},true);
+const _gotab=ACT.gotab;ACT.gotab=function(k){if(k==='dists')V.dd='';_gotab(k)};
+
+function distStats(id){const m={};S.orders.filter(o=>o.status==='confirmed'&&o.distId===id).forEach(o=>{const k=o.party.id,e=m[k]||(m[k]={n:0,p:0});e.n++;e.p+=linesPcs(o.lines)});return m}
+viewDists=function(){
+ const D=S.settings.distributors;
+ if(V.dd&&D.some(d=>d.id===V.dd))return distDetail(V.dd);V.dd='';
+ const m={};S.orders.filter(o=>o.status==='confirmed').forEach(o=>{const e=m[o.distId]||(m[o.distId]={n:0,p:0});e.n++;e.p+=linesPcs(o.lines)});
+ return pagehead('Network','Distributors',`<button class="p" data-act="dedit" data-arg="">＋ Add distributor</button>`)+
+ (D.length?`<div class="dgrid">${D.map(d=>{const e=m[d.id]||{n:0,p:0},c=S.parties.filter(p=>p.distId===d.id).length;return`<div class="dcard" data-act="dopen" data-arg="${d.id}" style="cursor:pointer"><div class="dl">${d.logo?`<img src="${d.logo}">`:LG(34,'mark','faded')}</div><div class="db"><div class="dn">${esc(d.name)}</div>
+ <div class="muted">${esc([d.city,d.phone].filter(Boolean).join(' · ')||'No contact details yet')}</div>
+ <div class="dm"><div><b>${c}</b><span>Customers</span></div><div><b>${e.n}</b><span>Orders</span></div><div><b>${e.p}</b><span>Pieces</span></div></div></div>
+ <div class="df"><button class="sm" data-act="dopen" data-arg="${d.id}">Open</button><button class="sm" data-act="dedit" data-arg="${d.id}">Edit</button><button class="sm d" data-act="ddel" data-arg="${d.id}">Delete</button></div></div>`}).join('')}</div>`:empty('No distributors yet'))};
+function distDetail(id){
+ const d=S.settings.distributors.find(x=>x.id===id),cs=S.parties.filter(p=>p.distId===id).sort((a,b)=>a.name.localeCompare(b.name)),st=distStats(id);
+ const tn=Object.values(st).reduce((a,e)=>a+e.n,0),tp=Object.values(st).reduce((a,e)=>a+e.p,0);
+ const row=(l,v)=>`<div class="drow"><span>${l}</span><b>${v?esc(v):'<i class="muted">Not added</i>'}</b></div>`;
+ return pagehead('Distributor',esc(d.name),`<button data-act="dback">← All distributors</button><button data-act="dedit" data-arg="${id}">Edit details</button><button class="p" data-act="dcadd" data-arg="${id}">＋ Add customer</button>`)+
+ `<div class="dinfo card"><div class="dl2">${d.logo?`<img src="${d.logo}">`:LG(40,'mark','faded')}</div><div class="dtext">${row('Name',d.name)}${row('City',d.city)}${row('Contact number',d.phone)}</div>
+ <div class="dm"><div><b>${cs.length}</b><span>Customers</span></div><div><b>${tn}</b><span>Orders</span></div><div><b>${tp}</b><span>Pieces</span></div></div></div>
+ <h3 style="margin-top:22px">Customers of ${esc(d.name)}</h3>
+ <div class="scroll"><table><thead><tr><th>Customer</th><th>City</th><th>WhatsApp</th><th class="n">Orders</th><th class="n">Pieces</th><th></th></tr></thead><tbody>
+ ${cs.map(p=>{const e=st[p.id]||{n:0,p:0};return`<tr><td><b>${esc(p.name)}</b>${p.gst?'<br><span class="muted">GST: '+esc(p.gst)+'</span>':''}</td><td>${esc([p.city,p.state].filter(Boolean).join(', '))}</td><td>${esc(showPhone(p.phone))}</td><td class="n">${e.n}</td><td class="n">${e.p}</td>
+ <td style="white-space:nowrap;text-align:right"><button class="sm" data-act="dstart" data-arg="${p.id}">Start order</button> <button class="sm" data-act="cedit" data-arg="${p.id}">Edit</button></td></tr>`}).join('')||`<tr><td colspan="6">${empty('No customers under this distributor yet — tap Add customer')}</td></tr>`}</tbody></table></div>`}
+Object.assign(ACT,{dopen(id){V.dd=id;V.tab='dists';render();window.scrollTo(0,0)},dback(){V.dd='';render()},
+ dcadd(id){custForm('');const s=$('#cf-dist');if(s)s.value=id},
+ dstart(id){V.tab='book';V.hm=false;V.cur=null;V.np=null;render();ACT.pickparty(id)}});
 
 (async()=>{
  try{S=await DB.get('state')}catch(e){}
