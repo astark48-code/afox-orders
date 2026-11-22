@@ -160,6 +160,52 @@ table.grid tr.ah td{position:static!important;z-index:auto;background:var(--blk)
 #who a{cursor:pointer;text-decoration:underline}
 .seg button{margin-right:6px}.seg{margin-bottom:18px!important}
 .dcard[data-act]:hover{outline:2px solid var(--blk)}
+
+/* ===== PHONE-FIRST (v0.9.4) ===== */
+@media(max-width:700px){
+ body{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+ header#top{display:block;padding:0;min-height:0}
+ .brand{padding:8px 0 6px;gap:2px}.brand i{display:none}
+ /* two rows of four tabs fixed to the bottom, within thumb reach */
+ header#top nav,header#top nav.nr{position:fixed;left:0;right:0;z-index:30;background:#fff;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line)}
+ header#top nav{bottom:calc(44px + env(safe-area-inset-bottom))}
+ header#top nav.nr{bottom:env(safe-area-inset-bottom);padding-bottom:0}
+ header#top nav button{padding:0 2px;height:44px;font-size:9.5px;letter-spacing:.06em;border-bottom:0;border-top:3px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ header#top nav button.on{border-top-color:var(--blk);border-bottom-color:transparent;background:#f1f0ec}
+ body.camopen header#top nav,body.camopen header#top nav.nr{display:none}
+ #camdock{z-index:45}
+ .scanbar{top:42px}
+ h1.mega{font-size:36px;line-height:.95}h1.big{font-size:32px}
+ .eyebrow{font-size:9.5px;letter-spacing:.2em;margin-bottom:8px}
+ .pagehead{margin-bottom:16px;gap:10px}
+ .hero{padding:4px 0 18px;gap:12px}.hero p{margin-top:10px;font-size:14px}
+ main{padding:14px 12px 24px}
+ h3{margin:22px 0 10px}
+ /* forms fill the width, buttons are thumb-sized */
+ .card input:not([type=checkbox]):not([type=radio]):not(.q),.card select,.card textarea,.row>label,.row>label>input,.row>label>select{width:100%;box-sizing:border-box;min-width:0}
+ .row>label,.row>div{flex:1 1 100%!important;min-width:0!important}
+ input,select,textarea{font-size:16px}
+ button{min-height:44px}
+ .card>button,.card .row>button{margin-top:4px}
+ .card{padding:14px 12px}
+ /* wide tables become stacked cards */
+ table[data-card]{display:block;border:0;background:transparent}
+ table[data-card] thead{display:none}
+ table[data-card] tbody{display:block}
+ table[data-card] tr{display:block;background:#fafaf8;border:1px solid var(--line);margin-bottom:10px;padding:6px 10px}
+ table[data-card] td{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:5px 0;border:0;text-align:right;min-height:0;word-break:break-word}
+ table[data-card] td[data-l]::before{content:attr(data-l);flex:0 0 38%;text-align:left;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-weight:500}
+ table[data-card] td[colspan]{display:block;text-align:center}
+ table[data-card] td[colspan]::before{display:none}
+ /* tables we keep as tables scroll sideways inside a framed box */
+ .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+ table:not([data-card]):not(.grid){font-size:12px}
+ .modal,.sheet{max-width:100vw}
+ #toast{bottom:calc(104px + env(safe-area-inset-bottom));max-width:92vw;text-align:center;padding:12px 16px}
+ header#top nav button{text-align:center;display:flex;align-items:center;justify-content:center}
+ .kpi b{font-size:30px}.kpi{padding:12px}
+ .announce{font-size:9px;letter-spacing:.06em;flex-wrap:wrap;gap:3px 10px;padding:5px 12px}
+}
 </style>
 </head>
 <body>
@@ -13090,6 +13136,14 @@ function camLoop(){
  if(r&&r.data){const t=Date.now();const fresh=r.data!==CAM.last||t-CAM.seen>1300;CAM.seen=t;if(fresh){CAM.last=r.data;if(navigator.vibrate)navigator.vibrate(50);handleScan(r.data)}}}
 
 /* ================= render root ================= */
+function phoneTables(){
+ if(!window.matchMedia||!matchMedia('(max-width:700px)').matches)return;
+ $$('#main table:not(.grid)').forEach(t=>{
+  const th=[...t.querySelectorAll('thead th')];
+  if(!th.length||th.length>10||t.dataset.card)return;
+  const L=th.map(x=>(x.textContent||'').trim());
+  t.querySelectorAll('tbody tr').forEach(tr=>{[...tr.children].forEach((td,i)=>{if(!td.hasAttribute('colspan')&&L[i])td.setAttribute('data-l',L[i])})});
+  t.setAttribute('data-card','1')})}
 function render(){
  ensure();chrome();
  if(CAM.on&&!(V.tab==='book'&&V.cur&&!V.review)&&!(V.sc&&V.tab==='qr'))camStop();
@@ -13107,7 +13161,8 @@ function render(){
  else m.innerHTML=viewSetup();
  if(V.tab==='book'&&V.cur&&!V.review){focusScan();updTotals()}
  if(V.tab==='book'&&V.cur&&V.review)initSig();
- if(V.tab==='book'&&!V.cur&&V.np)renderResults()}
+ if(V.tab==='book'&&!V.cur&&V.np)renderResults();
+ phoneTables()}
 
 /* ================= start new order ================= */
 function viewStart(){
