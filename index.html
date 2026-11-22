@@ -102,7 +102,7 @@ ul.res li{padding:11px 14px;border-bottom:1px solid #ecebe6;cursor:pointer}ul.re
 .hero .big-fox{padding-right:30px}
 .ordhead{border:0;background:var(--card);border-left:6px solid var(--blk)}
 .ordhead .no{font-size:36px;font-weight:800;letter-spacing:-.03em;line-height:1}
-.empty{display:flex;flex-direction:column;align-items:center;gap:14px;padding:46px 10px;color:var(--mut);letter-spacing:.14em;text-transform:uppercase;font-size:11px}
+.empty{background:rgba(255,250,246,.7);border-radius:18px;display:flex;flex-direction:column;align-items:center;gap:14px;padding:46px 10px;color:var(--mut);letter-spacing:.14em;text-transform:uppercase;font-size:11px}
 .dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
 .dcard{background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column}
 .dcard .dl{height:130px;background:#dedcd5;display:flex;align-items:center;justify-content:center;color:#a9a69c}
@@ -333,6 +333,44 @@ header#top button.on{border-bottom-color:var(--acc);color:var(--acc)}
 }
 .findbar{text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;line-height:1.2}
 .findbar span{text-transform:none;letter-spacing:0}
+
+/* ===== v0.11 ONE THEME: peach glass on every page ===== */
+:root{--ink:#2d1a14;--mut:#6d4a3d;--line:rgba(109,74,61,.22);--bg:#f1bba5;--card:rgba(255,250,246,.88);--cut:#f6dfd2;--blk:#2d1a14;--acc:#c4501d;--acc2:#f6dfd2;--ok:#2f6b3f}
+html{background:#e79a83}
+body,body.homebg{background:radial-gradient(ellipse at 50% 100%,#d9826e 0%,#ebaa94 30%,transparent 62%),linear-gradient(#f6dfd2,#f1bba5 55%,#e79a83) fixed;color:var(--ink)}
+header#top{background:rgba(255,248,243,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.card,.kpis,.dcard,.recent,.paper{background:var(--card);border:1px solid rgba(255,255,255,.6);box-shadow:0 2px 14px rgba(120,60,40,.08)}
+.kpis{border-radius:18px;overflow:hidden}
+.kpi{border-right-color:var(--line)}
+table{background:rgba(255,252,249,.92);border-color:var(--line)}
+th{background:rgba(246,223,210,.9);color:var(--mut);border-bottom:1px solid var(--blk)}
+input,select,textarea{background:rgba(255,255,255,.92);border-color:rgba(109,74,61,.3);color:var(--ink)}
+button{border-color:var(--blk);color:var(--ink)}
+button.p,button.primary{background:var(--blk);color:#fff;border-color:var(--blk)}
+header#top button.on,.seg button.p{color:#fff}
+header#top button.on{background:var(--blk);border-radius:999px;border-bottom-color:var(--blk)}
+#modal .box{background:#fff6f0;border-top:4px solid var(--acc);border-radius:20px}
+ul.res{background:rgba(255,255,255,.95);border-radius:14px}
+.eyebrow{color:var(--acc);border-bottom-color:var(--acc)}
+h3::after{background:var(--line)}
+.dsp.need{background:#fde9de}
+.obar,.scanbar{background:var(--blk)}
+body.homebg .herocard,.herocard{background:rgba(255,250,246,.88);color:var(--ink)}
+.herocard .lb,.herocard .st{color:var(--mut)}.herocard .st b{color:var(--ink)}
+#tabbar{background:rgba(255,250,246,.94)}
+.muted,.mut{color:var(--mut)}
+/* analysis */
+.an-kp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0}
+@media(min-width:700px){.an-kp{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.an-kp div{background:var(--card);border-radius:18px;padding:12px 16px}
+.an-kp .lb{font-size:12px;color:var(--mut)}.an-kp b{display:block;font-family:var(--serif,Georgia,serif);font-size:28px;font-weight:600;line-height:1.15}.an-kp small{font-size:12px;color:var(--mut)}
+.an-bars{display:flex;flex-direction:column;gap:7px}
+.an-bar{display:grid;grid-template-columns:minmax(110px,42%) 1fr auto;gap:10px;align-items:center;font-size:13px}
+.an-bar .tr{height:14px;background:rgba(109,74,61,.12);border-radius:7px;overflow:hidden}.an-bar .tr i{display:block;height:100%;background:var(--acc);border-radius:7px}
+.an-bar .n{display:flex;align-items:center;gap:8px;min-width:0}.an-bar .n span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.an-bar .v{font-variant-numeric:tabular-nums;font-weight:600}
+.an-tag{display:inline-block;border-radius:999px;padding:2px 10px;font-size:11px;font-weight:600}
+.an-tag.up{background:#d7ecd9;color:#1f5a2b}.an-tag.hold{background:#f1e3b8;color:#6b5210}.an-tag.low{background:#f3cfc7;color:#8a2c1a}
 </style>
 </head>
 <body>
@@ -14418,14 +14456,14 @@ const IC={
  find:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>',
  user:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4.2 4-6 8-6s7.2 1.8 8 6M18 3v4M16 5h4"/></svg>',
  visitor:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>'};
-const MORE_TABS=['products','qr','dists','rep','setup'];
+const MORE_TABS=['an','products','qr','dists','rep','setup'];
 function tabbar(){
  let t=$('#tabbar');if(!t){t=document.createElement('nav');t.id='tabbar';document.body.appendChild(t)}
  const gate=typeof needLogin==='function'&&needLogin();document.body.classList.toggle('nologin',!!gate);
  const on=x=>V.tab===x?' on':'',b=(tab,lb)=>`<button class="${on(tab).trim()}" data-tab="${tab}">${lb}</button>`;
  t.innerHTML=b('book','Book')+b('orders','Orders')+b('customers','Customers')+`<button class="${MORE_TABS.includes(V.tab)?'on':''}" data-act="moremenu">More</button>`}
 function moreMenu(){
- const it=[['products','Products'],['qr','QR codes'],['dists','Distributors'],['rep','Reports']];if(isAdmin())it.push(['setup','Setup']);
+ const it=[['products','Products'],['qr','QR codes'],['dists','Distributors'],['rep','Reports']];if(isAdmin()){it.unshift(['an','Analysis']);it.push(['setup','Setup'])};
  modal(`<h3 style="margin-top:0">More</h3><div style="display:flex;flex-direction:column;gap:10px">${it.map(([k,l])=>`<button data-act="gotab" data-arg="${k}" style="justify-content:flex-start;min-height:52px;font-size:13px">${l}</button>`).join('')}</div><div class="row" style="margin-top:16px"><button data-act="closemodal">Close</button></div>`)}
 Object.assign(ACT,{moremenu:moreMenu,gotab(k){closeModal();V.tab=k;render()}});
 const CH={beige:'#d8c7a8',wood:'#7a5a3c',mouse:'#9a948c',pista:'#9aa77f',navy:'#2f3d5a',black:'#1f1f1f',white:'#f4f2ee',grey:'#9a9a9a',gray:'#9a9a9a',olive:'#6b6b3a',brown:'#6b4a32',khaki:'#b5a577',cream:'#efe4cc',blue:'#3b5f8a',green:'#4f7a52',maroon:'#6e2a35',charcoal:'#3d3d3d',sand:'#d4bf99',coffee:'#5a4030',tan:'#b89868',stone:'#b9b2a4',steel:'#7d8791',sky:'#9dc0dc',rust:'#a24e2c',mustard:'#c9a227',peach:'#eab69f',pink:'#e5aeb7',red:'#a63030',teal:'#3f7f7a',wine:'#5e2531',mint:'#b9d8c4',lavender:'#b9a9d0',ivory:'#f1ead6',silver:'#b8b8b8',taupe:'#8b7b6b',camel:'#b88a55',denim:'#41597f',coal:'#2b2b2b',ash:'#aaa8a2',lemon:'#e9dc8a',orange:'#d9803a',purple:'#6d4a7c',yellow:'#d9bf4a'};
@@ -14457,7 +14495,7 @@ viewOrder=function(){const h=_viewOrder();const o=ord();if(!o||!o.work)return h;
  const n=linesPcs(o.work.lines.filter(l=>sumQ(l.q)>0));
  return h+`<div class="obar"><div class="t"><small>Order total</small><b>${n} pcs</b></div><button class="p" data-act="close" style="background:#fff;color:#1f1a17">Review &amp; close →</button></div>`};
 const _render=render;
-render=function(){_render();tabbar();document.body.classList.toggle('hasobar',!!$('.obar'));document.body.classList.toggle('inorder',V.tab==='book'&&!!V.cur);document.body.classList.toggle('homebg',V.tab==='book'&&!V.cur&&!needLogin());document.body.classList.toggle('sheetopen',!!$('.sheet'))};
+render=function(){_render();if(V.tab==='an'){const m=$('main');if(m)m.innerHTML=viewAnalysis()}const nr=$('header#top nav.nr');if(nr&&!nr.querySelector('[data-tab=an]')){const b=document.createElement('button');b.dataset.tab='an';b.textContent='Analysis';nr.insertBefore(b,nr.firstChild)}if(nr){const b=nr.querySelector('[data-tab=an]');if(b)b.style.display=(isAdmin()&&!needLogin())?'':'none'}$$('header#top button[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===V.tab));tabbar();document.body.classList.toggle('hasobar',!!$('.obar'));document.body.classList.toggle('inorder',V.tab==='book'&&!!V.cur);document.body.classList.toggle('homebg',V.tab==='book'&&!V.cur&&!needLogin());document.body.classList.toggle('sheetopen',!!$('.sheet'))};
 const _ut2=updTotals;
 updTotals=function(){_ut2();const b=$('.obar .t b'),o=ord();if(b&&o&&o.work)b.textContent=linesPcs(o.work.lines.filter(l=>sumQ(l.q)>0))+' pcs'};
 
@@ -14473,6 +14511,110 @@ document.addEventListener('change',e=>{const t=e.target;if(t.id==='od-disp'){con
 const _close=ACT.close;
 Object.assign(ACT,{dispin(n){const o=ord();if(!o||!o.work)return;o.work.dispatch=addDays(+n);save();render()},
  close(a,el){const o=ord();if(o&&o.work&&linesPcs(o.work.lines)&&!o.work.dispatch){toast('Select a dispatch date first',3200);const d=$('#od-disp');if(d){d.scrollIntoView({block:'center',behavior:'smooth'});d.focus()}return}return _close.call(this,a,el)}});
+
+
+/* ---------- ADMIN ANALYSIS + PDF (v0.11) ---------- */
+const AN={};
+function anExh(){return V.an&&V.an.exh!==undefined?V.an.exh:((V.np&&V.np.exh)||(S.exhibitions[0]||{}).id||'')}
+function anLeft(){return Math.max(0,+(V.an&&V.an.left)||0)}
+function anCompute(exId){
+ const conf=S.orders.filter(o=>o.status==='confirmed'&&(!exId||o.exhId===exId));
+ const art={},col={},setm={},size={},day={},state={},city={},dist={},dmon={},parties={};let pcs=0,val=0,setPcs=0,custPcs=0;
+ const add=(m,k,n,x)=>{const e=m[k]||(m[k]={k,pcs:0,orders:new Set(),...(x||{})});e.pcs+=n;return e};
+ conf.forEach(o=>{const p=o.party||{},d=(o.signedAt||o.date||'').slice(0,10),pk=(p.id||p.name||'')+'|'+(p.city||'');
+  const n0=linesPcs(o.lines);pcs+=n0;parties[pk]=(parties[pk]||0)+n0;
+  if(d)add(day,d,n0).orders.add(o.id);add(state,p.state||'—',n0).orders.add(o.id);add(city,(p.city||'—')+(p.state?', '+p.state:''),n0).orders.add(o.id);
+  add(dist,(distOf(o).name||'—'),n0).orders.add(o.id);
+  if(o.dispatch)add(dmon,o.dispatch.slice(0,7),n0).orders.add(o.id);
+  o.lines.forEach(l=>{const n=sumQ(l.q);if(!n)return;val+=n*(+l.mrp||0);
+   const A=add(art,l.art,n,{cols:{},sizes:{},sets:{}});A.orders.add(o.id);
+   const C=add(col,l.art+'|'+l.colName,n,{art:l.art,name:l.colName});C.orders.add(o.id);
+   const AC=A.cols[l.colName]||(A.cols[l.colName]={name:l.colName,pcs:0,sets:{},sizes:{}});AC.pcs+=n;
+   for(const s in l.q){const v=+l.q[s]||0;size[s]=(size[s]||0)+v;A.sizes[s]=(A.sizes[s]||0)+v;AC.sizes[s]=(AC.sizes[s]||0)+v}
+   if(l.sets&&l.sets.length){l.sets.forEach(x=>{const k=setLbl(x.q),pp=x.n*sumQ(x.q);add(setm,k,pp,{sets:0}).sets+=x.n;setm[k].orders.add(o.id);setPcs+=pp;A.sets[k]=(A.sets[k]||0)+x.n;AC.sets[k]=(AC.sets[k]||0)+x.n})}
+   else custPcs+=n})});
+ const arr=m=>Object.values(m).sort((a,b)=>b.pcs-a.pcs);
+ const A=arr(art);A.forEach(a=>{a.name=(artOf(a.k)||{}).name||'';a.mrp=(artOf(a.k)||{}).mrp||0;a.colsA=Object.values(a.cols).sort((x,y)=>y.pcs-x.pcs);a.setsA=Object.entries(a.sets).sort((x,y)=>y[1]-x[1])});
+ const days=Object.keys(day).sort(),nd=days.length||1;
+ const sold=new Set(A.map(a=>a.k)),unsold=S.articles.filter(a=>!sold.has(a.code));
+ return{conf,orders:conf.length,pcs,val,parties:Object.keys(parties).length,avg:conf.length?Math.round(pcs/conf.length):0,
+  A,C:arr(col),SET:arr(setm),setPcs,custPcs,SZ:Object.keys(size).map(Number).sort((a,b)=>a-b).map(s=>({k:s,pcs:size[s]})),
+  D:days.map(d=>({k:d,pcs:day[d].pcs,orders:day[d].orders.size})),ST:arr(state),CT:arr(city),DS:arr(dist),
+  DM:Object.keys(dmon).sort().map(k=>({k,pcs:dmon[k].pcs,orders:dmon[k].orders.size})),unsold,nd,perDay:Math.round(pcs/nd),
+  pend:conf.filter(o=>o.dispatch&&o.dispatch>=today()).length}}
+function anPlan(R){/* transparent rule-based suggestion */
+ const P=(S.settings.plan||{}),buf=Math.max(0,+P.buffer||10),rt=Math.max(1,+P.roundTo||12);
+ const n=R.A.length,topN=Math.max(1,Math.ceil(n*.25)),low=R.pcs?R.pcs/Math.max(n,1)*.4:0;
+ return R.A.map((a,i)=>{const fast=i<topN&&a.pcs>0,slow=a.pcs<low;const extra=fast?10:0;
+  const make=Math.ceil(a.pcs*(1+(buf+extra)/100)/rt)*rt;
+  return{a,make,call:fast?'Make more':slow?'Review':'Hold steady',extra:buf+extra,cls:fast?'up':slow?'low':'hold'}})}
+function anProject(R){const L=anLeft();return L?R.pcs+R.perDay*L:null}
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const anMon=k=>MON[+k.slice(5,7)-1]+' '+k.slice(0,4);
+function anBars(rows,fmt,dot){const mx=Math.max(1,...rows.map(r=>r.v));
+ return`<div class="an-bars">${rows.map(r=>`<div class="an-bar"><div class="n">${dot?`<span class="cdot" style="width:16px;height:16px;background:${colHex(r.dot||r.l)}"></span>`:''}<span>${esc(r.l)}</span></div><div class="tr"><i style="width:${Math.max(2,r.v*100/mx)}%"></i></div><div class="v">${fmt?fmt(r):r.v}</div></div>`).join('')}</div>`}
+function viewAnalysis(){
+ if(!isAdmin())return pagehead('Admin only','Analysis','')+`<div class="card">Only an admin can open the analysis.</div>`;
+ const ex=anExh(),E=S.exhibitions.find(e=>e.id===ex),R=anCompute(ex),pl=anPlan(R),prj=anProject(R),pct=(x,t)=>t?Math.round(x*100/t)+'%':'0%';
+ const sel=`<label>Exhibition<select id="an-exh">${S.exhibitions.map(e=>`<option value="${e.id}" ${e.id===ex?'selected':''}>${esc(e.name)} – ${esc(e.city)}</option>`).join('')}</select></label><label>Days still left<input id="an-left" inputmode="numeric" value="${anLeft()||''}" placeholder="e.g. 3" style="width:110px"></label>`;
+ let h=pagehead('Admin · live analysis','Analysis',`<button class="p" data-act="anpdf">⬇ Analysis PDF</button>`)+`<div class="card row">${sel}</div>`;
+ if(!R.orders)return h+`<div class="card">No signed orders at ${E?esc(E.name):'this exhibition'} yet. The analysis fills in as orders are signed.</div>`;
+ h+=`<div class="an-kp"><div><span class="lb">Orders signed</span><b>${R.orders}</b><small>${R.parties} customers</small></div><div><span class="lb">Pieces booked</span><b>${R.pcs.toLocaleString('en-IN')}</b><small>avg ${R.avg} per order</small></div><div><span class="lb">Order value (MRP)</span><b>₹${Math.round(R.val/1000).toLocaleString('en-IN')}k</b><small>at MRP, before discount</small></div><div><span class="lb">${prj?'Projected total':'Dispatch pending'}</span><b>${prj?prj.toLocaleString('en-IN'):R.pend}</b><small>${prj?'at '+R.perDay+' pcs/day for '+anLeft()+' more day(s)':'orders to be dispatched'}</small></div></div>`;
+ h+=`<div class="card"><h3>What is selling best</h3>${anBars(R.A.slice(0,8).map(a=>({l:a.k+(a.name?' · '+a.name:''),v:a.pcs,s:pct(a.pcs,R.pcs)})),r=>r.v+' · '+r.s)}</div>`;
+ h+=`<div class="card"><h3>Best colours</h3>${anBars(R.C.slice(0,8).map(c=>({l:c.art+' · '+c.name,dot:c.name,v:c.pcs})),null,1)}</div>`;
+ h+=`<div class="card"><h3>Size sets bought</h3>${R.SET.length?anBars(R.SET.slice(0,8).map(s=>({l:s.k,v:s.pcs,n:s.sets})),r=>r.n+' sets · '+r.v+' pcs'):'<p class="muted">No size sets booked yet.</p>'}${R.custPcs?`<p class="muted">${R.custPcs} pcs were entered as exact pieces, not sets.</p>`:''}</div>`;
+ h+=`<div class="card"><h3>Pieces per size</h3>${anBars(R.SZ.map(s=>({l:String(s.k),v:s.pcs})))}</div>`;
+ h+=`<div class="card"><h3>Orders by day</h3>${anBars(R.D.map(d=>({l:fmtDate(d.k),v:d.pcs,o:d.orders})),r=>r.v+' pcs · '+r.o+' orders')}</div>`;
+ h+=`<div class="card"><h3>Where the orders come from</h3>${anBars(R.CT.slice(0,6).map(c=>({l:c.k,v:c.pcs})))}<p class="muted" style="margin-top:8px">${R.ST.slice(0,4).map(s=>esc(s.k)+' '+pct(s.pcs,R.pcs)).join(' · ')}</p></div>`;
+ h+=`<div class="card"><h3>By distributor</h3>${anBars(R.DS.map(d=>({l:d.k,v:d.pcs})))}</div>`;
+ h+=`<div class="card"><h3>Dispatch load by month</h3>${R.DM.length?anBars(R.DM.map(m=>({l:anMon(m.k),v:m.pcs,o:m.orders})),r=>r.v+' pcs · '+r.o+' orders'):'<p class="muted">No dispatch dates yet.</p>'}</div>`;
+ h+=`<div class="card"><h3>What to make next</h3><p class="muted">Simple rules, not a forecast: ordered pieces plus your buffer (Reports → Production plan), +10% for the top quarter of articles, rounded up.</p><table><tr><th>Article</th><th>Ordered</th><th>Suggest making</th><th>Call</th></tr>${pl.map(p=>`<tr><td><b>${esc(p.a.k)}</b> ${esc(p.a.name)}</td><td>${p.a.pcs}</td><td>${p.make}</td><td><span class="an-tag ${p.cls}">${p.call}</span></td></tr>`).join('')}</table>${R.unsold.length?`<p class="muted" style="margin-top:8px">No orders yet: ${R.unsold.map(a=>esc(a.code)).join(', ')}</p>`:''}</div>`;
+ return h}
+Object.assign(ACT,{anpdf(){anPDF()}});
+document.addEventListener('change',e=>{const t=e.target;if(t.id==='an-exh'){V.an=V.an||{};V.an.exh=t.value;render()}else if(t.id==='an-left'){V.an=V.an||{};V.an.left=t.value;render()}});
+function anPDF(){
+ if(!isAdmin())return toast('Admin only');
+ const ex=anExh(),E=S.exhibitions.find(e=>e.id===ex)||{name:'All',city:''},R=anCompute(ex);if(!R.orders)return toast('No signed orders to analyse yet');
+ const pl=anPlan(R),prj=anProject(R),doc=new window.jspdf.jsPDF({unit:'mm',format:'a4'}),W=210,H=297,M=14,CW=W-2*M;let y=0,pg=0;
+ const bg=()=>{doc.setFillColor(248,243,234).rect(0,0,W,H,'F')};
+ const np=()=>{if(pg)doc.addPage();pg++;bg();doc.setFont('times','bold').setFontSize(11).setTextColor(45,26,20).text('AFOX · '+E.name,M,10);doc.setFont('times','normal').setFontSize(8).setTextColor(109,74,61).text('Page '+pg,W-M,10,{align:'right'});doc.setDrawColor(200,175,150).line(M,12,W-M,12);y=20};
+ const need=h=>{if(y+h>H-14)np()};
+ const T=(t,sz,b)=>{doc.setFont('times',b?'bold':'normal').setFontSize(sz).setTextColor(45,26,20)};
+ const H2=t=>{need(18);y+=6;T(0,15,1);doc.text(t,M,y);y+=2;doc.setDrawColor(196,80,29).setLineWidth(.6).line(M,y,M+22,y);y+=6};
+ const P=(t,sz)=>{T(0,sz||10);doc.setTextColor(80,55,45);doc.splitTextToSize(t,CW).forEach(l=>{need(5);doc.text(l,M,y);y+=4.6});y+=1};
+ const bars=(rows,fmt)=>{const mx=Math.max(1,...rows.map(r=>r.v));rows.forEach(r=>{need(7);T(0,9.5);doc.text(String(r.l).slice(0,34),M,y+3.2);const bx=M+62,bw=CW-62-34;doc.setFillColor(232,218,200).roundedRect(bx,y,bw,4,2,2,'F');doc.setFillColor(196,80,29).roundedRect(bx,y,Math.max(1.5,bw*r.v/mx),4,2,2,'F');doc.text(fmt?fmt(r):String(r.v),W-M,y+3.2,{align:'right'});y+=7})};
+ const tbl=(head,rows,cw)=>{const row=(c,b,fill)=>{need(7);if(fill){doc.setFillColor(238,225,208).rect(M,y-4.2,CW,6.6,'F')}T(0,9,b);let x=M+1.5;c.forEach((t,i)=>{doc.text(String(t).slice(0,Math.floor(cw[i]/1.9)),x,y);x+=cw[i]});y+=6.6};row(head,1,1);rows.forEach(r=>row(r))};
+ np();
+ T(0,26,1);doc.text('Exhibition analysis',M,y+6);y+=10;T(0,11);doc.setTextColor(109,74,61).text(E.name+(E.city?' · '+E.city:'')+' · prepared '+fmtDate(today()),M,y+3);y+=10;
+ const kp=[['Orders signed',String(R.orders)],['Pieces booked',R.pcs.toLocaleString('en-IN')],['Customers',String(R.parties)],['Order value at MRP','Rs '+Math.round(R.val).toLocaleString('en-IN')]];
+ kp.forEach((k,i)=>{const x=M+i*(CW/4);doc.setFillColor(255,250,246).roundedRect(x,y,CW/4-3,19,3,3,'F');T(0,8);doc.setTextColor(109,74,61).text(k[0],x+3,y+6);T(0,13,1);doc.text(k[1],x+3,y+14)});y+=26;
+ H2('The short version');
+ const t1=R.A[0],c1=R.C[0],s1=R.SET[0],top3=R.A.slice(0,3).reduce((a,x)=>a+x.pcs,0);
+ P(`${t1.k}${t1.name?' ('+t1.name+')':''} is the best seller with ${t1.pcs} pieces, ${Math.round(t1.pcs*100/R.pcs)}% of everything booked. The top three articles make up ${Math.round(top3*100/R.pcs)}% of pieces.`);
+ if(c1)P(`Best colour: ${c1.name} in ${c1.art} (${c1.pcs} pieces).`);
+ if(s1)P(`Most bought size set: ${s1.k}, ${s1.sets} sets (${s1.pcs} pieces).`);
+ P(`On average each order is ${R.avg} pieces, and about ${R.perDay} pieces are booked per exhibition day (${R.nd} day${R.nd>1?'s':''} so far).`+(prj?` With ${anLeft()} more day(s) at this pace, the total would reach about ${prj.toLocaleString('en-IN')} pieces.`:''));
+ H2('Best selling articles');bars(R.A.slice(0,10).map(a=>({l:a.k+(a.name?' '+a.name:''),v:a.pcs,s:Math.round(a.pcs*100/R.pcs)})),r=>r.v+' pcs · '+r.s+'%');
+ H2('Best colours');bars(R.C.slice(0,10).map(c=>({l:c.art+' '+c.name,v:c.pcs})),r=>r.v+' pcs');
+ H2('Size sets bought');if(R.SET.length)bars(R.SET.map(s=>({l:s.k,v:s.pcs,n:s.sets})),r=>r.n+' sets · '+r.v+' pcs');else P('No size sets booked yet.');
+ H2('Pieces per size');bars(R.SZ.map(s=>({l:'Size '+s.k,v:s.pcs})),r=>r.v+' pcs');
+ H2('Orders day by day');bars(R.D.map(d=>({l:fmtDate(d.k),v:d.pcs,o:d.orders})),r=>r.v+' pcs · '+r.o+' orders');
+ H2('Where orders come from');bars(R.CT.slice(0,8).map(c=>({l:c.k,v:c.pcs})),r=>r.v+' pcs');
+ H2('By distributor');bars(R.DS.map(d=>({l:d.k,v:d.pcs})),r=>r.v+' pcs');
+ H2('Dispatch load by month');if(R.DM.length)bars(R.DM.map(m=>({l:anMon(m.k),v:m.pcs,o:m.orders})),r=>r.v+' pcs · '+r.o+' orders');else P('No dispatch dates set.');
+ H2('What to make: article by article');
+ P('Rule of thumb, not a forecast: ordered pieces plus your buffer, with 10% extra on the top quarter of articles, rounded up to your production multiple.',9);
+ tbl(['Article','Ordered','Make about','Call'],pl.map(p=>[p.a.k+(p.a.name?' '+p.a.name:''),p.a.pcs,p.make,p.call]),[78,30,36,38]);
+ y+=4;H2('Colours and size sets to cut for the top articles');
+ pl.slice(0,5).forEach(p=>{need(24);T(0,11,1);doc.text(p.a.k+(p.a.name?' '+p.a.name:'')+' · make about '+p.make,M,y);y+=5.5;
+  const tot=p.a.pcs||1;P('Colours: '+p.a.colsA.map(c=>c.name+' '+Math.round(c.pcs*100/tot)+'% (~'+Math.round(p.make*c.pcs/tot)+' pcs)').join(', ')+'.',9.5);
+  if(p.a.setsA.length)P('Size sets: '+p.a.setsA.map(([k,n])=>k+' ×'+n).join(', ')+'.',9.5)});
+ if(R.unsold.length){H2('Not ordered yet');P(R.unsold.map(a=>a.code+(a.name?' '+a.name:'')).join(', ')+'. Check whether they were shown properly before deciding to drop them.')}
+ H2('Looking ahead');
+ P('Stock for dispatch: '+(R.DM.length?R.DM.map(m=>anMon(m.k)+' '+m.pcs+' pcs').join(', '):'no dispatch dates set yet')+'.');
+ P('Study these three things before the next production run: (1) which articles repeat in the top list across exhibitions; (2) whether the same size sets lead each time, so cutting plans can follow them; (3) the colours that sell out first, so they get the larger share of fabric.');
+ P('Limits: figures are signed orders only. Unsigned drafts, cancelled orders and walk-in visitors are not counted. Predictions improve once you have two or more exhibitions to compare.',9);
+ const n=doc.getNumberOfPages();doc.save('AFOX_Analysis_'+(E.name||'exhibition').replace(/[^A-Za-z0-9]+/g,'_')+'_'+today()+'.pdf');toast('Analysis PDF ready')}
 
 (async()=>{
  try{S=await DB.get('state')}catch(e){}
