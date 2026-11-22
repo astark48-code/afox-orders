@@ -13209,7 +13209,7 @@ function viewStart(){
  const f=np.form;
  
  return`<section class="hero"><div><span class="eyebrow">Exhibition order desk</span><h1 class="mega">New<br>order</h1><p>Choose the exhibition, find the customer (each customer belongs to a distributor), then scan the first article.</p></div><div class="big-fox">${LG(190,'full')}</div></section><div class="card" style="margin-top:22px"><div class="row">
- <label>Exhibition<select id="np-exh">${S.exhibitions.map(e=>`<option value="${e.id}" ${e.id===np.exh?'selected':''} ${e.locked?'disabled':''}>${e.locked?'🔒 ':''}${esc(e.name)} – ${esc(e.city)}</option>`).join('')}</select></label>
+ <label>Exhibition<select id="np-exh">${S.exhibitions.map(e=>`<option value="${e.id}" ${e.id===np.exh?'selected':''} ${e.locked?'disabled':''}>${e.locked?'🔒 ':''}${esc(e.name)} – ${esc(e.city)}</option>`).join('')}</select></label>${isAdmin()?`<button class="sm" data-act="exedit" data-arg="${np.exh}">✎ Edit exhibition</button><button class="sm" data-act="exedit" data-arg="">＋ New exhibition</button>`:''}
  <label style="flex:1;min-width:240px">Search customer (name, city or number)<input id="np-q" value="${esc(np.q)}" placeholder="type to search…" autocomplete="off"></label>
  <button data-act="newparty">＋ New customer</button><button data-act="visitor">＋ Quick visitor</button></div>
  <ul class="res" id="results"></ul>
@@ -13217,6 +13217,7 @@ function viewStart(){
  <div class="row"><label>Customer name<input id="pf-name" value="${esc(f.name)}"></label><label>WhatsApp number<input id="pf-phone" value="${esc(f.phone)}" inputmode="tel"></label>
  <label>Distributor${distSel(f.distId||np.dist,'pf-dist')}</label>
  <label>City<input id="pf-city" value="${esc(f.city)}"></label><label>State<input id="pf-state" value="${esc(f.state)}"></label>
+ <label>GST number <span class="muted">(optional)</span><input id="pf-gst" value="${esc(f.gst||'')}" maxlength="15" autocapitalize="characters" placeholder="24ABCDE1234F1Z5" style="text-transform:uppercase"></label>
  <label style="flex:1;min-width:220px">Address<input id="pf-address" value="${esc(f.address)}"></label>
  <label style="flex:1;min-width:220px">Notes (shown whenever this customer is booked)<input id="pf-note" value="${esc(f.note||'')}" placeholder="e.g. pays on delivery, wants delivery in 30 days"></label></div>
  <p class="muted">Order number and date are assigned automatically (${fmtDate(today())}). Corrections here update the party list.</p>
@@ -13224,13 +13225,15 @@ function viewStart(){
  ${parkedHTML()}`}
 function renderResults(){
  const ul=$('#results');if(!ul)return;const q=V.np.q.toLowerCase().trim();
- const list=q?S.parties.filter(p=>[p.name,p.city,p.state,p.phone,distName(p.distId)].join(' ').toLowerCase().includes(q)).slice(0,40):[];
- ul.innerHTML=list.length?list.map(p=>`<li data-act="pickparty" data-arg="${p.id}"><b>${esc(p.name)}</b> · ${esc(p.city)}, ${esc(p.state)} <span class="muted">${esc(showPhone(p.phone))}${p.distId?' · via '+esc(distName(p.distId)):''}</span></li>`).join(''):(q?'<li class="muted">No match – use “New party”</li>':'<li class="muted">Start typing to search the customer list</li>')}
-function readForm(){const g=i=>($('#pf-'+i)||{}).value||'';return{name:g('name').trim(),phone:g('phone').trim(),city:g('city').trim(),state:g('state').trim(),address:g('address').trim(),distId:g('dist'),note:g('note').trim()}}
+ const list=q?S.parties.filter(p=>[p.name,p.city,p.state,p.phone,p.gst,distName(p.distId)].join(' ').toLowerCase().includes(q)).slice(0,40):[];
+ ul.innerHTML=list.length?list.map(p=>`<li data-act="pickparty" data-arg="${p.id}"><b>${esc(p.name)}</b> · ${esc(p.city)}, ${esc(p.state)} <span class="muted">${esc(showPhone(p.phone))}${p.gst?' · GST '+esc(p.gst):''}${p.distId?' · via '+esc(distName(p.distId)):''}</span></li>`).join(''):(q?'<li class="muted">No match – use “New party”</li>':'<li class="muted">Start typing to search the customer list</li>')}
+const GSTRE=/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
+function readForm(){const g=i=>($('#pf-'+i)||{}).value||'';return{name:g('name').trim(),phone:g('phone').trim(),city:g('city').trim(),state:g('state').trim(),address:g('address').trim(),gst:g('gst').trim().toUpperCase().replace(/\s+/g,''),distId:g('dist'),note:g('note').trim()}}
 function startOrder(){
  const f=readForm(),np=V.np;
  if(!f.name||ccPhone(f.phone).length<10||!f.city||!f.state)return toast('Name, valid WhatsApp number, city and state are required');
  if(!f.distId)return toast('Select the distributor for this customer');
+ if(f.gst&&!GSTRE.test(f.gst))return toast('GST number must be 15 characters like 24ABCDE1234F1Z5 – fix it or leave it blank',4200);
  if(exhLocked(np.exh))return toast('🔒 That exhibition is locked');
  let p=np.pid&&S.parties.find(x=>x.id===np.pid);
  if(p)Object.assign(p,f);else{p={id:uid(),...f,addedAt:new Date().toISOString(),src:'exhibition'};S.parties.push(p)}
@@ -13309,13 +13312,13 @@ function finalize(){
  const o=ord();if(lockGuard(o))return;if(!V.sigDrawn)return toast('Buyer must sign first');
  const sig=$('#sig').toDataURL('image/png'),w=o.work;
  if(o.status==='confirmed'){o.revisions.push({rev:o.rev,signedAt:o.signedAt,sig:o.sig,lines:o.lines,party:o.party,waNumber:o.waNumber});o.rev++}
- o.lines=w.lines.filter(l=>sumQ(l.q)>0);o.party=w.party;o.waNumber=w.waNumber;o.sig=sig;o.signedAt=new Date().toISOString();o.signedBy=byName();o.status='confirmed';o.work=null;logA(o.rev?'sign revision R'+(o.rev+1):'sign order',o.no,o.party.name+' · '+linesPcs(o.lines)+' pcs');
+ o.lines=w.lines.filter(l=>sumQ(l.q)>0);o.party=w.party;o.waNumber=w.waNumber;o.sig=sig;o.signedAt=new Date().toISOString();o.signedBy=byName();o.status='confirmed';o.exhSnap=o.exhSnap||clone(exhOf(o));o.work=null;logA(o.rev?'sign revision R'+(o.rev+1):'sign order',o.no,o.party.name+' · '+linesPcs(o.lines)+' pcs');
  o.wa={status:'not_sent',at:null,tries:o.wa?o.wa.tries:0};
- const pp=S.parties.find(x=>x.id===o.party.id);if(pp)Object.assign(pp,{name:o.party.name,city:o.party.city,state:o.party.state,address:o.party.address});
+ const pp=S.parties.find(x=>x.id===o.party.id);if(pp)Object.assign(pp,{name:o.party.name,city:o.party.city,state:o.party.state,address:o.party.address,gst:o.party.gst||pp.gst||''});
  V.review=false;V.cur=null;V.tab='book';V.art=null;V.sel=new Set();V.undo=null;save();render();waPrompt(o.id)}
 
 /* ================= PDF ================= */
-function snapOf(o){return{no:o.no,date:o.date,party:o.party,lines:o.lines,sig:o.sig,signedAt:o.signedAt,rev:o.rev,dist:distOf(o),exh:exhOf(o)}}
+function snapOf(o){return{no:o.no,date:o.date,party:o.party,lines:o.lines,sig:o.sig,signedAt:o.signedAt,rev:o.rev,dist:distOf(o),exh:o.exhSnap||exhOf(o)}}
 function buildPDF(s){
  const doc=new window.jspdf.jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
  const M=10,cw=[26,38,16,...SIZES.map(()=>14),20],tw=cw.reduce((a,b)=>a+b,0),rh=6.2,PH=210;
@@ -13324,12 +13327,12 @@ function buildPDF(s){
   if(!first){doc.setFont('helvetica','bold').setFontSize(9).text(s.no+'  ·  '+s.party.name+'  (continued)',M,M+3);return M+7}
   if(S.settings.afoxLogo)img(S.settings.afoxLogo,M,M,32,14);else{img(LOGO_PDF,M,M,34,34/3.1359);doc.setFont('helvetica','normal').setFontSize(5.5).text('TROUSERS & BEYOND',M+0.5,M+14.2,{charSpace:0.95})}
   doc.setFont('helvetica','bold').setFontSize(13).text(s.draft?'ORDER SUMMARY – NOT YET SIGNED':'EXHIBITION ORDER FORM',148.5,M+6,{align:'center'});
-  doc.setFont('helvetica','normal').setFontSize(8).text(s.exh.name+' · '+s.exh.city,148.5,M+11,{align:'center'});
+  doc.setFont('helvetica','normal').setFontSize(8).text(s.exh.name+' · '+s.exh.city+(s.exh.venue?' · '+s.exh.venue:''),148.5,M+11,{align:'center'});
   if(s.dist.logo)img(s.dist.logo,297-M-32,M,32,14);else doc.setFont('helvetica','bold').setFontSize(11).text(s.dist.name,297-M,M+8,{align:'right'});
   const y=M+19;doc.setDrawColor(120).rect(M,y,tw,19);doc.line(M+tw/2,y,M+tw/2,y+19);
   doc.setFont('helvetica','bold').setFontSize(9).text('Party: ',M+2,y+5);doc.text('Order no: ',M+tw/2+2,y+5);
   doc.setFont('helvetica','normal');doc.text(s.party.name,M+14,y+5);doc.text('Phone: '+showPhone(s.party.phone||''),M+2,y+10);doc.text('City/State: '+s.party.city+', '+s.party.state,M+2,y+14.5);
-  doc.text(String(s.party.address||'').slice(0,70),M+2,y+18);
+  doc.text(String(s.party.address||'').slice(0,52),M+2,y+18);if(s.party.gst)doc.text('GSTIN: '+s.party.gst,M+tw/2+2,y+18);
   doc.text(s.no+(s.rev?'  (Revision R'+(s.rev+1)+')':''),M+tw/2+20,y+5);doc.text('Date: '+fmtDate(s.date),M+tw/2+2,y+10);doc.text('Distributor: '+s.dist.name,M+tw/2+2,y+14.5);
   return y+22};
  const cell=(i,x,y,t,o={})=>{const w=cw[i];if(o.fill){doc.setFillColor(...o.fill);doc.rect(x,y,w,rh,'FD')}else doc.rect(x,y,w,rh);
@@ -13494,8 +13497,8 @@ function exportInventory(mode){
  Object.values(R.A).forEach(a=>Object.values(a.cols).forEach(c=>{if(!seen.has(a.art+'|'+c.col))row(artOf(a.art),null,a.art,c.col)}));
  const ol=[['Order no','Date','Exhibition','Distributor','Party','WhatsApp','City','State','Article','Colour Code','Colour','MRP','Size','Qty']];
  R.conf.forEach(o=>o.lines.forEach(l=>SIZES.forEach(z=>{const q=+l.q[z]||0;if(q)ol.push([o.no,fmtDate(o.date),exhOf(o).name,distOf(o).name,o.party.name,o.waNumber,o.party.city,o.party.state,l.art,l.col,l.colName,l.mrp,z,q])})));
- const cu=[['Distributor','Party','WhatsApp','City','State','Address','Orders','Pieces','New party (added at exhibition)','Added on']];
- Object.values(R.P).forEach(x=>{const m=S.parties.find(y=>y.id===x.p.id)||{};cu.push([distName((S.parties.find(y=>y.id===x.p.id)||x.p).distId),x.p.name,x.p.phone,x.p.city,x.p.state,x.p.address,x.orders.length,x.pieces,m.src==='exhibition'?'Yes':'No',m.addedAt?fmtDate(m.addedAt.slice(0,10)):''])});
+ const cu=[['Distributor','Party','WhatsApp','GST','City','State','Address','Orders','Pieces','New party (added at exhibition)','Added on']];
+ Object.values(R.P).forEach(x=>{const m=S.parties.find(y=>y.id===x.p.id)||{};cu.push([distName((S.parties.find(y=>y.id===x.p.id)||x.p).distId),x.p.name,x.p.phone,m.gst||x.p.gst||'',x.p.city,x.p.state,x.p.address,x.orders.length,x.pieces,m.src==='exhibition'?'Yes':'No',m.addedAt?fmtDate(m.addedAt.slice(0,10)):''])});
  [['Booked vs Stock',bs],['Order lines',ol],['Customers',cu]].forEach(([n,a])=>{const w=ws.aoa_to_sheet(a);w['!cols']=a[0].map((h,i)=>({wch:i<6?16:(i>=6&&i<6+SIZES.length?5:14)}));ws.book_append_sheet(wb,w,n)});
  const now=new Date().toISOString();R.conf.forEach(o=>o.invExp=now);save();closeModal();
  XLSX.writeFile(wb,'AFOX_inventory_'+today()+'_'+pad(new Date().getHours())+pad(new Date().getMinutes())+'.xlsx');toast(R.conf.length+' order(s) exported for inventory');if(V.tab==='orders'||V.tab==='rep')render()}
@@ -13505,7 +13508,7 @@ function exportInventory(mode){
 function custStats(){const m={};S.orders.filter(o=>o.status==='confirmed').forEach(o=>{const e=m[o.party.id]||(m[o.party.id]={n:0,p:0});e.n++;e.p+=linesPcs(o.lines)});return m}
 function viewCustomers(){
  const st=custStats(),q=V.cu.q.toLowerCase();
- const list=S.parties.filter(p=>(!V.cu.st||p.state===V.cu.st)&&(!V.cu.d||(V.cu.d==='none'?!p.distId:p.distId===V.cu.d))&&(!q||[p.name,p.city,p.state,p.phone,distName(p.distId)].join(' ').toLowerCase().includes(q)));
+ const list=S.parties.filter(p=>(!V.cu.st||p.state===V.cu.st)&&(!V.cu.d||(V.cu.d==='none'?!p.distId:p.distId===V.cu.d))&&(!q||[p.name,p.city,p.state,p.phone,p.gst,distName(p.distId)].join(' ').toLowerCase().includes(q)));
  const states=[...new Set(S.parties.map(p=>p.state))].filter(Boolean).sort();
  const k=(v,l)=>`<div class="kpi"><b>${v}</b><span>${l}</span></div>`;
  return pagehead('Directory','Customers',`<button class="p" data-act="cedit" data-arg="">＋ Add customer</button><label class="filebtn">Import list<input type="file" id="imp-parties" accept=".xlsx,.xls,.csv"></label><button data-act="tplparty">Template</button><button data-act="expcust">⬇ Export customers</button><button data-act="expcontacts">⬇ WhatsApp contacts (CSV)</button>`)+
@@ -13514,26 +13517,28 @@ function viewCustomers(){
  <label>Distributor<select id="cu-d"><option value="">All</option>${S.settings.distributors.map(d=>`<option value="${d.id}" ${d.id===V.cu.d?'selected':''}>${esc(d.name)}</option>`).join('')}<option value="none" ${V.cu.d==='none'?'selected':''}>Not assigned</option></select></label>
  <label>State<select id="cu-st"><option value="">All</option>${states.map(x=>`<option ${x===V.cu.st?'selected':''}>${esc(x)}</option>`).join('')}</select></label></div>
  <div class="scroll"><table><thead><tr><th>Customer</th><th>Distributor</th><th>City</th><th>State</th><th>WhatsApp</th><th class="n">Orders</th><th class="n">Pieces</th><th></th></tr></thead><tbody>
- ${list.slice(0,300).map(p=>{const e=st[p.id]||{n:0,p:0};return`<tr><td><b>${esc(p.name)}</b> ${p.src==='exhibition'?'<span class="tag">New</span>':''}<br><span class="muted">${esc(p.address)}</span>${p.note?'<br><span class="notechip" style="display:inline-block;margin:3px 0 0">'+esc(p.note)+'</span>':''}</td><td>${p.distId?esc(distName(p.distId)):'<span class="tag warn">Not assigned</span>'}</td><td>${esc(p.city)}</td><td>${esc(p.state)}</td><td>${esc(showPhone(p.phone))}</td><td class="n">${e.n}</td><td class="n">${e.p}</td>
+ ${list.slice(0,300).map(p=>{const e=st[p.id]||{n:0,p:0};return`<tr><td><b>${esc(p.name)}</b> ${p.src==='exhibition'?'<span class="tag">New</span>':''}<br><span class="muted">${esc(p.address)}</span>${p.gst?'<br><span class="muted">GST: <b>'+esc(p.gst)+'</b></span>':''}${p.note?'<br><span class="notechip" style="display:inline-block;margin:3px 0 0">'+esc(p.note)+'</span>':''}</td><td>${p.distId?esc(distName(p.distId)):'<span class="tag warn">Not assigned</span>'}</td><td>${esc(p.city)}</td><td>${esc(p.state)}</td><td>${esc(showPhone(p.phone))}</td><td class="n">${e.n}</td><td class="n">${e.p}</td>
  <td style="white-space:nowrap;text-align:right"><button class="sm" data-act="cedit" data-arg="${p.id}">Edit</button> <button class="sm d" data-act="cdel" data-arg="${p.id}">Delete</button></td></tr>`}).join('')||`<tr><td colspan="8">${empty('No customers yet — add one or import your list')}</td></tr>`}</tbody></table></div>
  ${list.length>300?`<p class="muted">Showing first 300 of ${list.length}. Use search to narrow.</p>`:''}`}
 function custForm(id){
- const p=id?S.parties.find(x=>x.id===id):{name:'',phone:'',city:'',state:'',address:'',distId:'',note:''};V.ce=id||'';
+ const p=id?S.parties.find(x=>x.id===id):{name:'',phone:'',city:'',state:'',address:'',gst:'',distId:'',note:''};V.ce=id||'';
  modal(`<h3>${id?'Edit customer':'Add customer'}</h3><div class="row" style="flex-direction:column;align-items:stretch">
  <label>Customer name<input id="cf-name" value="${esc(p.name)}"></label><label>WhatsApp number<input id="cf-phone" value="${esc(p.phone)}" inputmode="tel"></label>
  <label>Distributor (this customer buys through)${distSel(p.distId,'cf-dist','Select distributor…')}</label>
  <div class="row"><label style="flex:1">City<input id="cf-city" value="${esc(p.city)}"></label><label style="flex:1">State<input id="cf-state" value="${esc(p.state)}"></label></div>
+ <label>GST number <span class="muted">(optional)</span><input id="cf-gst" value="${esc(p.gst||'')}" maxlength="15" autocapitalize="characters" placeholder="24ABCDE1234F1Z5" style="text-transform:uppercase"></label>
  <label>Address<input id="cf-address" value="${esc(p.address)}"></label><label>Notes (shown whenever this customer is booked)<input id="cf-note" value="${esc(p.note||'')}"></label></div>
  <div class="row" style="margin-top:18px"><button class="p" data-act="csave">Save customer</button><button data-act="closemodal">Cancel</button></div>`)}
 function saveCust(){
- const g=i=>$('#cf-'+i).value.trim(),f={name:g('name'),phone:g('phone'),city:g('city'),state:g('state'),address:g('address'),distId:g('dist'),note:g('note')};
+ const g=i=>$('#cf-'+i).value.trim(),f={name:g('name'),phone:g('phone'),city:g('city'),state:g('state'),address:g('address'),gst:g('gst').toUpperCase().replace(/\s+/g,''),distId:g('dist'),note:g('note')};
  if(!f.name||ccPhone(f.phone).length<10||!f.city||!f.state)return toast('Name, valid number, city and state required');
+ if(f.gst&&!GSTRE.test(f.gst))return toast('GST number must be 15 characters like 24ABCDE1234F1Z5 – fix it or leave it blank',4200);
  if(!f.distId)return toast('Select the distributor');
  if(V.ce)Object.assign(S.parties.find(x=>x.id===V.ce),f);else S.parties.push({id:uid(),...f,addedAt:new Date().toISOString(),src:'manual'});
  logA(V.ce?'edit customer':'add customer',f.name,'');save();closeModal();render();toast('Customer saved')}
 function exportCustomers(){
- const st=custStats(),a=[['Distributor','Customer','WhatsApp','City','State','Address','Confirmed orders','Pieces','Added at exhibition','Added on']];
- S.parties.forEach(p=>{const e=st[p.id]||{n:0,p:0};a.push([distName(p.distId),p.name,p.phone,p.city,p.state,p.address,e.n,e.p,p.src==='exhibition'?'Yes':'No',p.addedAt?fmtDate(p.addedAt.slice(0,10)):''])});
+ const st=custStats(),a=[['Distributor','Customer','WhatsApp','GST','City','State','Address','Confirmed orders','Pieces','Added at exhibition','Added on']];
+ S.parties.forEach(p=>{const e=st[p.id]||{n:0,p:0};a.push([distName(p.distId),p.name,p.phone,p.gst||'',p.city,p.state,p.address,e.n,e.p,p.src==='exhibition'?'Yes':'No',p.addedAt?fmtDate(p.addedAt.slice(0,10)):''])});
  sheetDownload('AFOX_customers_'+today()+'.xlsx',a)}
 
 /* ================= distributors ================= */
@@ -13673,7 +13678,7 @@ const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
 function pick(r,names){for(const k in r){if(names.includes(norm(k))&&String(r[k]).trim()!=='')return String(r[k]).trim()}return''}
 function readSheet(file,cb){const fr=new FileReader();fr.onload=()=>{const wb=XLSX.read(fr.result,{type:'array'});cb(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''}))};fr.readAsArrayBuffer(file)}
 function importParties(rows){let n=0;rows.forEach(r=>{const name=pick(r,['name','party','partyname']),phone=pick(r,['phone','mobile','whatsapp','contact','number','phoneno','mobileno']);if(!name)return;
-  const p={name,phone,city:pick(r,['city']),state:pick(r,['state']),address:pick(r,['address','addr'])};const dn=pick(r,['distributor','distributorname','dist']);if(dn){let d=S.settings.distributors.find(x=>x.name.toLowerCase()===String(dn).toLowerCase());if(!d){d={id:uid(),name:String(dn),logo:''};S.settings.distributors.push(d)}p.distId=d.id}const ex=S.parties.find(x=>x.name.toLowerCase()===name.toLowerCase()&&ccPhone(x.phone)===ccPhone(phone));if(ex)Object.assign(ex,p);else{S.parties.push({id:uid(),...p});n++}});save();toast(n+' new parties imported');render()}
+  const p={name,phone,city:pick(r,['city']),state:pick(r,['state']),address:pick(r,['address','addr']),gst:String(pick(r,['gst','gstin','gstno','gstnumber'])||'').toUpperCase().replace(/\s+/g,'')};const dn=pick(r,['distributor','distributorname','dist']);if(dn){let d=S.settings.distributors.find(x=>x.name.toLowerCase()===String(dn).toLowerCase());if(!d){d={id:uid(),name:String(dn),logo:''};S.settings.distributors.push(d)}p.distId=d.id}const ex=S.parties.find(x=>x.name.toLowerCase()===name.toLowerCase()&&ccPhone(x.phone)===ccPhone(phone));if(ex)Object.assign(ex,p);else{S.parties.push({id:uid(),...p});n++}});save();toast(n+' new parties imported');render()}
 function importCatalog(rows){const m={};rows.forEach(r=>{const code=pick(r,['article','articleno','articlecode','articlenumber']);if(!code)return;
   const a=m[code]||(m[code]={code,name:'',mrp:0,barcode:'',colours:[]});a.name=a.name||pick(r,['productname','name','description']);a.barcode=a.barcode||pick(r,['articleqrcode','articleqr','qrcode','qr','articlebarcode','barcode']);a.mrp=+pick(r,['mrp','price'])||a.mrp;
   const cc=pick(r,['colourcode','colorcode','colour','color']);if(cc)a.colours.push({code:cc,name:pick(r,['colourname','colorname'])||cc,barcode:pick(r,['swatchqrcode','swatchqr','colourqrcode','colourqr','colorqr','colorqrcode','swatchbarcode','colourbarcode','colorbarcode'])||code+'-'+cc,stock:pick(r,['stock']),sample:(pick(r,['sample'])||'Y').toUpperCase().startsWith('N')?'N':'Y'})});
@@ -13726,7 +13731,7 @@ const ACT={
  addexh(){const n=$('#ex-name').value.trim(),c=$('#ex-city').value.trim(),p=$('#ex-pre').value.trim().toUpperCase();if(!n||!p)return toast('Name and prefix required');S.exhibitions.push({id:uid(),name:n,city:c,prefix:p});save();render()},
  adddist(){const n=$('#di-name').value.trim();if(!n)return;S.settings.distributors.push({id:uid(),name:n,logo:''});save();render()},
  addpreset(){S.presets.push({id:uid(),name:'New',q:{}});save();render()},delpreset(id){S.presets=S.presets.filter(p=>p.id!==id);save();render()},
- tplparty(){sheetDownload('party_list_template.xlsx',[['Name','Phone','City','State','Address','Distributor'],['Sample Garments','9876543210','Ahmedabad','Gujarat','CG Road','Sample Distributor']])},
+ tplparty(){sheetDownload('party_list_template.xlsx',[['Name','Phone','City','State','Address','GST','Distributor'],['Sample Garments','9876543210','Ahmedabad','Gujarat','CG Road','24ABCDE1234F1Z5','Sample Distributor']])},
  tplcat(){sheetDownload('catalog_template.xlsx',[['Article','Article QR Code','MRP','Colour Code','Colour Name','Swatch QR Code','Stock','Sample'],['AF-4416','AF-4416',1499,'BG','Beige','AF-4416-BG',100,'Y']])},
  expcat(){const a=[['Article','Article QR Code','MRP','Colour Code','Colour Name','Swatch QR Code','Stock','Sample']];S.articles.forEach(x=>x.colours.forEach(c=>a.push([x.code,x.barcode,x.mrp,c.code,c.name,c.barcode,c.stock||'',c.sample||''])));sheetDownload('AFOX_catalog_'+today()+'.xlsx',a)},
  backup(){dl(new Blob([JSON.stringify(S)],{type:'application/json'}),'AFOX_backup_'+today()+'.json')}
@@ -13836,7 +13841,7 @@ function exportAudit(){bookDownload('AFOX_audit_'+today()+'.xlsx',[['Audit',[['W
 const exhLocked=id=>!!(S.exhibitions.find(e=>e.id===id)||{}).locked;
 function lockGuard(o){if(o&&exhLocked(o.exhId)){toast('🔒 This exhibition is locked – an admin must unlock it first',3200);return true}return false}
 function exhRows(){return S.exhibitions.map(e=>`<div class="row" style="margin:4px 0;align-items:center"><span>${e.locked?'🔒 ':''}${esc(e.name)} · ${esc(e.city)} · prefix <b>${esc(e.prefix)}</b>${e.locked?' <span class="muted">locked '+new Date(e.lockedAt).toLocaleString()+' by '+esc(e.lockedBy||'')+'</span>':''}</span>
- <button class="sm right" data-act="${e.locked?'unlockexh':'lockexh'}" data-arg="${e.id}">${e.locked?'Unlock…':'Lock exhibition'}</button></div>`).join('')||'<span class="muted">None</span>'}
+ <button class="sm right" data-act="exedit" data-arg="${e.id}">Edit</button><button class="sm" data-act="${e.locked?'unlockexh':'lockexh'}" data-arg="${e.id}">${e.locked?'Unlock…':'Lock exhibition'}</button></div>`).join('')||'<span class="muted">None</span>'}
 
 /* ---------- backups ---------- */
 const orderSig=()=>String(hsh(S.orders.length+':'+S.orders.map(o=>o.status[0]+o.rev+(o.status==='draft'?linesPcs(o.work?o.work.lines:[]):linesPcs(o.lines))).join(',')+'|'+S.parties.length+'|'+S.articles.length));
@@ -14285,6 +14290,30 @@ Object.assign(ACT,{
  editline(k){const[a,c]=k.split('|');V.art=a;V.scol=c;V.msel=new Set([c]);V.multi=false;V.sheet=true;render()},
  advtoggle(){V.adv=!V.adv;render()}});
 ['open','exit','close','camstop'].forEach(n=>{const f=ACT[n];if(!f)return;ACT[n]=function(a,t){if(n!=='camstop'){V.sheet=false;V.scol=null;V.msel=new Set();V.multi=false}return f.call(ACT,a,t)}});
+
+/* ---------- editable exhibition (v0.9.7) ---------- */
+function exForm(id){
+ const e=id?S.exhibitions.find(x=>x.id===id):{name:'',city:'',venue:'',prefix:''};if(!e)return;
+ if(id&&e.locked)return toast('🔒 Unlock this exhibition first (Setup)');
+ const used=id&&S.orders.some(o=>o.exhId===id);V.exe=id||'';
+ modal(`<h3>${id?'Edit exhibition':'New exhibition'}</h3><div class="row" style="flex-direction:column;align-items:stretch">
+ <label>Exhibition name<input id="ef-name" value="${esc(e.name)}" placeholder="e.g. Summer Exhibition 2027"></label>
+ <div class="row"><label style="flex:1">City<input id="ef-city" value="${esc(e.city)}" placeholder="Delhi, Jaipur…"></label>
+ <label style="flex:1">Venue <span class="muted">(optional, printed on the form)</span><input id="ef-venue" value="${esc(e.venue||'')}" placeholder="e.g. Pragati Maidan, Hall 4"></label></div>
+ <label>Order-number prefix${used?' <span class="muted">(locked – orders already exist)</span>':''}<input id="ef-pre" value="${esc(e.prefix)}" ${used?'disabled':''} style="width:120px" placeholder="S27"></label></div>
+ <p class="muted">${id?'Orders already signed keep the name and city they were signed with. New and unsigned orders use these details.':'Pick this exhibition from the list above after saving.'}</p>
+ <div class="row" style="margin-top:14px"><button class="p" data-act="exsave">Save</button><button data-act="closemodal">Cancel</button></div>`)}
+function exSave(){
+ if(!isAdmin())return toast('Admin only');
+ const g=i=>($('#ef-'+i)||{value:''}).value.trim(),n=g('name'),c=g('city'),vn=g('venue'),pre=g('pre').toUpperCase();
+ const e=V.exe?S.exhibitions.find(x=>x.id===V.exe):null;
+ if(!n||!c)return toast('Exhibition name and city are required');
+ if(e){e.name=n;e.city=c;e.venue=vn;if(!$('#ef-pre').disabled&&pre)e.prefix=pre;logA('edit exhibition',e.name,c)}
+ else{if(!pre)return toast('Order-number prefix is required');
+  if(S.exhibitions.some(x=>x.prefix===pre))return toast('That prefix is already used by another exhibition');
+  const ne={id:uid(),name:n,city:c,venue:vn,prefix:pre};S.exhibitions.push(ne);if(V.np)V.np.exh=ne.id;logA('add exhibition',n,c)}
+ save();closeModal();render();toast('Exhibition saved')}
+Object.assign(ACT,{exedit(id){if(!isAdmin())return toast('Admin only');exForm(id||'')},exsave:exSave});
 
 (async()=>{
  try{S=await DB.get('state')}catch(e){}
