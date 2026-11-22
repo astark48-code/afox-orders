@@ -206,6 +206,41 @@ table.grid tr.ah td{position:static!important;z-index:auto;background:var(--blk)
  .kpi b{font-size:30px}.kpi{padding:12px}
  .announce{font-size:9px;letter-spacing:.06em;flex-wrap:wrap;gap:3px 10px;padding:5px 12px}
 }
+
+/* ===== size-set sheet (v0.9.6) ===== */
+.sheet{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(600px,100%);background:#f5f4f0;border-top:1px solid #b9b6ad;border-radius:20px 20px 0 0;padding:10px 16px calc(16px + env(safe-area-inset-bottom));box-sizing:border-box;z-index:55;max-height:88vh;overflow-y:auto;box-shadow:0 -12px 40px rgba(0,0,0,.35)}
+.sheet .grab{width:40px;height:4px;background:#bdbab1;border-radius:2px;margin:0 auto 10px}
+.sheet .sh{display:flex;gap:12px;align-items:center}.sheet .sh img{width:56px;height:70px;object-fit:cover}
+.sheet .slab{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:12px 0 6px;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#55534d;font-weight:600}
+.sheet .slab b{color:#111;letter-spacing:0;font-size:13px}
+.sheet .srow{display:flex;flex-wrap:wrap;gap:8px}
+.sheet .sc,.sheet .ss,.sheet .sz{min-height:44px;border:1px solid #111;background:#fff;color:#111;padding:0 12px;font-weight:700;font-size:14px;border-radius:0;letter-spacing:0;text-transform:none;position:relative}
+.sheet .sz{min-width:44px;padding:0 6px;min-height:40px}
+.sheet .sc small{font-weight:500;opacity:.7}
+.sheet .sc.on,.sheet .ss.on,.sheet .sz.on{background:#111;color:#fff}
+.sheet .sc i{position:absolute;right:-6px;top:-8px;min-width:20px;height:20px;box-sizing:border-box;padding:0 5px;border-radius:10px;background:#c0392b;color:#fff;font-size:11px;font-style:normal;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sheet .sm.on{background:#111;color:#fff}
+.sheet .scp{display:flex;flex-direction:column;gap:8px;padding:10px;background:#fff;border:1px dashed #8f8c83;margin-top:8px}
+.sheet .sr{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:58px;border-top:1px solid #e6e3da}
+.sheet .sd{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}.sheet .sd b{font-size:16px}.sheet .sd span{font-size:11.5px}
+.sheet .ssp{display:flex;align-items:center;gap:6px;flex:none}.sheet .ssp button{width:44px;height:44px;font-size:24px;padding:0;line-height:1;display:flex;align-items:center;justify-content:center}.sheet .ssp b{min-width:34px;text-align:center;font-size:22px}
+.srows{max-height:30vh;overflow-y:auto}
+body:has(.sheet){padding-bottom:0}
+.lc .lch{padding-bottom:6px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.lc .lr{display:flex;align-items:center;gap:10px;min-height:52px;border-bottom:1px solid #eceae3}
+.lc .lr:last-child{border-bottom:0}.lc .ld{flex:1;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0}.lc .ln{font-size:20px}
+@media(max-width:700px){
+ body.camopen #camdock{inset:0;width:auto;max-height:none;padding:0;background:#0c0c0c;z-index:40;box-shadow:none}
+ body.camopen .camwrap{position:absolute;inset:0}
+ body.camopen #camvid{width:100%;height:100%;max-height:none;object-fit:cover}
+ body.camopen .camframe{inset:auto;left:50%;top:22%;width:220px;height:220px;margin-left:-110px;border:0;background:linear-gradient(#fff,#fff) 0 0/34px 4px no-repeat,linear-gradient(#fff,#fff) 0 0/4px 34px no-repeat,linear-gradient(#fff,#fff) 100% 0/34px 4px no-repeat,linear-gradient(#fff,#fff) 100% 0/4px 34px no-repeat,linear-gradient(#fff,#fff) 0 100%/34px 4px no-repeat,linear-gradient(#fff,#fff) 0 100%/4px 34px no-repeat,linear-gradient(#fff,#fff) 100% 100%/34px 4px no-repeat,linear-gradient(#fff,#fff) 100% 100%/4px 34px no-repeat}
+ body.camopen #camdock .camtop{position:absolute;top:0;left:0;right:0;z-index:2;margin:0;padding:14px;text-transform:none;letter-spacing:0;font-size:13px;gap:10px}
+ body.camopen #camdock .camtop b{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:22px;padding:12px 14px;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ body.camopen #camdock .camtop button{background:#fff;color:#111;border:0;border-radius:22px;min-height:44px;padding:0 16px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;font-size:11px}
+ body.camopen #camcap{position:absolute;left:0;right:0;top:calc(22% + 236px);text-align:center;z-index:2;color:#fff;font-size:14px;margin:0;padding:0 16px}
+ body.camopen main{padding-bottom:24px}
+}
+
 </style>
 </head>
 <body>
@@ -214,7 +249,7 @@ table.grid tr.ah td{position:static!important;z-index:auto;background:var(--blk)
 <div class="brand"><span id="brandfox"></span><i>Trousers &amp; Beyond</i></div>
 <nav class="nr"><button data-tab="customers">Customers</button><button data-tab="dists">Distributors</button><button data-tab="rep">Reports</button><button data-tab="setup">Setup</button></nav></header>
 <main id="main"></main>
-<div id="camdock"><div class="camtop"><b>Camera scanner</b><button class="sm" data-act="camstop">Close</button></div><div class="camwrap"><video id="camvid" playsinline muted></video><div class="camframe"></div></div><div id="camcap" class="muted">Point the camera at a QR code</div></div>
+<div id="camdock"><div class="camtop"><b id="camcust">Camera scanner</b><button class="sm" data-act="camstop"><span id="camord">Close</span> ›</button></div><div class="camwrap"><video id="camvid" playsinline muted></video><div class="camframe"></div></div><div id="camcap" class="muted">Point the camera at a QR code</div></div>
 <div id="modal"><div class="box" id="mbox"></div></div>
 <div id="toast"></div>
 <script>/*! xlsx.js (C) 2013-present SheetJS -- http://sheetjs.com */
@@ -13059,7 +13094,7 @@ const DB={open(){return new Promise((res,rej)=>{try{const r=indexedDB.open('afox
  async get(k){const db=await this.open();return new Promise((res,rej)=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})},
  async set(k,v){const db=await this.open();return new Promise((res,rej)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=()=>res();t.onerror=()=>rej(t.error)})}};
 let saveT;function save(){const _o=(S&&V.cur)?S.orders.find(x=>x.id===V.cur):null;if(_o&&_o.work&&_o.status!=='confirmed'||(_o&&_o.work))_o.touched=Date.now();clearTimeout(saveT);$('#saved').textContent='saving…';saveT=setTimeout(async()=>{try{await DB.set('state',S);$('#saved').textContent='✓ saved on this device '+new Date().toLocaleTimeString();try{chrome()}catch(e){}try{cloudKick()}catch(e){}}catch(e){try{localStorage.setItem('afox_state',JSON.stringify(S));$('#saved').textContent='✓ saved (fallback)'}catch(e2){$('#saved').textContent='⚠ NOT saved – export a backup'}}},250)}
-function defaults(){const P=[[28,34],[30,36],[32,38],[32,40],[30,40],[34,42]].map(([a,b])=>{const q={};for(let s=a;s<=b;s+=2)q[s]=1;return{id:uid(),name:a+'×'+b,q}});
+function defaults(){const P=[[28,34],[30,36],[32,38],[32,40],[40,46],[40,44]].map(([a,b])=>{const q={};for(let s=a;s<=b;s+=2)q[s]=1;return{id:'ps'+a+'_'+b,name:a+'×'+b,q}});
  return{v:1,settings:{distributors:[{id:'d1',name:'AFOX Direct',logo:''}],afoxLogo:'',cc:'91',deviceTag:'',sendEndpoint:''},exhibitions:[],presets:P,articles:[],parties:[],orders:[],counters:{},staff:[],audit:[],visitors:[],follow:{}}}
 function demo(){
  const mk=(code,mrp,cols)=>({code,name:'',mrp,barcode:code,colours:cols.map(([c,n])=>({code:c,name:n,barcode:code+'-'+c,stock:'',sample:'Y'}))});
@@ -13113,7 +13148,7 @@ function handleScan(v){
 function addLine(o,a,c){o.work.lines.push({art:a.code,col:c.code,colName:c.name,mrp:a.mrp,q:{}})}
 function flashRow(k){const t=$$('tr[data-k]').find(x=>x.dataset.k===k);if(t){t.classList.add('flash');t.scrollIntoView({block:'center',behavior:'smooth'});setTimeout(()=>t.classList.remove('flash'),1200)}}
 function flashArt(c){const t=$$('tr.ah').find(x=>x.dataset.arg===c);if(t){t.classList.add('flash');setTimeout(()=>t.classList.remove('flash'),1200)}}
-const focusScan=()=>{const s=$('#scan');if(s)s.focus()};
+let focusScan=()=>{const s=$("#scan");if(s)s.focus()};
 
 
 /* ================= phone camera QR scanner ================= */
@@ -13705,7 +13740,7 @@ document.addEventListener('keydown',e=>{
  if(e.key==='Escape'&&$('#scan')){$('#scan').focus();return}
  if(V.tab==='book'&&V.cur&&!V.review&&e.key.length===1&&!e.ctrlKey&&!e.metaKey&&!/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName))focusScan()});
 document.addEventListener('input',e=>{const t=e.target;
- if(t.classList.contains('q')&&t.dataset.k){const l=lineByKey(t.dataset.k);const n=Math.min(9999,Math.max(0,parseInt(t.value)||0));if(n)l.q[t.dataset.s]=n;else delete l.q[t.dataset.s];updTotals();save();return}
+ if(t.classList.contains('q')&&t.dataset.k){const l=lineByKey(t.dataset.k);l.sets=null;const n=Math.min(9999,Math.max(0,parseInt(t.value)||0));if(n)l.q[t.dataset.s]=n;else delete l.q[t.dataset.s];updTotals();save();return}
  if(t.dataset.pq){const p=S.presets.find(x=>x.id===t.dataset.pq),n=parseInt(t.value)||0;if(n)p.q[t.dataset.s]=n;else delete p.q[t.dataset.s];save();return}
  if(t.dataset.pn){S.presets.find(x=>x.id===t.dataset.pn).name=t.value;save();return}
  if(t.id==='pr-q'){V.pr.q=t.value;const p=t.selectionStart;render();const n=$('#pr-q');n.focus();n.setSelectionRange(p,p);return}
@@ -13745,7 +13780,7 @@ $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()})
 /* ================= boot ================= */
 /* ================= v0.8 additions ================= */
 const hsh=s=>{let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return h};
-function ensure(){S.cloud=S.cloud||{on:false,names:[]};S.cloud.meta=S.cloud.meta||{};S.cloud.since=S.cloud.since||0;S.staff=S.staff||[];S.audit=S.audit||[];S.visitors=S.visitors||[];S.follow=S.follow||{};
+function ensure(){if(S&&S.presets&&!S.presetsV){if(S.presets.map(p=>p.name).join(',')==='28×34,30×36,32×38,32×40,30×40,34×42')S.presets=[[28,34],[30,36],[32,38],[32,40],[40,46],[40,44]].map(([a,b])=>{const q={};for(let s=a;s<=b;s+=2)q[s]=1;return{id:'ps'+a+'_'+b,name:a+'×'+b,q}});S.presetsV=2}S.cloud=S.cloud||{on:false,names:[]};S.cloud.meta=S.cloud.meta||{};S.cloud.since=S.cloud.since||0;S.staff=S.staff||[];S.audit=S.audit||[];S.visitors=S.visitors||[];S.follow=S.follow||{};
  const st=S.settings;st.plan=st.plan||{buffer:0,roundTo:1,minColour:0};st.lastBackupAt=st.lastBackupAt||0;st.lastBackupSig=st.lastBackupSig||''}
 function bookDownload(name,sheets){const wb=XLSX.utils.book_new();const used=new Set();
  sheets.forEach(([n,a])=>{let s=String(n).replace(/[\\\/?*\[\]:]/g,'').slice(0,28)||'Sheet',k=s,i=2;while(used.has(k.toLowerCase()))k=s+' '+i++;used.add(k.toLowerCase());XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(a),k)});
@@ -14145,6 +14180,111 @@ Object.assign(ACT,{
  cstaffpin(id){const p=prompt('New PIN (4–6 digits)');if(p==null)return;cstaffCall('staff_pin',{id,pin:p.trim()},'PIN changed')},
  cstafftog(id){cstaffCall('staff_toggle',{id},'Updated')}
 });
+
+/* ===== size sets, bottom sheet, multi-colour (v0.9.6) ===== */
+const sk=q=>Object.keys(q).map(Number).sort((a,b)=>a-b).map(k=>k+':'+q[k]).join(',');
+function skParse(s){const q={};String(s).split(',').forEach(p=>{const[a,b]=p.split(':');if(a&&+b>0)q[+a]=+b});return q}
+function setLbl(q){const ks=Object.keys(q).map(Number).sort((a,b)=>a-b);const flat=ks.every(k=>q[k]===1),st=ks.every((k,i)=>!i||k-ks[i-1]===2);return flat&&st&&ks.length>1?ks[0]+'–'+ks[ks.length-1]:ks.map(k=>q[k]===1?k:k+'×'+q[k]).join('·')}
+function setChipsList(){return S.presets.filter(p=>p.q&&Object.keys(p.q).length).map(p=>({q:clone(p.q)}))}
+function recalc(l){const q={};(l.sets||[]).forEach(s=>{for(const z in s.q)q[z]=Math.min(9999,(q[z]||0)+s.q[z]*s.n)});l.q=q}
+function syncManual(){const o=ord();if(!o||!o.work)return;o.work.lines.forEach(l=>{if(!l.sets)return;const t={l:{sets:l.sets}};recalc(t.l);const a=sk(t.l.q),b=sk(l.q||{});if(a!==b)delete l.sets})}
+function shTargets(){const a=artOf(V.art);if(!a)return[];const c=V.multi?[...(V.msel||[])]:(V.scol?[V.scol]:[]);return c.filter(x=>a.colours.some(y=>y.code===x))}
+function shFind(cc){const o=ord(),a=artOf(V.art);return o.work.lines.find(x=>x.art===a.code&&x.col===cc)}
+function shLine(cc){const o=ord(),a=artOf(V.art);let l=shFind(cc);if(!l){addLine(o,a,a.colours.find(x=>x.code===cc));l=o.work.lines[o.work.lines.length-1]}if(!l.sets&&!sumQ(l.q))l.sets=[];return l}
+const isManual=l=>!!l&&!l.sets&&sumQ(l.q)>0;
+function shAdd(q,d){
+ const tg=shTargets();if(!tg.length)return toast('Tap a colour first');
+ const o=ord(),bl=[],k=sk(q);
+ tg.forEach(cc=>{const l=shLine(cc);if(isManual(l)){bl.push(l.colName);return}
+  let s=l.sets.find(x=>sk(x.q)===k);
+  if(s){s.n+=d;if(s.n<=0)l.sets=l.sets.filter(x=>x!==s)}else if(d>0)l.sets.push({q:clone(q),n:d});
+  recalc(l);if(!l.sets.length)o.work.lines=o.work.lines.filter(x=>x!==l)});
+ if(bl.length)toast('Exact pieces already typed for '+bl.join(', ')+' – tap “Reset to sets” first',3500);
+ save();render()}
+function sheetHTML(){
+ const a=V.sheet&&V.art&&artOf(V.art);if(!a)return'';
+ const o=ord(),tg=shTargets(),prim=tg[0]?shFind(tg[0]):null;
+ const colPcs=tg.reduce((n,cc)=>{const l=shFind(cc);return n+(l?sumQ(l.q):0)},0);
+ const cname=tg.length?(a.colours.find(c=>c.code===tg[0]).name+(tg.length>1?' + '+(tg.length-1)+' more':'')):'';
+ const chips=a.colours.map(c=>{const l=shFind(c.code),n=l?sumQ(l.q):0;return`<button class="sc ${tg.includes(c.code)?'on':''}" data-act="scol" data-arg="${esc(c.code)}">${esc(c.name)} <small>${esc(c.code)}</small>${n?`<i>${n}</i>`:''}</button>`}).join('');
+ const pk=a.pack&&a.pack.q&&Object.keys(a.pack.q).length?a.pack.q:null;
+ const sets=(pk?`<button class="ss ${prim&&prim.sets&&prim.sets.some(x=>sk(x.q)===sk(pk))?'on':''}" data-act="sadd" data-arg="${sk(pk)}">★ Usual pack</button>`:'')+setChipsList().map(s=>{const on=prim&&prim.sets&&prim.sets.some(x=>sk(x.q)===sk(s.q));return`<button class="ss ${on?'on':''}" data-act="sadd" data-arg="${sk(s.q)}">${setLbl(s.q)}</button>`}).join('')+`<button class="ss ${V.cust?'on':''}" data-act="scust">Custom</button>`;
+ const cs=V.cs||[30,32,34,36];
+ const custom=V.cust?`<div class="scp"><span class="muted">Custom set: tap the sizes it contains, then add it</span><div class="srow">${SIZES.map(z=>`<button class="sz ${cs.includes(z)?'on':''}" data-act="scsz" data-arg="${z}" aria-label="Size ${z}">${z}</button>`).join('')}</div><button class="p" data-act="scadd">+ Add this custom set</button></div>`:'';
+ const rows=prim&&prim.sets&&prim.sets.length?prim.sets.map(s=>{const per=sumQ(s.q),k=sk(s.q),sz=Object.keys(s.q).map(Number).sort((x,y)=>x-y).map(z=>s.q[z]===1?z:z+'×'+s.q[z]).join(' · ');return`<div class="sr"><div class="sd"><b>${setLbl(s.q)}</b><span class="muted">${sz} = ${per} pcs per set · ${per*s.n} pcs</span></div><div class="ssp"><button data-act="sdec" data-arg="${k}" aria-label="Minus one set">−</button><b>${s.n}</b><button class="p" data-act="sinc" data-arg="${k}" aria-label="Plus one set">+</button></div></div>`}).join(''):(tg.length?(isManual(prim)?'':'<div class="muted" style="padding:10px 0">No set added yet. Tap a size set above.</div>'):'<div class="muted" style="padding:10px 0">Tap the colour(s) the customer wants.</div>');
+ const manual=isManual(prim)?`<div class="muted" style="padding:8px 0">Exact pieces typed in the table (${sumQ(prim.q)} pcs). <a data-act="sreset" data-arg="${esc(prim.col)}" style="text-decoration:underline;cursor:pointer">Reset to sets</a></div>`:'';
+ return`<div class="sheet" role="dialog" aria-label="Sets for ${esc(a.code)}"><div class="grab"></div>
+  <div class="sh">${a.photo?`<img src="${a.photo}" alt="">`:''}<div style="flex:1"><b style="font-size:22px">${esc(a.code)}</b><div class="muted">MRP ₹${a.mrp}${cname?' · <b style="color:#111">'+esc(cname)+'</b>':''}</div></div><button class="sm" data-act="sdone" aria-label="Close" style="width:44px;height:44px;font-size:20px">×</button></div>
+  <div class="slab"><span>Colour</span><span><button class="sm ${V.multi?'on':''}" data-act="smulti">Select several</button> <button class="sm" data-act="sall">All</button></span></div>
+  <div class="srow">${chips}</div>
+  <div class="slab"><span>Add size sets · tap one or more</span></div>
+  <div class="srow">${sets}</div>${custom}
+  <div class="slab" style="margin-top:12px;border-top:1px solid #dcd9d0;padding-top:8px"><span>Sets${cname?' for '+esc(cname):''}</span><b>${colPcs} pcs</b></div>
+  ${V.multi&&tg.length>1?`<div class="muted" style="padding-bottom:6px;color:#111;font-weight:600">Changes apply to all ${tg.length} selected colours. Rows show ${esc(a.colours.find(c=>c.code===tg[0]).name)}.</div>`:''}
+  <div class="srows">${rows}${manual}</div>
+  <button class="p big" data-act="sdone" style="width:100%;margin-top:10px;min-height:52px">Done · scan next</button></div>`}
+function linesCard(w){
+ const gs=groups(w.lines);
+ if(!gs.length)return'<div class="card muted" style="text-align:center">No colours booked yet. Scan an article, then choose colours and size sets.</div>';
+ return gs.map(g=>{const a=artOf(g.art);return`<div class="card lc"><div class="lch"><b>${esc(g.art)}</b> <span class="muted">MRP ${a?a.mrp:''} — <span id="at-${esc(g.art)}">0</span> pcs</span></div>`+
+  g.lines.map(l=>{const n=sumQ(l.q),br=l.sets&&l.sets.length?l.sets.map(s=>setLbl(s.q)+' × '+s.n+(s.n===1?' set':' sets')).join(' · '):(n?'exact pieces':'no pieces');return`<div class="lr"><div class="ld" data-act="editline" data-arg="${esc(key(l))}"><b>${esc(l.colName)} <small class="muted">${esc(l.col)}</small></b><span class="muted">${esc(br)}</span></div><b class="ln" data-lt="${esc(key(l))}">${n}</b><button class="sm d" data-act="rm" data-arg="${esc(key(l))}" aria-label="Remove ${esc(l.colName)}">✕</button></div>`}).join('')+`</div>`}).join('')}
+function viewOrder(){
+ syncManual();
+ const o=ord(),w=o.work,ex=exhOf(o),p=w.party,rev=o.status==='confirmed';
+ const gs=groups(w.lines);
+ return`<div class="card row ordhead" style="align-items:center">
+  <div><span class="no">${esc(o.no)}</span> ${rev?'<span class="tag warn">Revising signed order · R'+(o.rev+1)+'</span>':''}<br><span>${esc(p.name)}</span> · <span class="muted">${esc(p.city)}, ${esc(p.state)} · ${esc(showPhone(w.waNumber))}</span><br><span class="muted">${esc(ex.name)} (${esc(ex.city)}) · ${fmtDate(o.date)} · ${esc(distOf(o).name)}</span></div>
+  <span class="pill right">Order total<span id="ot">0</span>pcs</span>
+  <button class="p" data-act="close">Close order →</button><button class="g" data-act="waorder">WhatsApp</button>
+  <button data-act="exit">${rev?'Discard revision':'Park · next customer'}</button></div>
+ ${noteOf(p)?`<div class="notechip"><b>NOTE</b> ${esc(noteOf(p))} <a data-act="editnote">edit</a></div>`:`<div class="muted" style="margin:-4px 0 8px"><a data-act="editnote" style="cursor:pointer;text-decoration:underline">+ add a note for this customer</a></div>`}
+ <div class="scanbar"><b>${LG(20,'mark','inv')} SCAN</b><input id="scan" autocomplete="off" placeholder="Scan the article QR, then each colour QR…"><button data-act="camstart" class="camb">Scan with camera</button><div id="msg" class="${V.msg?V.msg.c:'muted'}">${V.msg?esc(V.msg.t):'Ready'}</div></div>
+ ${V.sheet?'':'<p class="muted">Scan an article QR code to begin. Tap a booked colour below to edit its sets.</p>'}
+ ${linesCard(w)}
+ <div style="margin:10px 0"><button class="sm" data-act="advtoggle">${V.adv?'▾':'▸'} Exact pieces table (advanced)</button></div>
+ ${V.adv?advHTML(o,w,gs):''}
+ ${sheetHTML()}`}
+function advHTML(o,w,gs){
+ const art=V.art&&artOf(V.art);
+ return`<div class="card"><div class="row"><label>Saved breakdown<select id="preset">${art&&art.pack&&Object.keys(art.pack.q||{}).length?`<option value="pack">★ ${esc(art.code)} usual pack</option>`:''}${S.presets.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select></label>
+  <label>Sets<input id="sets" type="number" min="1" value="1" style="width:70px"></label>
+  <button class="p" data-act="applypreset">Apply to selected colours</button>${art&&art.pack&&Object.keys(art.pack.q||{}).length?`<button class="g" data-act="packall">Whole ${esc(art.code)} · usual pack ×sets</button>`:''}<button class="sm" data-act="selall">Select all rows</button><button class="sm" data-act="selnone">Clear selection</button></div>
+  <p class="muted" style="margin:6px 0 0">Typing exact pieces here turns that colour into “exact pieces” (it no longer follows size sets).</p></div>
+ <div class="scroll"><table class="grid"><thead><tr><th></th><th>Colour</th>${SIZES.map(s=>`<th>${s}</th>`).join('')}<th>Total</th><th></th></tr></thead><tbody>
+ ${gs.length?gs.map(g=>g.lines.map(l=>`<tr data-k="${esc(key(l))}"><td><input type="checkbox" class="sel" data-k="${esc(key(l))}" ${V.sel.has(key(l))?'checked':''}></td><td style="white-space:nowrap">${esc(g.art)} · ${esc(l.colName)}</td>
+   ${SIZES.map(s=>`<td><input class="q" inputmode="numeric" data-k="${esc(key(l))}" data-s="${s}" value="${l.q[s]||''}"></td>`).join('')}
+   <td class="n"><b>${sumQ(l.q)}</b></td><td style="white-space:nowrap"><button class="sm" data-act="same" data-arg="${esc(key(l))}">↑ same</button> <button class="sm" data-act="usesel" data-arg="${esc(key(l))}">→ sel</button> <button class="sm" data-act="dbl" data-arg="${esc(key(l))}">×2</button></td></tr>`).join('')).join(''):`<tr><td colspan="${SIZES.length+4}" class="muted">No colours booked yet.</td></tr>`}
+ </tbody></table></div>`}
+function handleScan(v){
+ if(V.sc&&V.tab==='qr')return scanCheckHit(v);
+ const o=ord();if(!o||!o.work||V.review||V.tab!=='book')return setMsg('warn','Start or open an order first');
+ const r=resolve(v);
+ if(!r){beep(0);setMsg('bad','✗ "'+v.slice(0,40)+'" not recognised'+(V.art?' for '+V.art:''));return}
+ if(V.art!==r.art.code){V.art=r.art.code;V.scol=null;V.msel=new Set();V.multi=false;V.cust=false}
+ V.sheet=true;
+ if(!r.col){beep(1);setMsg('ok','Article '+r.art.code+' – tap the colour(s) wanted');render();return}
+ if(V.multi){V.msel=V.msel||new Set();V.msel.add(r.col.code);V.scol=r.col.code}else{V.scol=r.col.code;V.msel=new Set([r.col.code])}
+ shLine(r.col.code);beep(1);setMsg('ok',r.art.code+' · '+r.col.name+' – add size sets');render();save()}
+focusScan=function(){if(V.sheet||(window.matchMedia&&matchMedia('(pointer:coarse)').matches))return;const s=$('#scan');if(s)s.focus()};
+function updTotals(){
+ const o=ord();if(!o||!o.work)return;let tot=0;const at={};
+ o.work.lines.forEach(l=>{const n=sumQ(l.q);tot+=n;at[l.art]=(at[l.art]||0)+n;const e=$$('[data-lt]').find(x=>x.dataset.lt===key(l));if(e)e.textContent=n});
+ for(const a in at){const e=document.getElementById('at-'+a);if(e)e.textContent=at[a]}
+ const e=$('#ot');if(e)e.textContent=tot;
+ const c=$('#camord');if(c)c.textContent='Order · '+tot+' pcs';const n=$('#camcust');if(n)n.textContent=o.work.party.name}
+Object.assign(ACT,{
+ scol(c){if(V.multi){const s=V.msel||(V.msel=new Set());if(s.has(c)){if(s.size>1)s.delete(c)}else s.add(c);V.scol=[...s][0]}else{V.scol=c;V.msel=new Set([c])}render()},
+ smulti(){if(V.multi){V.multi=false;const f=[...(V.msel||[])][0]||null;V.scol=f;V.msel=new Set(f?[f]:[])}else{V.multi=true;V.msel=new Set(V.scol?[V.scol]:[])}render()},
+ sall(){const a=artOf(V.art);if(!a)return;V.multi=true;V.msel=new Set(a.colours.map(c=>c.code));V.scol=a.colours[0]&&a.colours[0].code;render()},
+ sadd(k){shAdd(skParse(k),1)},sinc(k){shAdd(skParse(k),1)},sdec(k){shAdd(skParse(k),-1)},
+ scust(){V.cust=!V.cust;V.cs=V.cs||[30,32,34,36];render()},
+ scsz(z){z=+z;const c=V.cs||(V.cs=[30,32,34,36]);const i=c.indexOf(z);if(i>=0){if(c.length>1)c.splice(i,1)}else{c.push(z);c.sort((a,b)=>a-b)}render()},
+ scadd(){const q={};(V.cs||[30,32,34,36]).forEach(z=>q[z]=1);shAdd(q,1)},
+ sdone(){V.sheet=false;V.scol=null;V.msel=new Set();V.multi=false;V.cust=false;setMsg('ok','Scan the next article');render()},
+ sreset(c){const l=shFind(c);if(l){l.q={};l.sets=[];save();render()}},
+ editline(k){const[a,c]=k.split('|');V.art=a;V.scol=c;V.msel=new Set([c]);V.multi=false;V.sheet=true;render()},
+ advtoggle(){V.adv=!V.adv;render()}});
+['open','exit','close','camstop'].forEach(n=>{const f=ACT[n];if(!f)return;ACT[n]=function(a,t){if(n!=='camstop'){V.sheet=false;V.scol=null;V.msel=new Set();V.multi=false}return f.call(ACT,a,t)}});
 
 (async()=>{
  try{S=await DB.get('state')}catch(e){}
