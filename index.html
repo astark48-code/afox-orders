@@ -371,6 +371,11 @@ body.homebg .herocard,.herocard{background:rgba(255,250,246,.88);color:var(--ink
 .an-bar .v{font-variant-numeric:tabular-nums;font-weight:600}
 .an-tag{display:inline-block;border-radius:999px;padding:2px 10px;font-size:11px;font-weight:600}
 .an-tag.up{background:#d7ecd9;color:#1f5a2b}.an-tag.hold{background:#f1e3b8;color:#6b5210}.an-tag.low{background:#f3cfc7;color:#8a2c1a}
+
+#wafab{position:fixed;right:16px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:39;width:60px;height:60px;min-height:60px;padding:0;border-radius:50%;border:0;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(20,90,50,.4)}
+#wafab:active{transform:scale(.94)}
+body.hasobar #wafab{bottom:calc(100px + env(safe-area-inset-bottom))}
+@media(min-width:701px){#wafab{bottom:28px;right:28px}}
 </style>
 </head>
 <body>
@@ -13803,8 +13808,7 @@ function viewSetup(){
  <div class="card"><h3>Saved size breakdowns</h3><p class="muted">Pieces per waist size for each preset. Leave blank for no piece in that size.</p>
   <div class="scroll"><table><thead><tr><th>Name</th>${sizeHead}<th></th></tr></thead><tbody>${S.presets.map(p=>`<tr><td><input data-pn="${p.id}" value="${esc(p.name)}" style="width:80px"></td>${SIZES.map(s=>`<td><input class="q" style="width:38px;text-align:center" data-pq="${p.id}" data-s="${s}" value="${p.q[s]||''}"></td>`).join('')}<td><button class="sm d" data-act="delpreset" data-arg="${p.id}">✕</button></td></tr>`).join('')}</tbody></table></div>
   <div class="row" style="margin-top:8px"><button data-act="addpreset">＋ Add breakdown</button></div></div>
- <div class="card"><h3>Other</h3><div class="row"><label>Default country code<input id="st-cc" value="${esc(st.cc)}" style="width:70px"></label><label>Device letter (keeps order numbers unique across laptops)<input id="st-tag" value="${esc(st.deviceTag)}" style="width:90px" placeholder="A"></label>
-  <label style="flex:1;min-width:280px">Direct-send endpoint (optional, WhatsApp Cloud API relay)<input id="st-ep" value="${esc(st.sendEndpoint)}" placeholder="https://your-server/send-order"></label></div></div>`+cloudCard()+staffCard()+auditCard()}
+`+cloudCard()+staffCard()+auditCard()}
 const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
 function pick(r,names){for(const k in r){if(names.includes(norm(k))&&String(r[k]).trim()!=='')return String(r[k]).trim()}return''}
 function readSheet(file,cb){const fr=new FileReader();fr.onload=()=>{const wb=XLSX.read(fr.result,{type:'array'});cb(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''}))};fr.readAsArrayBuffer(file)}
@@ -14495,7 +14499,7 @@ viewOrder=function(){const h=_viewOrder();const o=ord();if(!o||!o.work)return h;
  const n=linesPcs(o.work.lines.filter(l=>sumQ(l.q)>0));
  return h+`<div class="obar"><div class="t"><small>Order total</small><b>${n} pcs</b></div><button class="p" data-act="close" style="background:#fff;color:#1f1a17">Review &amp; close →</button></div>`};
 const _render=render;
-render=function(){_render();if(V.tab==='an'){const m=$('main');if(m)m.innerHTML=viewAnalysis()}const nr=$('header#top nav.nr');if(nr&&!nr.querySelector('[data-tab=an]')){const b=document.createElement('button');b.dataset.tab='an';b.textContent='Analysis';nr.insertBefore(b,nr.firstChild)}if(nr){const b=nr.querySelector('[data-tab=an]');if(b)b.style.display=(isAdmin()&&!needLogin())?'':'none'}$$('header#top button[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===V.tab));tabbar();document.body.classList.toggle('hasobar',!!$('.obar'));document.body.classList.toggle('inorder',V.tab==='book'&&!!V.cur);document.body.classList.toggle('homebg',V.tab==='book'&&!V.cur&&!needLogin());document.body.classList.toggle('sheetopen',!!$('.sheet'))};
+render=function(){_render();if(V.tab==='an'){const m=$('main');if(m)m.innerHTML=viewAnalysis()}const nr=$('header#top nav.nr');if(nr&&!nr.querySelector('[data-tab=an]')){const b=document.createElement('button');b.dataset.tab='an';b.textContent='Analysis';nr.insertBefore(b,nr.firstChild)}if(nr){const b=nr.querySelector('[data-tab=an]');if(b)b.style.display=(isAdmin()&&!needLogin())?'':'none'}$$('header#top button[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===V.tab));wafab();tabbar();document.body.classList.toggle('hasobar',!!$('.obar'));document.body.classList.toggle('inorder',V.tab==='book'&&!!V.cur);document.body.classList.toggle('homebg',V.tab==='book'&&!V.cur&&!needLogin());document.body.classList.toggle('sheetopen',!!$('.sheet'))};
 const _ut2=updTotals;
 updTotals=function(){_ut2();const b=$('.obar .t b'),o=ord();if(b&&o&&o.work)b.textContent=linesPcs(o.work.lines.filter(l=>sumQ(l.q)>0))+' pcs'};
 
@@ -14511,6 +14515,14 @@ document.addEventListener('change',e=>{const t=e.target;if(t.id==='od-disp'){con
 const _close=ACT.close;
 Object.assign(ACT,{dispin(n){const o=ord();if(!o||!o.work)return;o.work.dispatch=addDays(+n);save();render()},
  close(a,el){const o=ord();if(o&&o.work&&linesPcs(o.work.lines)&&!o.work.dispatch){toast('Select a dispatch date first',3200);const d=$('#od-disp');if(d){d.scrollIntoView({block:'center',behavior:'smooth'});d.focus()}return}return _close.call(this,a,el)}});
+
+/* ---------- floating WhatsApp button while booking (v0.11.1) ---------- */
+function wafab(){let b=$('#wafab');const o=typeof ord==='function'?ord():null;
+ const on=V.tab==='book'&&V.cur&&o&&o.work&&linesPcs(o.work.lines)>0&&!$('.sheet')&&!document.body.classList.contains('camopen')&&!needLogin();
+ if(!on){if(b)b.remove();return}
+ if(!b){b=document.createElement('button');b.id='wafab';b.dataset.act='waorder';b.setAttribute('aria-label','Send this order to the customer on WhatsApp');
+  b.innerHTML='<svg viewBox="0 0 32 32" width="30" height="30" fill="#fff" aria-hidden="true"><path d="M16 3C9 3 3.3 8.6 3.3 15.5c0 2.4.7 4.6 1.9 6.5L3 29l7.2-2.1c1.8 1 3.8 1.5 5.8 1.5 7 0 12.7-5.6 12.7-12.5S23 3 16 3zm0 22.6c-1.8 0-3.6-.5-5.1-1.4l-.4-.2-4.3 1.2 1.2-4.1-.3-.4a10 10 0 0 1-1.6-5.4C5.5 9.8 10.2 5.3 16 5.3s10.5 4.5 10.5 10.2S21.800 25.600 16 25.600zm5.800-7.500c-.3-.2-1.900-.9-2.200-1s-.5-.2-.7.2-.8 1-1 1.200-.4.2-.7.1a8.600 8.600 0 0 1-4.300-3.700c-.3-.6.300-.5.900-1.700.1-.2 0-.4 0-.5l-1-2.300c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4s-1.200 1.200-1.200 2.800 1.200 3.300 1.400 3.500 2.400 3.700 5.900 5.100c2.200.9 3 .9 4 .8.6-.1 1.900-.8 2.200-1.500s.3-1.400.2-1.500-.3-.2-.6-.3z"/></svg>';
+  document.body.appendChild(b)}}
 
 
 /* ---------- ADMIN ANALYSIS + PDF (v0.11) ---------- */
