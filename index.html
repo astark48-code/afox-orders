@@ -376,6 +376,13 @@ body.homebg .herocard,.herocard{background:rgba(255,250,246,.88);color:var(--ink
 #wafab:active{transform:scale(.94)}
 body.hasobar #wafab{bottom:calc(100px + env(safe-area-inset-bottom))}
 @media(min-width:701px){#wafab{bottom:28px;right:28px}}
+
+/* v0.12 */
+.sdot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+.sdot.green{background:#2fa84f}.sdot.amber{background:#e0a21b}.sdot.red{background:#d23a2a}.sdot.grey{background:#9a948c}
+.hist{padding:10px 14px}.hist .row{gap:10px}
+#undochip{position:fixed;left:16px;bottom:calc(100px + env(safe-area-inset-bottom));z-index:39;min-height:44px;padding:0 16px;border-radius:22px;border:0;background:#fff;color:var(--ink);box-shadow:0 6px 16px rgba(80,40,20,.25);font-weight:600}
+@media(min-width:701px){#undochip{bottom:28px}}
 </style>
 </head>
 <body>
@@ -13433,7 +13440,7 @@ function viewReview(){
  <div class="paper"><div class="hd"><div class="logo">${S.settings.afoxLogo?`<img src="${S.settings.afoxLogo}">`:LG(62,'full')}</div><div style="text-align:center"><b>EXHIBITION ORDER FORM</b><br><span class="muted">${esc(ex.name)} · ${esc(ex.city)}</span></div><div class="logo" style="font-size:18px">${logo(d.logo,d.name)}</div></div>
  <table style="margin-bottom:8px"><tr><td><b>Party:</b> ${esc(p.name)}<br><b>Phone:</b> ${esc(showPhone(w.waNumber))}<br><b>City / State:</b> ${esc(p.city)}, ${esc(p.state)}<br><b>Address:</b> ${esc(p.address)}</td>
  <td><b>Order no:</b> ${esc(o.no)}${o.status==='confirmed'?' (revision R'+(o.rev+1)+')':''}<br><b>Date:</b> ${fmtDate(o.date)}<br><b>Dispatch date:</b> ${w.dispatch?fmtDate(w.dispatch):'—'}<br><b>Distributor:</b> ${esc(d.name)}</td></tr></table>
- ${tableHTML(w.lines)}</div>
+ ${(w.tags&&w.tags.length)||w.note?`<p style="margin:0 0 8px"><b>Note:</b> ${esc([...(w.tags||[]),w.note||''].filter(Boolean).join(' – '))}</p>`:''}${tableHTML(w.lines)}</div>
  <div class="card" style="margin-top:12px"><h3>Buyer's signature</h3><canvas id="sig"></canvas>
  <div class="row" style="margin-top:8px"><button data-act="sigclear">Clear</button><button class="g" data-act="sign">✔ Confirm &amp; sign order</button></div></div>`}
 function initSig(){
@@ -13448,13 +13455,13 @@ function finalize(){
  if(!o.work.dispatch)return toast('Select a dispatch date first – tap “Back to correct”',3600);
  const sig=$('#sig').toDataURL('image/png'),w=o.work;
  if(o.status==='confirmed'){o.revisions.push({rev:o.rev,signedAt:o.signedAt,sig:o.sig,lines:o.lines,party:o.party,waNumber:o.waNumber,dispatch:o.dispatch});o.rev++}
- o.lines=w.lines.filter(l=>sumQ(l.q)>0);o.party=w.party;o.waNumber=w.waNumber;o.dispatch=w.dispatch;o.sig=sig;o.signedAt=new Date().toISOString();o.signedBy=byName();o.status='confirmed';o.exhSnap=o.exhSnap||clone(exhOf(o));o.work=null;logA(o.rev?'sign revision R'+(o.rev+1):'sign order',o.no,o.party.name+' · '+linesPcs(o.lines)+' pcs');
+ o.lines=w.lines.filter(l=>sumQ(l.q)>0);o.party=w.party;o.waNumber=w.waNumber;o.dispatch=w.dispatch;o.tags=w.tags||[];o.note=w.note||'';o.sig=sig;o.signedAt=new Date().toISOString();o.signedBy=byName();o.status='confirmed';o.exhSnap=o.exhSnap||clone(exhOf(o));o.work=null;logA(o.rev?'sign revision R'+(o.rev+1):'sign order',o.no,o.party.name+' · '+linesPcs(o.lines)+' pcs');
  o.wa={status:'not_sent',at:null,tries:o.wa?o.wa.tries:0};
  const pp=S.parties.find(x=>x.id===o.party.id);if(pp)Object.assign(pp,{name:o.party.name,city:o.party.city,state:o.party.state,address:o.party.address,gst:o.party.gst||pp.gst||''});
  V.review=false;V.cur=null;V.tab='book';V.art=null;V.sel=new Set();V.undo=null;save();render();waPrompt(o.id)}
 
 /* ================= PDF ================= */
-function snapOf(o){return{no:o.no,date:o.date,party:o.party,lines:o.lines,sig:o.sig,signedAt:o.signedAt,rev:o.rev,dispatch:o.dispatch||'',dist:distOf(o),exh:o.exhSnap||exhOf(o)}}
+function snapOf(o){return{no:o.no,date:o.date,party:o.party,lines:o.lines,sig:o.sig,signedAt:o.signedAt,rev:o.rev,dispatch:o.dispatch||'',tags:o.tags||[],note:o.note||'',dist:distOf(o),exh:o.exhSnap||exhOf(o)}}
 function buildPDF(s){
  const doc=new window.jspdf.jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
  const M=10,cw=[26,38,16,...SIZES.map(()=>14),20],tw=cw.reduce((a,b)=>a+b,0),rh=6.2,PH=210;
@@ -13470,7 +13477,8 @@ function buildPDF(s){
   doc.setFont('helvetica','normal');doc.text(s.party.name,M+14,y+5);doc.text('Phone: '+showPhone(s.party.phone||''),M+2,y+10);doc.text('City/State: '+s.party.city+', '+s.party.state,M+2,y+14.5);
   doc.text(String(s.party.address||'').slice(0,52),M+2,y+18);if(s.party.gst)doc.text('GSTIN: '+s.party.gst,M+tw/2+2,y+18);
   doc.text(s.no+(s.rev?'  (Revision R'+(s.rev+1)+')':''),M+tw/2+20,y+5);doc.text('Date: '+fmtDate(s.date),M+tw/2+2,y+10);if(s.dispatch){doc.setFont('helvetica','bold').text('Dispatch date: '+fmtDate(s.dispatch),M+tw/2+50,y+10);doc.setFont('helvetica','normal')}doc.text('Distributor: '+s.dist.name,M+tw/2+2,y+14.5);
-  return y+22};
+  const nt=[(s.tags||[]).join(', '),s.note||''].filter(Boolean).join(' – ');if(nt){doc.setFont('helvetica','bold').text('Note: '+nt.slice(0,105),M+2,y+22.5);doc.setFont('helvetica','normal')}
+  return y+(nt?26:22)};
  const cell=(i,x,y,t,o={})=>{const w=cw[i];if(o.fill){doc.setFillColor(...o.fill);doc.rect(x,y,w,rh,'FD')}else doc.rect(x,y,w,rh);
   doc.setFont('helvetica',o.b?'bold':'normal').setFontSize(o.fs||8);if(o.col)doc.setTextColor(...o.col);
   if(t!==''&&t!=null)doc.text(String(t),o.l?x+1.5:x+w/2,y+4.3,{align:o.l?'left':'center'});doc.setTextColor(0)};
@@ -13527,12 +13535,12 @@ async function waSend(arg,tg,md){
 /* ================= orders list ================= */
 function viewOrders(){
  const f=V.of,q=f.q.toLowerCase();
- const list=S.orders.filter(o=>(!f.st||o.status===f.st)&&(!q||(o.no+' '+partyOf(o).name+' '+partyOf(o).city+' '+distName(o.distId)).toLowerCase().includes(q))).slice().reverse();
- return pagehead('Register','Orders','')+`<div class="row card"><label>Search<input id="of-q" value="${esc(f.q)}" placeholder="order no, party, city, distributor"></label>
+ const list=S.orders.filter(o=>(!f.st||o.status===f.st)&&(!f.my||o.by===byName())&&(!f.today||o.date===today())&&(!q||(o.no+' '+partyOf(o).name+' '+partyOf(o).city+' '+distName(o.distId)).toLowerCase().includes(q))).slice().reverse();
+ return pagehead('Register','Orders','')+`<div class="card"><div class="chips"><button class="chip${f.today?' on':''}" data-act="oftoday">Today</button><button class="chip${f.my?' on':''}" data-act="ofmy">My orders</button><span class="muted" style="align-self:center">${list.length} shown</span></div></div><div class="row card"><label>Search<input id="of-q" value="${esc(f.q)}" placeholder="order no, party, city, distributor"></label>
  <label>Status<select id="of-st"><option value="">All</option><option value="draft" ${f.st==='draft'?'selected':''}>Draft</option><option value="confirmed" ${f.st==='confirmed'?'selected':''}>Confirmed</option><option value="cancelled" ${f.st==='cancelled'?'selected':''}>Cancelled</option></select></label><button class="p right" data-act="invmodal" data-arg="all">⬇ Export for inventory</button></div>
  <div class="scroll"><table><thead><tr><th>Order</th><th>Date</th><th>Distributor</th><th>Party</th><th>City / State</th><th class="n">Pieces</th><th>Status</th><th>WhatsApp</th><th></th></tr></thead><tbody>
  ${list.map(o=>{const p=partyOf(o),pc=o.status==='draft'?linesPcs(o.work.lines):linesPcs(o.lines),w=WA[o.wa.status];
-  return`<tr><td><b>${esc(o.no)}</b>${exhLocked(o.exhId)?' 🔒':''}${o.rev?' <span class="tag">R'+(o.rev+1)+'</span>':''}${o.status==='confirmed'&&o.work?' <span class="tag warn">revision pending</span>':''}</td><td>${fmtDate(o.date)}</td><td>${esc(distName(o.distId))}</td><td>${esc(p.name)}${o.by?'<br><span class="muted">by '+esc(o.by)+'</span>':''}</td><td>${esc(p.city)}, ${esc(p.state)}</td><td class="n">${pc}</td>
+  return`<tr><td><b>${esc(o.no)}</b>${exhLocked(o.exhId)?' 🔒':''}${o.rev?' <span class="tag">R'+(o.rev+1)+'</span>':''}${o.status==='confirmed'&&o.work?' <span class="tag warn">revision pending</span>':''}</td><td>${fmtDate(o.date)}</td><td>${esc(distName(o.distId))}</td><td>${esc(p.name)}${o.by?'<br><span class="muted">by '+esc(o.by)+'</span>':''}${(o.tags||[]).map(t=>' <span class="tag warn">'+esc(t)+'</span>').join('')}${o.note?'<br><span class="muted">'+esc(o.note)+'</span>':''}</td><td>${esc(p.city)}, ${esc(p.state)}</td><td class="n">${pc}</td>
   <td><span class="tag ${o.status==='confirmed'?'ok':o.status==='cancelled'?'bad':'warn'}">${o.status}</span></td>
   <td>${o.status==='confirmed'?`<span class="tag ${w[1]}">${w[0]}</span>`:''}</td>
   <td style="white-space:nowrap">${o.status==='draft'?`<button class="sm" data-act="open" data-arg="${o.id}">Continue</button> <button class="sm d" data-act="deldraft" data-arg="${o.id}">Delete</button>`:''}
@@ -13845,7 +13853,7 @@ const ACT={
   const z=w.lines.filter(l=>!sumQ(l.q));if(z.length){if(!confirm(z.length+' colour(s) have no quantity and will be dropped: '+z.map(l=>l.colName).join(', ')+'. Continue?'))return;w.lines=w.lines.filter(l=>sumQ(l.q))}
   V.review=true;save();render();window.scrollTo(0,0)},
  backedit(){V.review=false;render()},sigclear(){initSig()},sign(){finalize()},
- revise(id){const o=S.orders.find(x=>x.id===id);logA('start revision',o.no,o.party.name);o.work={lines:clone(o.lines),party:clone(o.party),waNumber:o.waNumber,dispatch:o.dispatch||''};save();ACT.open(id)},
+ revise(id){const o=S.orders.find(x=>x.id===id);logA('start revision',o.no,o.party.name);o.work={lines:clone(o.lines),party:clone(o.party),waNumber:o.waNumber,dispatch:o.dispatch||'',tags:clone(o.tags||[]),note:o.note||''};save();ACT.open(id)},
  deldraft(id){if(!confirm('Delete this draft?'))return;const _d=S.orders.find(o=>o.id===id);if(_d)logA('delete draft',_d.no,_d.work?_d.work.party.name:'');S.orders=S.orders.filter(o=>o.id!==id);save();render()},
  cancelorder(id){if(!confirm('Cancel this confirmed order? It will be removed from all totals.'))return;const o=S.orders.find(x=>x.id===id);o.status='cancelled';o.work=null;logA('cancel order',o.no,o.party.name);save();render()},
  dlpdf(id){downloadPDF(id)},dlrev(a){const[id,r]=a.split('|');downloadPDF(id,r)},
@@ -13995,7 +14003,7 @@ function exportAll(){
  const O=S.orders,ln=[];O.filter(o=>o.status!=='cancelled').forEach(o=>{const L=o.status==='draft'?o.work.lines:o.lines,p=partyOf(o);L.forEach(l=>{if(sumQ(l.q))ln.push([o.no,o.status,fmtDate(o.date),exhOf(o).name,distName(o.distId),p.name,p.city,p.state,l.art,l.col,l.colName,l.mrp,...SIZES.map(s=>+l.q[s]||0),sumQ(l.q)])})});
  const bk={};O.filter(o=>o.status==='confirmed').forEach(o=>o.lines.forEach(l=>{bk[l.art+'|'+l.col]=(bk[l.art+'|'+l.col]||0)+sumQ(l.q)}));
  bookDownload('AFOX_everything_'+today()+'.xlsx',[
-  ['Orders',[['Order no','Date','Dispatch date','Exhibition','Distributor','Customer','WhatsApp','City','State','Status','Revision','Pieces','Taken by','Signed at','WhatsApp status'],...O.map(o=>{const p=partyOf(o);return[o.no,fmtDate(o.date),o.dispatch?fmtDate(o.dispatch):'',exhOf(o).name,distName(o.distId),p.name,o.waNumber||p.phone,p.city,p.state,o.status,'R'+((o.rev||0)+1),o.status==='draft'?linesPcs(o.work.lines):linesPcs(o.lines),o.by||'',o.signedAt||'',((WA[o.wa&&o.wa.status]||[''])[0])||'']})]],
+  ['Orders',[['Order no','Date','Dispatch date','Exhibition','Distributor','Customer','WhatsApp','City','State','Status','Revision','Pieces','Taken by','Signed at','WhatsApp status','Tags','Note'],...O.map(o=>{const p=partyOf(o);return[o.no,fmtDate(o.date),o.dispatch?fmtDate(o.dispatch):'',exhOf(o).name,distName(o.distId),p.name,o.waNumber||p.phone,p.city,p.state,o.status,'R'+((o.rev||0)+1),o.status==='draft'?linesPcs(o.work.lines):linesPcs(o.lines),o.by||'',o.signedAt||'',((WA[o.wa&&o.wa.status]||[''])[0])||'',(o.tags||[]).join(', '),o.note||'']})]],
   ['Order lines',[['Order no','Status','Date','Exhibition','Distributor','Customer','City','State','Article','Colour code','Colour','MRP',...SIZES,'Total'],...ln]],
   ['Customers',[['Distributor','Customer','WhatsApp','City','State','Address','Notes'],...S.parties.map(p=>[distName(p.distId),p.name,p.phone,p.city,p.state,p.address,p.note||''])]],
   ['Products',[['Article','Name','MRP','Fabric m/pc','Colour code','Colour','Stock','Sample','Ordered (confirmed)'],...S.articles.flatMap(a=>a.colours.map(c=>[a.code,a.name||'',a.mrp,a.fabricM||'',c.code,c.name,c.stock||'',c.sample||'',bk[a.code+'|'+c.code]||0]))]],
@@ -14024,7 +14032,7 @@ function waOrder(){const o=ord();if(!o||!o.work)return;const w=o.work;if(!linesP
  <p class="muted" style="font-size:12px">“Send PDF” opens your phone’s share sheet — choose WhatsApp, then the customer. “Open chat” goes straight to this number with the message ready and downloads the PDF to attach.</p>`,'560px')}
 async function waPreview(mode){const o=ord(),w=o.work,num=ccPhone($('#wp-num').value);if(num.length<11)return toast('Enter a valid WhatsApp number');
  if(num!==w.waNumber){w.waNumber=num;w.party.phone=num;const pp=S.parties.find(x=>x.id===w.party.id);if(pp)pp.phone=num}
- const s={no:o.no,date:o.date,party:w.party,lines:w.lines.filter(l=>sumQ(l.q)>0),sig:null,signedAt:null,rev:o.rev||0,dispatch:w.dispatch||'',dist:distOf(o),exh:exhOf(o),draft:true};
+ const s={no:o.no,date:o.date,party:w.party,lines:w.lines.filter(l=>sumQ(l.q)>0),sig:null,signedAt:null,rev:o.rev||0,dispatch:w.dispatch||'',tags:w.tags||[],note:w.note||'',dist:distOf(o),exh:exhOf(o),draft:true};
  const file=pdfFile(s),text='Dear '+w.party.name+', here is your order '+o.no+' at '+s.exh.name+' ('+linesPcs(s.lines)+' pcs). It is not final until you sign. – AFOX / Trousers & Beyond';
  try{await waTransport(file,text,num,o.no+'-draft','chat'===mode?'chat':'share');logA('whatsapp preview',o.no,w.party.name);toast('Handed to WhatsApp');closeModal()}catch(e){if(!(e&&e.name==='AbortError'))toast('Could not send – use Download PDF from Orders later')}save()}
 
@@ -14531,10 +14539,11 @@ function anExh(){return V.an&&V.an.exh!==undefined?V.an.exh:((V.np&&V.np.exh)||(
 function anLeft(){return Math.max(0,+(V.an&&V.an.left)||0)}
 function anCompute(exId){
  const conf=S.orders.filter(o=>o.status==='confirmed'&&(!exId||o.exhId===exId));
- const art={},col={},setm={},size={},day={},state={},city={},dist={},dmon={},parties={};let pcs=0,val=0,setPcs=0,custPcs=0;
+ const stf={},hr={},art={},col={},setm={},size={},day={},state={},city={},dist={},dmon={},parties={};let pcs=0,val=0,setPcs=0,custPcs=0;
  const add=(m,k,n,x)=>{const e=m[k]||(m[k]={k,pcs:0,orders:new Set(),...(x||{})});e.pcs+=n;return e};
  conf.forEach(o=>{const p=o.party||{},d=(o.signedAt||o.date||'').slice(0,10),pk=(p.id||p.name||'')+'|'+(p.city||'');
   const n0=linesPcs(o.lines);pcs+=n0;parties[pk]=(parties[pk]||0)+n0;
+  {const b=o.signedBy||o.by||'—';add(stf,b,n0).orders.add(o.id);if(o.signedAt){const h=new Date(o.signedAt).getHours();add(hr,h,n0).orders.add(o.id)}}
   if(d)add(day,d,n0).orders.add(o.id);add(state,p.state||'—',n0).orders.add(o.id);add(city,(p.city||'—')+(p.state?', '+p.state:''),n0).orders.add(o.id);
   add(dist,(distOf(o).name||'—'),n0).orders.add(o.id);
   if(o.dispatch)add(dmon,o.dispatch.slice(0,7),n0).orders.add(o.id);
@@ -14551,7 +14560,7 @@ function anCompute(exId){
  const sold=new Set(A.map(a=>a.k)),unsold=S.articles.filter(a=>!sold.has(a.code));
  return{conf,orders:conf.length,pcs,val,parties:Object.keys(parties).length,avg:conf.length?Math.round(pcs/conf.length):0,
   A,C:arr(col),SET:arr(setm),setPcs,custPcs,SZ:Object.keys(size).map(Number).sort((a,b)=>a-b).map(s=>({k:s,pcs:size[s]})),
-  D:days.map(d=>({k:d,pcs:day[d].pcs,orders:day[d].orders.size})),ST:arr(state),CT:arr(city),DS:arr(dist),
+  D:days.map(d=>({k:d,pcs:day[d].pcs,orders:day[d].orders.size})),STF:arr(stf).map(x=>({k:x.k,pcs:x.pcs,orders:x.orders.size})),HR:Object.keys(hr).map(Number).sort((a,b)=>a-b).map(h=>({k:h,pcs:hr[h].pcs,orders:hr[h].orders.size})),ST:arr(state),CT:arr(city),DS:arr(dist),
   DM:Object.keys(dmon).sort().map(k=>({k,pcs:dmon[k].pcs,orders:dmon[k].orders.size})),unsold,nd,perDay:Math.round(pcs/nd),
   pend:conf.filter(o=>o.dispatch&&o.dispatch>=today()).length}}
 function anPlan(R){/* transparent rule-based suggestion */
@@ -14569,13 +14578,15 @@ function viewAnalysis(){
  if(!isAdmin())return pagehead('Admin only','Analysis','')+`<div class="card">Only an admin can open the analysis.</div>`;
  const ex=anExh(),E=S.exhibitions.find(e=>e.id===ex),R=anCompute(ex),pl=anPlan(R),prj=anProject(R),pct=(x,t)=>t?Math.round(x*100/t)+'%':'0%';
  const sel=`<label>Exhibition<select id="an-exh">${S.exhibitions.map(e=>`<option value="${e.id}" ${e.id===ex?'selected':''}>${esc(e.name)} – ${esc(e.city)}</option>`).join('')}</select></label><label>Days still left<input id="an-left" inputmode="numeric" value="${anLeft()||''}" placeholder="e.g. 3" style="width:110px"></label>`;
- let h=pagehead('Admin · live analysis','Analysis',`<button class="p" data-act="anpdf">⬇ Analysis PDF</button>`)+`<div class="card row">${sel}</div>`;
+ let h=pagehead('Admin · live analysis','Analysis',`<button data-act="eodsend">Send today's summary</button><button class="p" data-act="anpdf">⬇ Analysis PDF</button>`)+`<div class="card row">${sel}</div>`;
  if(!R.orders)return h+`<div class="card">No signed orders at ${E?esc(E.name):'this exhibition'} yet. The analysis fills in as orders are signed.</div>`;
  h+=`<div class="an-kp"><div><span class="lb">Orders signed</span><b>${R.orders}</b><small>${R.parties} customers</small></div><div><span class="lb">Pieces booked</span><b>${R.pcs.toLocaleString('en-IN')}</b><small>avg ${R.avg} per order</small></div><div><span class="lb">Order value (MRP)</span><b>₹${Math.round(R.val/1000).toLocaleString('en-IN')}k</b><small>at MRP, before discount</small></div><div><span class="lb">${prj?'Projected total':'Dispatch pending'}</span><b>${prj?prj.toLocaleString('en-IN'):R.pend}</b><small>${prj?'at '+R.perDay+' pcs/day for '+anLeft()+' more day(s)':'orders to be dispatched'}</small></div></div>`;
  h+=`<div class="card"><h3>What is selling best</h3>${anBars(R.A.slice(0,8).map(a=>({l:a.k+(a.name?' · '+a.name:''),v:a.pcs,s:pct(a.pcs,R.pcs)})),r=>r.v+' · '+r.s)}</div>`;
  h+=`<div class="card"><h3>Best colours</h3>${anBars(R.C.slice(0,8).map(c=>({l:c.art+' · '+c.name,dot:c.name,v:c.pcs})),null,1)}</div>`;
  h+=`<div class="card"><h3>Size sets bought</h3>${R.SET.length?anBars(R.SET.slice(0,8).map(s=>({l:s.k,v:s.pcs,n:s.sets})),r=>r.n+' sets · '+r.v+' pcs'):'<p class="muted">No size sets booked yet.</p>'}${R.custPcs?`<p class="muted">${R.custPcs} pcs were entered as exact pieces, not sets.</p>`:''}</div>`;
  h+=`<div class="card"><h3>Pieces per size</h3>${anBars(R.SZ.map(s=>({l:String(s.k),v:s.pcs})))}</div>`;
+ h+=`<div class="card"><h3>Team: who took the orders</h3>${anBars(R.STF.map(x=>({l:x.k,v:x.orders,p:x.pcs})),r=>r.v+' orders · '+r.p+' pcs')}</div>`;
+ h+=`<div class="card"><h3>Busiest hours</h3>${R.HR.length?anBars(R.HR.map(x=>({l:(x.k%12||12)+(x.k<12?' am':' pm'),v:x.orders,p:x.pcs})),r=>r.v+' orders · '+r.p+' pcs'):'<p class="muted">No signing times yet.</p>'}</div>`;
  h+=`<div class="card"><h3>Orders by day</h3>${anBars(R.D.map(d=>({l:fmtDate(d.k),v:d.pcs,o:d.orders})),r=>r.v+' pcs · '+r.o+' orders')}</div>`;
  h+=`<div class="card"><h3>Where the orders come from</h3>${anBars(R.CT.slice(0,6).map(c=>({l:c.k,v:c.pcs})))}<p class="muted" style="margin-top:8px">${R.ST.slice(0,4).map(s=>esc(s.k)+' '+pct(s.pcs,R.pcs)).join(' · ')}</p></div>`;
  h+=`<div class="card"><h3>By distributor</h3>${anBars(R.DS.map(d=>({l:d.k,v:d.pcs})))}</div>`;
@@ -14610,6 +14621,8 @@ function anPDF(){
  H2('Best colours');bars(R.C.slice(0,10).map(c=>({l:c.art+' '+c.name,v:c.pcs})),r=>r.v+' pcs');
  H2('Size sets bought');if(R.SET.length)bars(R.SET.map(s=>({l:s.k,v:s.pcs,n:s.sets})),r=>r.n+' sets · '+r.v+' pcs');else P('No size sets booked yet.');
  H2('Pieces per size');bars(R.SZ.map(s=>({l:'Size '+s.k,v:s.pcs})),r=>r.v+' pcs');
+ H2('Who took the orders');bars(R.STF.map(x=>({l:x.k,v:x.orders})),r=>r.v+' orders · '+R.STF.find(z=>z.k===r.l).pcs+' pcs');
+ H2('Busiest hours');if(R.HR.length)bars(R.HR.map(x=>({l:(x.k%12||12)+(x.k<12?' am':' pm'),v:x.orders})),r=>r.v+' orders');else P('No signing times recorded.');
  H2('Orders day by day');bars(R.D.map(d=>({l:fmtDate(d.k),v:d.pcs,o:d.orders})),r=>r.v+' pcs · '+r.o+' orders');
  H2('Where orders come from');bars(R.CT.slice(0,8).map(c=>({l:c.k,v:c.pcs})),r=>r.v+' pcs');
  H2('By distributor');bars(R.DS.map(d=>({l:d.k,v:d.pcs})),r=>r.v+' pcs');
@@ -14627,6 +14640,76 @@ function anPDF(){
  P('Study these three things before the next production run: (1) which articles repeat in the top list across exhibitions; (2) whether the same size sets lead each time, so cutting plans can follow them; (3) the colours that sell out first, so they get the larger share of fabric.');
  P('Limits: figures are signed orders only. Unsigned drafts, cancelled orders and walk-in visitors are not counted. Predictions improve once you have two or more exhibitions to compare.',9);
  const n=doc.getNumberOfPages();doc.save('AFOX_Analysis_'+(E.name||'exhibition').replace(/[^A-Za-z0-9]+/g,'_')+'_'+today()+'.pdf');toast('Analysis PDF ready')}
+
+
+/* ---------- TEAM FEATURES (v0.12) ---------- */
+/* 3. sync status you can read from across the room */
+cloudStatus=function(){
+ if(!cloudOn())return'<span class="sdot grey"></span>this phone only · ';
+ if(V.needRelogin||(V.me&&!V.tok))return'<a data-act="relogin"><span class="sdot red"></span>not syncing · tap to sign in</a> · ';
+ if(CS.err==='offline'||!navigator.onLine)return'<span class="sdot red"></span>offline – saved on this phone'+(CS.waiting?' · '+CS.waiting+' waiting':'')+' · ';
+ if(CS.busy)return'<span class="sdot amber"></span>syncing · ';
+ return CS.waiting?'<a data-act="syncnow"><span class="sdot amber"></span>'+CS.waiting+' waiting · tap to sync</a> · ':'<span class="sdot green"></span>all synced · '};
+/* 2. undo any change to the order, one step at a time */
+function trackHist(){const o=typeof ord==='function'?ord():null;if(!o||!o.work||V.tab!=='book'){V.hid=null;return}
+ const cur=JSON.stringify(o.work.lines);
+ if(V.hid!==o.id){V.hid=o.id;V.hist=[];V.hlast=cur;return}
+ if(cur!==V.hlast){(V.hist=V.hist||[]).push(V.hlast);if(V.hist.length>40)V.hist.shift();V.hlast=cur;undoChip()}}
+function undoChip(){let b=$('#undochip');const o=ord(),on=o&&o.work&&V.tab==='book'&&V.hist&&V.hist.length&&!V.review;
+ if(!on){if(b)b.remove();return}
+ if(!b){b=document.createElement('button');b.id='undochip';b.dataset.act='undoall';document.body.appendChild(b)}
+ b.textContent='↶ Undo ('+V.hist.length+')'}
+document.addEventListener('click',()=>setTimeout(()=>{try{trackHist()}catch(e){}},60),true);
+document.addEventListener('input',()=>setTimeout(()=>{try{trackHist()}catch(e){}},60),true);
+const _rnd3=render;render=function(){_rnd3();try{trackHist();undoChip()}catch(e){}};
+/* duplicate scan: tell the stall what is already booked */
+const _hs3=handleScan;
+handleScan=function(v){const o=ord(),r=o&&o.work&&!V.review&&V.tab==='book'?resolve(v):null;
+ if(r&&r.col){const l=o.work.lines.find(x=>x.art===r.art.code&&x.col===r.col.code),n=l?sumQ(l.q):0;
+  if(n){beep(0);toast(r.col.name+' is already booked: '+n+' pcs. Adding more will increase it.',3800)}}
+ return _hs3(v)};
+/* 1 + 5. customer history, copy last order */
+function lastOrders(pid){return S.orders.filter(o=>o.status==='confirmed'&&o.party&&String(o.party.id)===String(pid)).sort((a,b)=>(b.signedAt||'').localeCompare(a.signedAt||''))}
+function histSummary(pid){const L=lastOrders(pid);if(!L.length)return null;const pcs=L.reduce((a,o)=>a+linesPcs(o.lines),0),top={};
+ L.forEach(o=>o.lines.forEach(l=>{const k=l.art+' '+l.colName;top[k]=(top[k]||0)+sumQ(l.q)}));
+ return{L,n:L.length,pcs,last:L[0],top:Object.entries(top).sort((a,b)=>b[1]-a[1]).slice(0,3)}}
+function histCard(w,cur){const H=histSummary(w.party.id);if(!H)return`<div class="card hist"><span class="muted">New customer: no earlier orders.</span></div>`;
+ const o=H.last,empty=!cur||!linesPcs(w.lines);
+ return`<div class="card hist"><div class="row" style="align-items:center"><div><b>${H.n} earlier order${H.n>1?'s':''} · ${H.pcs} pcs</b><br><span class="muted">Last: ${esc(o.no)} on ${fmtDate((o.signedAt||o.date||'').slice(0,10))} · ${linesPcs(o.lines)} pcs${H.top.length?'<br>Usually takes: '+H.top.map(t=>esc(t[0])+' ('+t[1]+')').join(', '):''}</span></div>
+ ${empty?`<button class="p right" data-act="copylast">Copy last order</button>`:''}</div></div>`}
+function copyLast(){const o=ord();if(!o||!o.work)return;const H=histSummary(o.work.party.id);if(!H)return toast('No earlier order for this customer');
+ if(linesPcs(o.work.lines))return toast('This order already has pieces');
+ const lines=clone(H.last.lines).map(l=>{const a=artOf(l.art);if(a)l.mrp=a.mrp;return l});
+ const gone=lines.filter(l=>!artOf(l.art)).length;o.work.lines=lines;logA('copy last order',o.no,H.last.no);save();render();
+ toast('Copied '+H.last.no+(gone?' ('+gone+' article(s) no longer in the list, check them)':'')+'. Change anything that differs.',4200)}
+/* 7. tags and a note on every order */
+const TAGS=['Urgent','Sample','Special packing','Advance paid','Credit'];
+function tagHTML(w){const t=w.tags||[];return`<div class="card"><div class="lb muted" style="font-size:12px;margin-bottom:6px">Order tags and note</div><div class="chips">${TAGS.map(x=>`<button class="chip${t.includes(x)?' on':''}" data-act="tagtog" data-arg="${x}">${x}</button>`).join('')}</div><input id="od-note" value="${esc(w.note||'')}" placeholder="Note for the office (optional)" style="margin-top:8px;width:100%"></div>`}
+const _vo3=viewOrder;
+viewOrder=function(){const h=_vo3(),o=ord();if(!o||!o.work)return h;const i=h.indexOf('<div class="scanbar">');
+ return i<0?h:h.slice(0,i)+histCard(o.work,1)+tagHTML(o.work)+h.slice(i)};
+document.addEventListener('change',e=>{const t=e.target;if(t.id==='od-note'){const o=ord();if(o&&o.work){o.work.note=t.value.trim();save()}}});
+/* customer picker: show the history when a customer is pressed */
+const _pp3=ACT.pickparty;
+ACT.pickparty=function(a,t){const r=_pp3.call(ACT,a,t);setTimeout(()=>{const H=histSummary(a);let b=$('#pf-hist');if(!b){const f=$('#pf-gst');if(f&&f.closest('label')){b=document.createElement('div');b.id='pf-hist';b.className='card';f.closest('label').after(b)}}
+  if(b)b.innerHTML=H?`<b>${H.n} earlier order${H.n>1?'s':''} · ${H.pcs} pcs</b><br><span class="muted">Last ${esc(H.last.no)} · ${H.top.map(x=>esc(x[0])+' ('+x[1]+')').join(', ')}</span>`:'<span class="muted">New customer: no earlier orders.</span>'},60);return r};
+/* 9. quick filters */
+Object.assign(ACT,{oftoday(){V.of.today=!V.of.today;render()},ofmy(){V.of.my=!V.of.my;render()},syncnow(){try{cloudSync()}catch(e){}toast('Syncing…',1500)},
+ undoall(){const o=ord();if(!o||!o.work||!V.hist||!V.hist.length)return;o.work.lines=JSON.parse(V.hist.pop());V.hlast=JSON.stringify(o.work.lines);V.undo=null;save();render();toast('Undone',1400)},
+ copylast(){copyLast()},tagtog(x){const o=ord();if(!o||!o.work)return;const t=o.work.tags=o.work.tags||[];const i=t.indexOf(x);if(i>=0)t.splice(i,1);else t.push(x);save();render()},
+ eodsend(){eodSend()}});
+/* 8. end-of-day summary: one tap, text + Excel to your WhatsApp */
+function eodData(day,exId){const O=S.orders.filter(o=>o.status==='confirmed'&&(!exId||o.exhId===exId)&&(o.signedAt||o.date||'').slice(0,10)===day);
+ const rows=[],art={},staff={};let pcs=0;
+ O.forEach(o=>{const n=linesPcs(o.lines);pcs+=n;const b=o.signedBy||o.by||'—';(staff[b]=staff[b]||{o:0,p:0}).o++;staff[b].p+=n;
+  o.lines.forEach(l=>{const q=sumQ(l.q);art[l.art]=(art[l.art]||0)+q;rows.push([o.no,o.party.name,o.party.city,o.party.state,l.art,l.colName,(l.sets||[]).map(x=>setLbl(x.q)+' ×'+x.n).join(' + ')||'exact pieces',q,o.dispatch?fmtDate(o.dispatch):'',(o.tags||[]).join(', '),o.note||'',b])})});
+ return{O,pcs,rows,top:Object.entries(art).sort((a,b)=>b[1]-a[1]).slice(0,3),staff:Object.entries(staff).sort((a,b)=>b[1].p-a[1].p)}}
+async function eodSend(){if(!isAdmin())return toast('Admin only');const ex=anExh(),E=S.exhibitions.find(e=>e.id===ex)||{name:'',city:''},d=eodData(today(),ex);
+ if(!d.O.length)return toast('No signed orders today yet');
+ const text=`AFOX · ${E.name}${E.city?', '+E.city:''}\nSummary for ${fmtDate(today())}\nOrders: ${d.O.length} · Pieces: ${d.pcs}\nTop: ${d.top.map(t=>t[0]+' ('+t[1]+')').join(', ')}\nTeam: ${d.staff.map(s=>s[0]+' '+s[1].o+' orders').join(', ')}\nDetails in the attached Excel.`;
+ const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Order','Customer','City','State','Article','Colour','Size sets','Pieces','Dispatch','Tags','Note','Taken by'],...d.rows]),'Today');
+ const file=new File([XLSX.write(wb,{bookType:'xlsx',type:'array'})],'AFOX_day_summary_'+today()+'.xlsx',{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+ try{if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],text});else{dl(file,file.name);window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank')}logA('day summary',today(),d.O.length+' orders')}catch(e){if(!(e&&e.name==='AbortError'))toast('Could not share – the Excel was downloaded')}}
 
 (async()=>{
  try{S=await DB.get('state')}catch(e){}
