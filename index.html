@@ -14673,10 +14673,10 @@ function lastOrders(pid){return S.orders.filter(o=>o.status==='confirmed'&&o.par
 function histSummary(pid){const L=lastOrders(pid);if(!L.length)return null;const pcs=L.reduce((a,o)=>a+linesPcs(o.lines),0),top={};
  L.forEach(o=>o.lines.forEach(l=>{const k=l.art+' '+l.colName;top[k]=(top[k]||0)+sumQ(l.q)}));
  return{L,n:L.length,pcs,last:L[0],top:Object.entries(top).sort((a,b)=>b[1]-a[1]).slice(0,3)}}
-function histCard(w,cur){const H=histSummary(w.party.id);if(!H)return`<div class="card hist"><span class="muted">New customer: no earlier orders.</span></div>`;
+function histCard(w,cur){const H=histSummary(w.party.id);if(!H)return`<div class="card hist"><div class="row" style="align-items:center"><span class="muted">New customer: no earlier orders.</span>${linesPcs(w.lines)?`<button class="right" data-act="copyto" data-arg="${esc(ord()?ord().id:'')}">Same order for another customer</button>`:''}</div></div>`;
  const o=H.last,empty=!cur||!linesPcs(w.lines);
  return`<div class="card hist"><div class="row" style="align-items:center"><div><b>${H.n} earlier order${H.n>1?'s':''} · ${H.pcs} pcs</b><br><span class="muted">Last: ${esc(o.no)} on ${fmtDate((o.signedAt||o.date||'').slice(0,10))} · ${linesPcs(o.lines)} pcs${H.top.length?'<br>Usually takes: '+H.top.map(t=>esc(t[0])+' ('+t[1]+')').join(', '):''}</span></div>
- ${empty?`<button class="p right" data-act="copylast">Copy last order</button>`:''}</div></div>`}
+ ${empty?`<button class="p right" data-act="copylast">Copy last order</button>`:`<button class="right" data-act="copyto" data-arg="${esc(ord()?ord().id:'')}">Same order for another customer</button>`}</div></div>`}
 function copyLast(){const o=ord();if(!o||!o.work)return;const H=histSummary(o.work.party.id);if(!H)return toast('No earlier order for this customer');
  if(linesPcs(o.work.lines))return toast('This order already has pieces');
  const lines=clone(H.last.lines).map(l=>{const a=artOf(l.art);if(a)l.mrp=a.mrp;return l});
@@ -14710,6 +14710,23 @@ async function eodSend(){if(!isAdmin())return toast('Admin only');const ex=anExh
  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Order','Customer','City','State','Article','Colour','Size sets','Pieces','Dispatch','Tags','Note','Taken by'],...d.rows]),'Today');
  const file=new File([XLSX.write(wb,{bookType:'xlsx',type:'array'})],'AFOX_day_summary_'+today()+'.xlsx',{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
  try{if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],text});else{dl(file,file.name);window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank')}logA('day summary',today(),d.O.length+' orders')}catch(e){if(!(e&&e.name==='AbortError'))toast('Could not share – the Excel was downloaded')}}
+
+/* group buying: the same order for another customer (each gets their own order, PDF and signature) */
+function copyTo(id){const o=S.orders.find(x=>x.id===id||String(x.id)===String(id));if(!o)return;
+ const w=o.status==='draft'||o.work?o.work:null,lines=clone((w&&w.lines)||o.lines).filter(l=>sumQ(l.q)>0);
+ if(!lines.length)return toast('Add some pieces first');
+ V.copySrc={no:o.no,lines,dispatch:(w&&w.dispatch)||o.dispatch||'',tags:clone((w&&w.tags)||o.tags||[]),from:(w?w.party:o.party).name};
+ closeModal();V.cur=null;V.art=null;V.np=null;V.tab='book';save();render();toast('Pick the next customer. This order will be copied to them.',3600)}
+const _vs3=viewStart;
+viewStart=function(){const h=_vs3();const c=V.copySrc;if(!c)return h;
+ return`<div class="card" style="border:1px solid var(--acc)"><b>Copying ${esc(c.no)} (${esc(c.from)}) · ${linesPcs(c.lines)} pcs</b><br><span class="muted">Search or add the next customer below, then Start order. Change any quantity that differs.</span><div class="row" style="margin-top:8px"><button data-act="copycancel">Cancel copy</button></div></div>`+h};
+const _so3=startOrder;
+startOrder=function(){const c=V.copySrc,before=V.cur;_so3();if(!c||V.cur===before||!V.cur)return;const o=ord();if(!o||!o.work)return;
+ o.work.lines=clone(c.lines).map(l=>{const a=artOf(l.art);if(a)l.mrp=a.mrp;return l});o.work.dispatch=c.dispatch;o.work.tags=c.tags;o.work.note='Same as '+c.no;
+ V.copySrc=null;logA('copy order to customer',c.no,o.no);save();render();toast('Copied from '+c.no+'. Check the quantities, then close.',3600)};
+Object.assign(ACT,{copyto(id){copyTo(id)},copycancel(){V.copySrc=null;render()}});
+const _wp3=waPrompt;
+waPrompt=function(id){_wp3(id);const r=$('#modal .row');if(r&&!r.querySelector('[data-act=copyto]')){const b=document.createElement('button');b.dataset.act='copyto';b.dataset.arg=id;b.textContent='Same order for another customer';r.appendChild(b)}};
 
 (async()=>{
  try{S=await DB.get('state')}catch(e){}
