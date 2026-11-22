@@ -14593,14 +14593,14 @@ const IC={
  find:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>',
  user:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4.2 4-6 8-6s7.2 1.8 8 6M18 3v4M16 5h4"/></svg>',
  visitor:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>'};
-const MORE_TABS=['an','products','qr','dists','rep','setup'];
+const MORE_TABS=['an','customers','products','qr','rep','setup'];
 function tabbar(){
  let t=$('#tabbar');if(!t){t=document.createElement('nav');t.id='tabbar';document.body.appendChild(t)}
  const gate=typeof needLogin==='function'&&needLogin();document.body.classList.toggle('nologin',!!gate);
  const on=x=>V.tab===x?' on':'',b=(tab,lb)=>`<button class="${on(tab).trim()}" data-tab="${tab}">${lb}</button>`;
- t.innerHTML=b('book','Book')+b('orders','Orders')+b('customers','Retailers')+`<button class="${MORE_TABS.includes(V.tab)?'on':''}" data-act="moremenu">More</button>`}
+ t.innerHTML=b('book','Book')+b('orders','Orders')+b('dists','Distributors')+`<button class="${MORE_TABS.includes(V.tab)?'on':''}" data-act="moremenu">More</button>`}
 function moreMenu(){
- const it=[['products','Products'],['qr','QR codes'],['dists','Distributors'],['rep','Reports']];if(isAdmin()){it.unshift(['an','Analysis']);it.push(['setup','Setup'])};
+ const it=[['customers','Retailers'],['products','Products'],['qr','QR codes'],['rep','Reports']];if(isAdmin()){it.unshift(['an','Analysis']);it.push(['setup','Setup'])};
  modal(`<h3 style="margin-top:0">More</h3><div style="display:flex;flex-direction:column;gap:10px">${it.map(([k,l])=>`<button data-act="gotab" data-arg="${k}" style="justify-content:flex-start;min-height:52px;font-size:13px">${l}</button>`).join('')}</div><button class="themebtn wide" data-act="theme" data-label="1" style="margin-top:10px"></button><div class="row" style="margin-top:16px"><button data-act="closemodal">Close</button></div>`)}
 Object.assign(ACT,{moremenu:moreMenu,gotab(k){closeModal();V.tab=k;render()}});
 const CH={beige:'#d8c7a8',wood:'#7a5a3c',mouse:'#9a948c',pista:'#9aa77f',navy:'#2f3d5a',black:'#1f1f1f',white:'#f4f2ee',grey:'#9a9a9a',gray:'#9a9a9a',olive:'#6b6b3a',brown:'#6b4a32',khaki:'#b5a577',cream:'#efe4cc',blue:'#3b5f8a',green:'#4f7a52',maroon:'#6e2a35',charcoal:'#3d3d3d',sand:'#d4bf99',coffee:'#5a4030',tan:'#b89868',stone:'#b9b2a4',steel:'#7d8791',sky:'#9dc0dc',rust:'#a24e2c',mustard:'#c9a227',peach:'#eab69f',pink:'#e5aeb7',red:'#a63030',teal:'#3f7f7a',wine:'#5e2531',mint:'#b9d8c4',lavender:'#b9a9d0',ivory:'#f1ead6',silver:'#b8b8b8',taupe:'#8b7b6b',camel:'#b88a55',denim:'#41597f',coal:'#2b2b2b',ash:'#aaa8a2',lemon:'#e9dc8a',orange:'#d9803a',purple:'#6d4a7c',yellow:'#d9bf4a'};
@@ -14972,8 +14972,6 @@ function themeSync(){const d=(document.documentElement.getAttribute('data-theme'
 function themeApply(t){document.documentElement.setAttribute('data-theme',t);const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='dark'?'#1f2630':'#dde3ea';const o=document.getElementById('themebtn');if(o)o.remove();themeSync()}
 function themeToggle(){const t=themeGet()==='dark'?'light':'dark';try{localStorage.setItem('afox_theme',t)}catch(e){}themeApply(t)}
 ACT.theme=themeToggle;
-const _vcl2=viewCloudLogin;viewCloudLogin=function(){return _vcl2()+'<div class="row" style="margin-top:12px"><button class="themebtn wide" data-act="theme" data-label="1"></button></div>'};
-if(typeof viewLogin==='function'){const _vl2=viewLogin;viewLogin=function(){return _vl2()+'<div class="row" style="margin-top:12px"><button class="themebtn wide" data-act="theme" data-label="1"></button></div>'}}
 themeApply(themeGet());
 
 
@@ -14993,7 +14991,7 @@ viewStart=function(){
  return`<div class="row" style="margin:0 0 10px"><button data-act="hback">← Home</button><button data-act="newparty">＋ New retailer</button><button data-act="visitor">＋ Quick visitor</button></div>`+h.replace(/<div class="homehead">[\s\S]*?<\/div>\s*<button class="findbar"[\s\S]*?<\/button>\s*<div class="herocard">[\s\S]*?<div class="qa2">[\s\S]*?<\/div>/,'')};
 Object.assign(ACT,{neworder(){V.tab='book';V.hm=false;V.cur=null;render()},hback(){V.hm=true;V.np=null;render()}});
 /* tapping Booking (tab or dock) with no open order goes to home tiles */
-document.addEventListener('click',e=>{const tb=e.target.closest('[data-tab]');if(tb&&tb.dataset.tab==='book'&&!V.cur){V.hm=true;V.np=null}},true);
+document.addEventListener('click',e=>{const tb=e.target.closest('[data-tab]');if(tb&&tb.dataset.tab==='book'&&!V.cur){V.hm=true;V.np=null}if(tb&&tb.dataset.tab==='dists')V.dd=''},true);
 const _gotab=ACT.gotab;ACT.gotab=function(k){if(k==='dists')V.dd='';_gotab(k)};
 
 function distStats(id){const m={};S.orders.filter(o=>o.status==='confirmed'&&o.distId===id).forEach(o=>{const k=o.party.id,e=m[k]||(m[k]={n:0,p:0});e.n++;e.p+=linesPcs(o.lines)});return m}
