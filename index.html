@@ -397,6 +397,83 @@ a.hasic .ic{width:1.1em;height:1.1em}
 header#top button.hasic .ic{width:1.15em;height:1.15em}
 .findbar .ic,.mc .ic{display:none}
 #modal button.hasic .ic{width:22px;height:22px;margin-right:.8em}button.hasic .ic{width:1.45em;height:1.45em}
+
+/* ===== v0.15 NEUMORPHIC THEMES: light (Warm Sand) and dark (Midnight Soft), switchable ===== */
+html:root{--bg:#e8ddd0;--hi:#fbf6ee;--lo:#c5b6a4;--ink:#2d1a14;--mut:#6d5348;--acc:#c4501d;--onacc:#fff;--blk:#2d1a14;--onblk:#fff;--card:#e8ddd0;--cut:#e8ddd0;--line:rgba(109,74,61,.22);--acc2:#e8ddd0;--paper:#fffdf9;--paperink:#2d1a14;--rs:7px 7px 15px var(--lo),-7px -7px 15px var(--hi);--rss:4px 4px 9px var(--lo),-4px -4px 9px var(--hi);--ri:inset 4px 4px 9px var(--lo),inset -4px -4px 9px var(--hi)}
+html:root[data-theme=dark]{--bg:#2b2e36;--hi:#383c46;--lo:#1c1e24;--ink:#f2eee8;--mut:#a9a7b0;--acc:#f0a04b;--onacc:#1c1e24;--blk:#f0a04b;--onblk:#1c1e24;--card:#2b2e36;--cut:#2b2e36;--line:rgba(255,255,255,.12);--acc2:#2b2e36;color-scheme:dark}
+html,html body,html body.homebg{background:var(--bg);color:var(--ink)}
+html body{background-image:none}
+html header#top{background:var(--bg);backdrop-filter:none;border-bottom:0;box-shadow:0 6px 14px var(--lo)}
+html .card,html .kpis,html .dcard,html .recent,html .herocard,html .mc,html .an-kp div,html .hist,html .scroll,html .empty{background:var(--bg);border:0;box-shadow:var(--rs);color:var(--ink)}
+html .card .card{box-shadow:var(--ri)}
+html .findbar{background:var(--bg);box-shadow:var(--ri);color:var(--mut)}
+html .findbar i{background:var(--acc);box-shadow:var(--rss)}html .findbar i svg{stroke:var(--onacc)}
+html .herocard .lb,html .herocard .st,html .mc .lb,html .mc .st,html .recent .lb,html .an-kp .lb,html .an-kp small{color:var(--mut)}
+html .herocard .bg,html .mc .mv,html .an-kp b,html .homehead .gm{color:var(--ink)}
+html .homehead .sb{color:var(--mut)}
+html table{background:transparent;box-shadow:none;border:0}
+html th{background:transparent;color:var(--mut);border-bottom:2px solid var(--acc)}
+html td{border-color:var(--line);color:var(--ink)}
+html input,html select,html textarea{background:var(--bg);color:var(--ink);border:0;box-shadow:var(--ri)}
+html input::placeholder,html textarea::placeholder{color:var(--mut);opacity:.8}
+html button,html .filebtn{background:var(--bg);color:var(--ink);border:0;box-shadow:var(--rss)}
+html button:active{box-shadow:var(--ri)}
+html button.p,html button.g,html .obar button,html .scanbar button.p{background:var(--blk);color:var(--onblk);box-shadow:var(--rss)}
+html button.d{color:#d23a2a}
+html button.p .ic .t,html button.g .ic .t,html #tabbar button.on .ic .t{fill:rgba(255,255,255,.28)}
+html[data-theme=dark] button.p .ic .t,html[data-theme=dark] button.g .ic .t{fill:rgba(0,0,0,.18)}
+html .chip,html .sc,html .ss,html .sz{background:var(--bg);color:var(--ink);border:0;box-shadow:var(--rss)}
+html .chip.on,html .sc.on,html .ss.on,html .sz.on{background:var(--bg);color:var(--acc);box-shadow:var(--ri);font-weight:600}
+html header#top button.on{background:var(--bg);color:var(--acc);box-shadow:var(--ri);border-radius:999px}
+html header#top button{box-shadow:none;background:transparent}
+html #tabbar{background:var(--bg);box-shadow:var(--rs);border:0}
+html #tabbar button{background:transparent;box-shadow:none;color:var(--mut)}
+html #tabbar button.on{background:var(--bg);color:var(--acc);box-shadow:var(--ri)}
+html .obar,html .scanbar{background:var(--blk);color:var(--onblk);border:0;box-shadow:var(--rs)}
+html .obar button{background:var(--bg);color:var(--ink)}
+html .obar .t b,html .obar *{color:inherit}
+html #modal .box{background:var(--bg);color:var(--ink);box-shadow:var(--rs);border-top:0;border:1px solid var(--line)}
+html ul.res{background:var(--bg);box-shadow:var(--rs);border:0}
+html ul.res li{border-color:var(--line)}
+html .dsp.need{background:var(--bg);box-shadow:var(--ri);outline:2px solid var(--acc)}
+html .paper{background:var(--paper);color:var(--paperink);box-shadow:var(--rs);border:0}
+html .paper *{color:inherit}html .paper th{color:#6d5348}html .paper td{border-color:#e3d5c3}
+html .tag{background:var(--bg);box-shadow:var(--rss);color:var(--ink);border:0}
+html .tag.ok{color:#2fa84f}html .tag.warn{color:var(--acc)}html .tag.bad{color:#d23a2a}
+html .an-bar .tr{background:var(--bg);box-shadow:var(--ri)}html .an-bar .tr i{background:var(--acc)}
+html .an-tag.up{background:rgba(47,168,79,.18);color:#2fa84f}html .an-tag.hold{background:rgba(240,160,75,.2);color:var(--acc)}html .an-tag.low{background:rgba(210,58,42,.18);color:#d23a2a}
+html .ic .t{fill:color-mix(in srgb,var(--acc) 22%,transparent)}
+html .eyebrow{color:var(--acc);border-bottom-color:var(--acc)}
+html h1.big,html h1.mega,html h3,html label{color:var(--ink)}
+html .muted,html .mut,html label span.muted{color:var(--mut)}
+html #toast{background:var(--blk);color:var(--onblk);box-shadow:var(--rs)}
+html #undochip{background:var(--bg);color:var(--ink);box-shadow:var(--rs)}
+html #who,html #bkp{color:#e8e2da}
+html a{color:var(--acc)}
+html .sheet{background:var(--bg);color:var(--ink);box-shadow:0 -8px 20px var(--lo)}
+html .cdot{box-shadow:var(--rss)}
+html hr{border-color:var(--line)}
+html[data-theme=dark] .empty img,html[data-theme=dark] .empty svg{filter:brightness(1.6)}
+/* theme switch */
+#themebtn{position:fixed;z-index:60;top:28px;right:12px;width:38px;height:38px;min-height:38px;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0}
+#themebtn svg{width:19px;height:19px}
+@media(min-width:701px){html header#top nav.nr{padding-right:58px}#themebtn{top:14px;right:16px}}
+
+html body.homebg .herocard,html body.homebg{background-image:none}
+html body.homebg .herocard{background:var(--bg);color:var(--ink);box-shadow:var(--rs)}
+html body.homebg .herocard .lb,html body.homebg .herocard .st{color:var(--mut)}
+html[data-theme=dark] #brandfox,html[data-theme=dark] header#top .brand img,html[data-theme=dark] header#top svg:not(.ic svg){filter:invert(1) brightness(1.15)}
+html .scanbar input{background:#f6f1ea;color:#2d1a14;box-shadow:none}
+html .scanbar button{background:transparent;color:var(--onblk);box-shadow:none;border:1px solid currentColor}
+html[data-theme=dark] .scanbar{background:var(--bg);box-shadow:var(--ri);color:var(--ink)}
+html[data-theme=dark] .scanbar input{background:var(--bg);color:var(--ink);box-shadow:var(--ri)}
+html[data-theme=dark] .scanbar button{color:var(--acc)}
+html[data-theme=dark] .obar,html[data-theme=dark] .obar *{color:#1c1e24}
+html[data-theme=dark] .obar button{background:#1c1e24;color:#f2eee8;box-shadow:none}
+html .obar button{background:#fff;color:#1c1e24}
+html .paper{--bg:#fffdf9;--ink:#2d1a14;--mut:#6d5348;--line:#e3d5c3;--card:#fffdf9;--cut:#f6f1ea;--blk:#1f1a17;--onblk:#fff;--hi:#fff;--lo:#d9ccba}
+html .paper .scroll{background:transparent;box-shadow:none}
+html .paper table{background:transparent}
 </style>
 </head>
 <body>
@@ -14850,6 +14927,17 @@ function iconize(){
  document.querySelectorAll('h3').forEach(h=>{if(h.querySelector(':scope > .ic'))return;const t=h.textContent;const m=ICH.find(x=>x[0].test(t));if(m){h.insertAdjacentHTML('afterbegin',icSVG(m[1]));h.classList.add('hasic')}})}
 new MutationObserver(()=>{if(!icPend){icPend=1;requestAnimationFrame(()=>{icPend=0;try{iconize()}catch(e){}})}}).observe(document.body,{childList:true,subtree:true});
 try{iconize()}catch(e){}
+
+/* ---------- light / dark switch (v0.15) ---------- */
+ICN.moon='<path class="t" d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>';
+function themeGet(){try{return localStorage.getItem('afox_theme')||'light'}catch(e){return'light'}}
+function themeApply(t){document.documentElement.setAttribute('data-theme',t);const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='dark'?'#2b2e36':'#e8ddd0';
+ let b=document.getElementById('themebtn');if(!b){b=document.createElement('button');b.id='themebtn';b.dataset.act='theme';document.body.appendChild(b)}
+ b.setAttribute('aria-label',t==='dark'?'Switch to light theme':'Switch to dark theme');b.title=b.getAttribute('aria-label');
+ b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+(t==='dark'?ICN.sun:ICN.moon)+'</svg>'}
+function themeToggle(){const t=themeGet()==='dark'?'light':'dark';try{localStorage.setItem('afox_theme',t)}catch(e){}themeApply(t)}
+ACT.theme=themeToggle;
+themeApply(themeGet());
 
 (async()=>{
  try{S=await DB.get('state')}catch(e){}
