@@ -383,6 +383,20 @@ body.hasobar #wafab{bottom:calc(100px + env(safe-area-inset-bottom))}
 .hist{padding:10px 14px}.hist .row{gap:10px}
 #undochip{position:fixed;left:16px;bottom:calc(100px + env(safe-area-inset-bottom));z-index:39;min-height:44px;padding:0 16px;border-radius:22px;border:0;background:#fff;color:var(--ink);box-shadow:0 6px 16px rgba(80,40,20,.25);font-weight:600}
 @media(min-width:701px){#undochip{bottom:28px}}
+/* v0.14 icons */
+.ic{display:inline-flex;width:1.3em;height:1.3em;margin-right:.55em;vertical-align:-.3em;flex:none}
+.ic svg{width:100%;height:100%;overflow:visible}
+.ic .t{fill:rgba(196,80,29,.2)}
+button.p .ic .t,button.g .ic .t,#tabbar button.on .ic .t,header#top button.on .ic .t,.obar .ic .t,.scanbar .ic .t{fill:rgba(255,255,255,.3)}
+button.hasic{display:inline-flex;align-items:center;justify-content:center}
+h3.hasic{display:flex;align-items:center}h3.hasic .ic{width:1.35em;height:1.35em}
+a.hasic .ic{width:1.1em;height:1.1em}
+#tabbar button.hasic{flex-direction:column;gap:2px;font-size:11px;min-height:58px;line-height:1.1}
+#tabbar button.hasic .ic{margin:0;width:24px;height:24px}
+#tabbar button.on .ic .t{fill:rgba(255,255,255,.3)}
+header#top button.hasic .ic{width:1.15em;height:1.15em}
+.findbar .ic,.mc .ic{display:none}
+#modal button.hasic .ic{width:22px;height:22px;margin-right:.8em}button.hasic .ic{width:1.45em;height:1.45em}
 </style>
 </head>
 <body>
@@ -14763,6 +14777,79 @@ const _cc4=cloudCard;
 cloudCard=function(){let h=_cc4();if(!cloudOn()||!isAdmin()||!bioOK())return h;const b=bioGet(),mine=b&&V.me&&b.name===V.me.name;
  return h+`<div class="card"><h3>Face ID sign-in <span class="tag ${mine?'ok':'warn'}">${mine?'on for this phone':'off'}</span></h3><p class="muted">Admins only. After this, you can open the app on this phone with Face ID or your fingerprint instead of typing your PIN. Staff still use their PIN. Resetting or switching off an admin's PIN under Staff turns Face ID off on every phone for that person.</p><div class="row">${mine?'<button class="d" data-act="biooff">Turn off on this phone</button>':'<button class="p" data-act="bioon">Turn on Face ID for this phone</button>'}</div></div>`};
 Object.assign(ACT,{bioon(){bioEnable()},biooff(){bioDisable()},biosign(){bioSignIn()}});
+
+
+/* ---------- ICON SYSTEM (v0.14): two-tone line icons on every button, tab and heading ---------- */
+const ICN={
+scan:'<path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path class="t" d="M7.5 12h9" />',
+book:'<rect class="t" x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4V3h6v1M12 10v6M9 13h6"/>',
+plus:'<circle class="t" cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
+orders:'<path class="t" d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',
+users:'<circle class="t" cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 4.7a3.5 3.5 0 0 1 0 6.6M18 14.6c2 .8 3 2.6 3 5.4"/>',
+userplus:'<circle class="t" cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M18 8v6M15 11h6"/>',
+user:'<circle class="t" cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',
+grid:'<rect class="t" x="4" y="4" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="2"/><rect class="t" x="13.5" y="13.5" width="6.5" height="6.5" rx="2"/>',
+chart:'<path d="M4 20h16"/><rect class="t" x="5" y="11" width="3.5" height="9" rx="1"/><rect class="t" x="10.3" y="6" width="3.5" height="14" rx="1"/><rect class="t" x="15.5" y="9" width="3.5" height="11" rx="1"/>',
+report:'<path class="t" d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 17v-3M12 17v-5M15 17v-2"/>',
+trousers:'<path class="t" d="M7 3h10l1.2 18h-4.4L12 10.5 10.2 21H5.8z"/><path d="M7 7h10"/>',
+qr:'<rect class="t" x="4" y="4" width="6" height="6" rx="1.2"/><rect x="14" y="4" width="6" height="6" rx="1.2"/><rect x="4" y="14" width="6" height="6" rx="1.2"/><path d="M14 14h2.5v2.5H14zM19 14v2M14 19h2M18 18.5h2.5V21"/>',
+truck:'<path class="t" d="M3 6h11v10H3z"/><path d="M14 9.5h4l3 3V16h-7"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/>',
+sliders:'<path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle class="t" cx="16" cy="7" r="2.3"/><circle class="t" cx="8" cy="17" r="2.3"/>',
+wa:'<path class="t" d="M4 20l1.3-4.2A8 8 0 1 1 8.2 18.8z"/><path d="M9.2 9.2c.5 2.6 2.5 4.6 5.1 5.2"/>',
+down:'<path d="M12 4v11M7.5 11 12 15.5 16.5 11"/><path class="t" d="M5 19h14v1H5z"/>',
+send:'<path class="t" d="M21 3 3 10.5l6.5 2.5L12 20z"/><path d="M21 3 9.5 13"/>',
+undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+copy:'<rect class="t" x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
+trash:'<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/><path class="t" d="M8 9h8l-.6 10H8.6z"/>',
+pencil:'<path class="t" d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/>',
+check:'<circle class="t" cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/>',
+x:'<circle class="t" cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>',
+eye:'<path class="t" d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+cloud:'<path class="t" d="M7 18a4 4 0 0 1-.6-7.9A6 6 0 0 1 18 9.5 4.3 4.3 0 0 1 17 18z"/>',
+refresh:'<path d="M20 11a8 8 0 0 0-14-4L4 9M4 4v5h5M4 13a8 8 0 0 0 14 4l2-2M20 20v-5h-5"/>',
+disk:'<path class="t" d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/>',
+faceid:'<path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M9 10v1.5M15 10v1.5M12 10v3.5h-1M9 16c1.7 1.4 4.3 1.4 6 0"/>',
+lock:'<rect class="t" x="5" y="10" width="14" height="10" rx="2.5"/><path d="M8 10V8a4 4 0 0 1 8 0v2"/>',
+logout:'<path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/>',
+cal:'<rect class="t" x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M8 3v4M16 3v4"/>',
+tag:'<path class="t" d="M3 12V4h8l9 9-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/>',
+note:'<path class="t" d="M5 4h14v12l-4 4H5z"/><path d="M15 20v-4h4M8 9h8M8 13h5"/>',
+sun:'<circle class="t" cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4"/>',
+search:'<circle class="t" cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/>',
+camera:'<path class="t" d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+print:'<path d="M7 9V4h10v5"/><rect class="t" x="4" y="9" width="16" height="8" rx="2"/><path d="M7 14h10v6H7z"/>',
+sign:'<path d="M3 16c2-6 4-9 5-9s0 6 2 6 2-4 4-4 1 4 3 4 2-1 4-3"/><path class="t" d="M4 20h16v1H4z"/>',
+palette:'<path class="t" d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 1.5-2.2s0-2.3 1.5-2.3H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3z"/><circle cx="8" cy="11" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16" cy="11" r="1"/>',
+layers:'<path class="t" d="M12 3 3 8l9 5 9-5z"/><path d="M3 12.5l9 5 9-5"/>',
+shield:'<path class="t" d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/>',
+clock:'<circle class="t" cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+park:'<circle class="t" cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/>',
+arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+back:'<path d="M19 12H5M11 6l-6 6 6 6"/>',
+home:'<path class="t" d="M4 11 12 4l8 7v9H4z"/><path d="M10 20v-6h4v6"/>',
+bell:'<path class="t" d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9z"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>'};
+const ICA={camstart:'camera',qafind:'search',startorder:'arrow',newparty:'userplus',visitor:'eye',vstart:'eye',vsave:'check',close:'check',waorder:'wa',wasend:'wa',wapreview:'wa',waprompt:'wa',distwa:'wa',fwa:'wa',wamark:'check',
+ dlpdf:'down',anpdf:'down',planx:'down',distx:'down',exportrep:'down',exportall:'down',expcust:'down',expcontacts:'down',expcat:'down',invmodal:'down',invgo:'down',backup:'disk',bkpnow:'disk',followx:'down',auditx:'down',qrpdf:'down',qrpdfone:'down',dlrev:'down',doprint:'print',
+ copyto:'copy',copylast:'copy',same:'copy',undo:'undo',undoall:'undo',deldraft:'trash',prm:'trash',cdel:'trash',ddel:'trash',pdel:'trash',delpreset:'trash',qxrm:'trash',pphotorm:'trash',
+ editnote:'note',pedit:'pencil',cedit:'pencil',dedit:'pencil',exedit:'pencil',notesave:'check',tagtog:'tag',oftoday:'sun',ofmy:'user',syncnow:'refresh',cloudnow:'refresh',cloudconnect:'cloud',clogin:'cloud',relogin:'cloud',csetup:'cloud',dorelogin:'lock',
+ biosign:'faceid',bioon:'faceid',biooff:'x',login:'lock',logout:'logout',moremenu:'grid',sign:'sign',sigclear:'x',eodsend:'send',cancelorder:'x',cancelcopy:'x',copycancel:'x',sdone:'check',sall:'check',selall:'check',selnone:'x',allcols:'palette',exit:'park',backedit:'back',
+ addexh:'cal',exsave:'check',addstaff:'userplus',cstaffadd:'userplus',addpreset:'plus',scadd:'plus',sadd:'plus',openart:'trousers',pview:'eye',pqr:'qr',qrtest:'qr',scancheck:'scan',qrall:'qr',pcol:'palette',packall:'layers',applypreset:'layers',repgo:'chart',rtab:'report',drill:'search',
+ clouddisc:'x',staffpin:'lock',cstaffpin:'lock',staffoff:'x',cstafftog:'x',fdone:'check',gosetup:'sliders',tplparty:'down',tplcat:'down',psave:'check',csave:'check',dsave:'check',pquick:'plus',pbulkqr:'qr',pbulkall:'check',startdemo:'plus',demo:'plus',usesel:'check',advtoggle:'sliders',scust:'sliders',smulti:'layers',pickparty:'user',chip:'tag'};
+const ICT={book:'book',orders:'orders',customers:'users',an:'chart',products:'trousers',qr:'qr',dists:'truck',rep:'report',setup:'sliders'};
+const ICH=[[/cloud/i,'cloud'],[/backup/i,'disk'],[/signature|sign in|sign-in/i,'sign'],[/exhibition/i,'cal'],[/staff/i,'users'],[/audit/i,'shield'],[/colour/i,'palette'],[/size/i,'layers'],[/qr|test before/i,'qr'],[/product|article/i,'trousers'],[/visitor/i,'eye'],[/party|customer/i,'users'],[/send/i,'wa'],[/park|pending/i,'clock'],[/selling/i,'chart'],[/export/i,'down'],[/notes/i,'note'],[/photos/i,'camera'],[/connect/i,'cloud']];
+const icSVG=n=>ICN[n]?`<i class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICN[n]}</svg></i>`:'';
+let icPend=0;
+function iconize(){
+ document.querySelectorAll('button[data-act],button[data-tab],a[data-act]').forEach(el=>{
+  if(el.querySelector(':scope > .ic')||el.id==='wafab'||el.id==='undochip'||el.classList.contains('chip')||el.classList.contains('tab-plain'))return;
+  const tab=el.dataset.tab,act=el.dataset.act,tx=el.textContent.trim();
+  if(!tx||(tx.length<=2&&!tab))return;
+  const n=tab?ICT[tab]:(act==='gotab'?ICT[el.dataset.arg]:ICA[act]);if(!n)return;
+  const f=[...el.childNodes].find(c=>c.nodeType===3&&c.nodeValue.trim());if(f)f.nodeValue=f.nodeValue.replace(/^[\s⬇⬆＋+✔✓←↶↷✕✖⚠☁▸▾✎✏]+/,'');
+  el.insertAdjacentHTML('afterbegin',icSVG(n));el.classList.add('hasic')});
+ document.querySelectorAll('h3').forEach(h=>{if(h.querySelector(':scope > .ic'))return;const t=h.textContent;const m=ICH.find(x=>x[0].test(t));if(m){h.insertAdjacentHTML('afterbegin',icSVG(m[1]));h.classList.add('hasic')}})}
+new MutationObserver(()=>{if(!icPend){icPend=1;requestAnimationFrame(()=>{icPend=0;try{iconize()}catch(e){}})}}).observe(document.body,{childList:true,subtree:true});
+try{iconize()}catch(e){}
 
 (async()=>{
  try{S=await DB.get('state')}catch(e){}
