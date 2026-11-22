@@ -88,10 +88,10 @@ tr.flash td{background:#e1dfa8!important}
 #modal.on{display:flex}#modal .box{background:var(--bg);padding:30px;max-width:580px;width:100%;max-height:92vh;overflow:auto;border-top:4px solid var(--blk)}
 #modal .box h3{margin-top:0;font-size:13px}
 #toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--blk);color:#fff;padding:13px 26px;display:none;z-index:60;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
-.sheet{background:#fff;border:1px solid #bbb;padding:30px 34px}
-.sheet table{border:1px solid #999}.sheet table th,.sheet table td{border:1px solid #bdbbb4}
-.sheet table th{background:#e6e4de}
-.sheet .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;padding-bottom:16px;border-bottom:3px solid var(--blk)}
+.paper{background:#fff;border:1px solid #bbb;padding:30px 34px}
+.paper table{border:1px solid #999}.paper table th,.paper table td{border:1px solid #bdbbb4}
+.paper table th{background:#e6e4de}
+.paper .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;padding-bottom:16px;border-bottom:3px solid var(--blk)}
 .logo{display:flex;align-items:center}.logo img{max-height:54px}
 canvas#sig{border:1px dashed #555;background:#fff;width:100%;max-width:580px;height:180px;touch-action:none}
 .muted{color:var(--mut)}.right{margin-left:auto}
@@ -301,6 +301,8 @@ header#top button.on{border-bottom-color:var(--acc);color:var(--acc)}
 }
 #mbox{border-radius:20px}
 @media(max-width:700px){#mbox{border-radius:24px 24px 0 0}}
+.dsp.need{border-color:var(--acc);background:#fbf3e8}
+.dsp .chip{padding:9px 14px;min-height:40px}
 </style>
 </head>
 <body>
@@ -13355,9 +13357,9 @@ function viewReview(){
  const o=ord(),w=o.work,p=w.party,d=distOf(o),ex=exhOf(o);
  const logo=(src,txt)=>src?`<img src="${src}">`:esc(txt);
  return`<div class="row" style="margin-bottom:8px"><button data-act="backedit">← Back to correct</button><span class="muted">Buyer: please check every line, then sign below.</span></div>
- <div class="sheet"><div class="hd"><div class="logo">${S.settings.afoxLogo?`<img src="${S.settings.afoxLogo}">`:LG(62,'full')}</div><div style="text-align:center"><b>EXHIBITION ORDER FORM</b><br><span class="muted">${esc(ex.name)} · ${esc(ex.city)}</span></div><div class="logo" style="font-size:18px">${logo(d.logo,d.name)}</div></div>
+ <div class="paper"><div class="hd"><div class="logo">${S.settings.afoxLogo?`<img src="${S.settings.afoxLogo}">`:LG(62,'full')}</div><div style="text-align:center"><b>EXHIBITION ORDER FORM</b><br><span class="muted">${esc(ex.name)} · ${esc(ex.city)}</span></div><div class="logo" style="font-size:18px">${logo(d.logo,d.name)}</div></div>
  <table style="margin-bottom:8px"><tr><td><b>Party:</b> ${esc(p.name)}<br><b>Phone:</b> ${esc(showPhone(w.waNumber))}<br><b>City / State:</b> ${esc(p.city)}, ${esc(p.state)}<br><b>Address:</b> ${esc(p.address)}</td>
- <td><b>Order no:</b> ${esc(o.no)}${o.status==='confirmed'?' (revision R'+(o.rev+1)+')':''}<br><b>Date:</b> ${fmtDate(o.date)}<br><b>Distributor:</b> ${esc(d.name)}</td></tr></table>
+ <td><b>Order no:</b> ${esc(o.no)}${o.status==='confirmed'?' (revision R'+(o.rev+1)+')':''}<br><b>Date:</b> ${fmtDate(o.date)}<br><b>Dispatch date:</b> ${w.dispatch?fmtDate(w.dispatch):'—'}<br><b>Distributor:</b> ${esc(d.name)}</td></tr></table>
  ${tableHTML(w.lines)}</div>
  <div class="card" style="margin-top:12px"><h3>Buyer's signature</h3><canvas id="sig"></canvas>
  <div class="row" style="margin-top:8px"><button data-act="sigclear">Clear</button><button class="g" data-act="sign">✔ Confirm &amp; sign order</button></div></div>`}
@@ -13370,15 +13372,16 @@ function initSig(){
  c.onpointerup=()=>on=false}
 function finalize(){
  const o=ord();if(lockGuard(o))return;if(!V.sigDrawn)return toast('Buyer must sign first');
+ if(!o.work.dispatch)return toast('Select a dispatch date first – tap “Back to correct”',3600);
  const sig=$('#sig').toDataURL('image/png'),w=o.work;
- if(o.status==='confirmed'){o.revisions.push({rev:o.rev,signedAt:o.signedAt,sig:o.sig,lines:o.lines,party:o.party,waNumber:o.waNumber});o.rev++}
- o.lines=w.lines.filter(l=>sumQ(l.q)>0);o.party=w.party;o.waNumber=w.waNumber;o.sig=sig;o.signedAt=new Date().toISOString();o.signedBy=byName();o.status='confirmed';o.exhSnap=o.exhSnap||clone(exhOf(o));o.work=null;logA(o.rev?'sign revision R'+(o.rev+1):'sign order',o.no,o.party.name+' · '+linesPcs(o.lines)+' pcs');
+ if(o.status==='confirmed'){o.revisions.push({rev:o.rev,signedAt:o.signedAt,sig:o.sig,lines:o.lines,party:o.party,waNumber:o.waNumber,dispatch:o.dispatch});o.rev++}
+ o.lines=w.lines.filter(l=>sumQ(l.q)>0);o.party=w.party;o.waNumber=w.waNumber;o.dispatch=w.dispatch;o.sig=sig;o.signedAt=new Date().toISOString();o.signedBy=byName();o.status='confirmed';o.exhSnap=o.exhSnap||clone(exhOf(o));o.work=null;logA(o.rev?'sign revision R'+(o.rev+1):'sign order',o.no,o.party.name+' · '+linesPcs(o.lines)+' pcs');
  o.wa={status:'not_sent',at:null,tries:o.wa?o.wa.tries:0};
  const pp=S.parties.find(x=>x.id===o.party.id);if(pp)Object.assign(pp,{name:o.party.name,city:o.party.city,state:o.party.state,address:o.party.address,gst:o.party.gst||pp.gst||''});
  V.review=false;V.cur=null;V.tab='book';V.art=null;V.sel=new Set();V.undo=null;save();render();waPrompt(o.id)}
 
 /* ================= PDF ================= */
-function snapOf(o){return{no:o.no,date:o.date,party:o.party,lines:o.lines,sig:o.sig,signedAt:o.signedAt,rev:o.rev,dist:distOf(o),exh:o.exhSnap||exhOf(o)}}
+function snapOf(o){return{no:o.no,date:o.date,party:o.party,lines:o.lines,sig:o.sig,signedAt:o.signedAt,rev:o.rev,dispatch:o.dispatch||'',dist:distOf(o),exh:o.exhSnap||exhOf(o)}}
 function buildPDF(s){
  const doc=new window.jspdf.jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
  const M=10,cw=[26,38,16,...SIZES.map(()=>14),20],tw=cw.reduce((a,b)=>a+b,0),rh=6.2,PH=210;
@@ -13393,7 +13396,7 @@ function buildPDF(s){
   doc.setFont('helvetica','bold').setFontSize(9).text('Party: ',M+2,y+5);doc.text('Order no: ',M+tw/2+2,y+5);
   doc.setFont('helvetica','normal');doc.text(s.party.name,M+14,y+5);doc.text('Phone: '+showPhone(s.party.phone||''),M+2,y+10);doc.text('City/State: '+s.party.city+', '+s.party.state,M+2,y+14.5);
   doc.text(String(s.party.address||'').slice(0,52),M+2,y+18);if(s.party.gst)doc.text('GSTIN: '+s.party.gst,M+tw/2+2,y+18);
-  doc.text(s.no+(s.rev?'  (Revision R'+(s.rev+1)+')':''),M+tw/2+20,y+5);doc.text('Date: '+fmtDate(s.date),M+tw/2+2,y+10);doc.text('Distributor: '+s.dist.name,M+tw/2+2,y+14.5);
+  doc.text(s.no+(s.rev?'  (Revision R'+(s.rev+1)+')':''),M+tw/2+20,y+5);doc.text('Date: '+fmtDate(s.date),M+tw/2+2,y+10);if(s.dispatch){doc.setFont('helvetica','bold').text('Dispatch date: '+fmtDate(s.dispatch),M+tw/2+50,y+10);doc.setFont('helvetica','normal')}doc.text('Distributor: '+s.dist.name,M+tw/2+2,y+14.5);
   return y+22};
  const cell=(i,x,y,t,o={})=>{const w=cw[i];if(o.fill){doc.setFillColor(...o.fill);doc.rect(x,y,w,rh,'FD')}else doc.rect(x,y,w,rh);
   doc.setFont('helvetica',o.b?'bold':'normal').setFontSize(o.fs||8);if(o.col)doc.setTextColor(...o.col);
@@ -13770,7 +13773,7 @@ const ACT={
   const z=w.lines.filter(l=>!sumQ(l.q));if(z.length){if(!confirm(z.length+' colour(s) have no quantity and will be dropped: '+z.map(l=>l.colName).join(', ')+'. Continue?'))return;w.lines=w.lines.filter(l=>sumQ(l.q))}
   V.review=true;save();render();window.scrollTo(0,0)},
  backedit(){V.review=false;render()},sigclear(){initSig()},sign(){finalize()},
- revise(id){const o=S.orders.find(x=>x.id===id);logA('start revision',o.no,o.party.name);o.work={lines:clone(o.lines),party:clone(o.party),waNumber:o.waNumber};save();ACT.open(id)},
+ revise(id){const o=S.orders.find(x=>x.id===id);logA('start revision',o.no,o.party.name);o.work={lines:clone(o.lines),party:clone(o.party),waNumber:o.waNumber,dispatch:o.dispatch||''};save();ACT.open(id)},
  deldraft(id){if(!confirm('Delete this draft?'))return;const _d=S.orders.find(o=>o.id===id);if(_d)logA('delete draft',_d.no,_d.work?_d.work.party.name:'');S.orders=S.orders.filter(o=>o.id!==id);save();render()},
  cancelorder(id){if(!confirm('Cancel this confirmed order? It will be removed from all totals.'))return;const o=S.orders.find(x=>x.id===id);o.status='cancelled';o.work=null;logA('cancel order',o.no,o.party.name);save();render()},
  dlpdf(id){downloadPDF(id)},dlrev(a){const[id,r]=a.split('|');downloadPDF(id,r)},
@@ -13920,7 +13923,7 @@ function exportAll(){
  const O=S.orders,ln=[];O.filter(o=>o.status!=='cancelled').forEach(o=>{const L=o.status==='draft'?o.work.lines:o.lines,p=partyOf(o);L.forEach(l=>{if(sumQ(l.q))ln.push([o.no,o.status,fmtDate(o.date),exhOf(o).name,distName(o.distId),p.name,p.city,p.state,l.art,l.col,l.colName,l.mrp,...SIZES.map(s=>+l.q[s]||0),sumQ(l.q)])})});
  const bk={};O.filter(o=>o.status==='confirmed').forEach(o=>o.lines.forEach(l=>{bk[l.art+'|'+l.col]=(bk[l.art+'|'+l.col]||0)+sumQ(l.q)}));
  bookDownload('AFOX_everything_'+today()+'.xlsx',[
-  ['Orders',[['Order no','Date','Exhibition','Distributor','Customer','WhatsApp','City','State','Status','Revision','Pieces','Taken by','Signed at','WhatsApp status'],...O.map(o=>{const p=partyOf(o);return[o.no,fmtDate(o.date),exhOf(o).name,distName(o.distId),p.name,o.waNumber||p.phone,p.city,p.state,o.status,'R'+((o.rev||0)+1),o.status==='draft'?linesPcs(o.work.lines):linesPcs(o.lines),o.by||'',o.signedAt||'',((WA[o.wa&&o.wa.status]||[''])[0])||'']})]],
+  ['Orders',[['Order no','Date','Dispatch date','Exhibition','Distributor','Customer','WhatsApp','City','State','Status','Revision','Pieces','Taken by','Signed at','WhatsApp status'],...O.map(o=>{const p=partyOf(o);return[o.no,fmtDate(o.date),o.dispatch?fmtDate(o.dispatch):'',exhOf(o).name,distName(o.distId),p.name,o.waNumber||p.phone,p.city,p.state,o.status,'R'+((o.rev||0)+1),o.status==='draft'?linesPcs(o.work.lines):linesPcs(o.lines),o.by||'',o.signedAt||'',((WA[o.wa&&o.wa.status]||[''])[0])||'']})]],
   ['Order lines',[['Order no','Status','Date','Exhibition','Distributor','Customer','City','State','Article','Colour code','Colour','MRP',...SIZES,'Total'],...ln]],
   ['Customers',[['Distributor','Customer','WhatsApp','City','State','Address','Notes'],...S.parties.map(p=>[distName(p.distId),p.name,p.phone,p.city,p.state,p.address,p.note||''])]],
   ['Products',[['Article','Name','MRP','Fabric m/pc','Colour code','Colour','Stock','Sample','Ordered (confirmed)'],...S.articles.flatMap(a=>a.colours.map(c=>[a.code,a.name||'',a.mrp,a.fabricM||'',c.code,c.name,c.stock||'',c.sample||'',bk[a.code+'|'+c.code]||0]))]],
@@ -13949,7 +13952,7 @@ function waOrder(){const o=ord();if(!o||!o.work)return;const w=o.work;if(!linesP
  <p class="muted" style="font-size:12px">“Send PDF” opens your phone’s share sheet — choose WhatsApp, then the customer. “Open chat” goes straight to this number with the message ready and downloads the PDF to attach.</p>`,'560px')}
 async function waPreview(mode){const o=ord(),w=o.work,num=ccPhone($('#wp-num').value);if(num.length<11)return toast('Enter a valid WhatsApp number');
  if(num!==w.waNumber){w.waNumber=num;w.party.phone=num;const pp=S.parties.find(x=>x.id===w.party.id);if(pp)pp.phone=num}
- const s={no:o.no,date:o.date,party:w.party,lines:w.lines.filter(l=>sumQ(l.q)>0),sig:null,signedAt:null,rev:o.rev||0,dist:distOf(o),exh:exhOf(o),draft:true};
+ const s={no:o.no,date:o.date,party:w.party,lines:w.lines.filter(l=>sumQ(l.q)>0),sig:null,signedAt:null,rev:o.rev||0,dispatch:w.dispatch||'',dist:distOf(o),exh:exhOf(o),draft:true};
  const file=pdfFile(s),text='Dear '+w.party.name+', here is your order '+o.no+' at '+s.exh.name+' ('+linesPcs(s.lines)+' pcs). It is not final until you sign. – AFOX / Trousers & Beyond';
  try{await waTransport(file,text,num,o.no+'-draft','chat'===mode?'chat':'share');logA('whatsapp preview',o.no,w.party.name);toast('Handed to WhatsApp');closeModal()}catch(e){if(!(e&&e.name==='AbortError'))toast('Could not send – use Download PDF from Orders later')}save()}
 
@@ -14415,6 +14418,19 @@ const _render=render;
 render=function(){_render();tabbar();document.body.classList.toggle('hasobar',!!$('.obar'));document.body.classList.toggle('sheetopen',!!$('.sheet'))};
 const _ut2=updTotals;
 updTotals=function(){_ut2();const b=$('.obar .t b'),o=ord();if(b&&o&&o.work)b.textContent=linesPcs(o.work.lines.filter(l=>sumQ(l.q)>0))+' pcs'};
+
+/* ---------- dispatch date (v0.9.9) ---------- */
+const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+function dispHTML(w){
+ const v=w.dispatch||'',ch=[7,15,30,45,60].map(n=>`<button class="chip${v===addDays(n)?' on':''}" data-act="dispin" data-arg="${n}">${n} days</button>`).join('');
+ return`<div class="card dsp${v?'':' need'}"><div class="row" style="align-items:flex-end"><label>Dispatch date <span class="muted" style="text-transform:none;letter-spacing:0">${v?'':'(required before signing)'}</span><input type="date" id="od-disp" value="${esc(v)}" min="${addDays(0)}"></label><div class="chips" style="display:flex;gap:8px;flex-wrap:wrap">${ch}</div></div></div>`}
+const _vo2=viewOrder;
+viewOrder=function(){const h=_vo2(),o=ord();if(!o||!o.work)return h;
+ const i=h.indexOf('<div class="scanbar">');return i<0?h:h.slice(0,i)+dispHTML(o.work)+h.slice(i)};
+document.addEventListener('change',e=>{const t=e.target;if(t.id==='od-disp'){const o=ord();if(o&&o.work){o.work.dispatch=t.value;save();render()}}});
+const _close=ACT.close;
+Object.assign(ACT,{dispin(n){const o=ord();if(!o||!o.work)return;o.work.dispatch=addDays(+n);save();render()},
+ close(a,el){const o=ord();if(o&&o.work&&linesPcs(o.work.lines)&&!o.work.dispatch){toast('Select a dispatch date first',3200);const d=$('#od-disp');if(d){d.scrollIntoView({block:'center',behavior:'smooth'});d.focus()}return}return _close.call(this,a,el)}});
 
 (async()=>{
  try{S=await DB.get('state')}catch(e){}
