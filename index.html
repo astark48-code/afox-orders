@@ -307,7 +307,7 @@ header#top button.on{border-bottom-color:var(--acc);color:var(--acc)}
 .cdot{display:inline-block;width:26px;height:26px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
 .lr .cdot{width:34px;height:34px}
 .findbar{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:56px;border-radius:28px;border:0;background:rgba(255,250,246,.88);padding:0 8px 0 22px;font-size:15px;color:#6d4a3d;text-align:left;margin:4px 0 12px}
-.findbar i{width:42px;height:42px;border-radius:50%;background:#c4501d;display:flex;align-items:center;justify-content:center}
+.findbar i{width:42px;height:42px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center}
 .findbar i svg{width:20px;height:20px;stroke:#fff}
 .herocard .dots{position:absolute;right:18px;bottom:16px;display:flex;gap:6px}
 .mini2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}
@@ -386,7 +386,7 @@ body.hasobar #wafab{bottom:calc(100px + env(safe-area-inset-bottom))}
 /* v0.14 icons */
 .ic{display:inline-flex;width:1.3em;height:1.3em;margin-right:.55em;vertical-align:-.3em;flex:none}
 .ic svg{width:100%;height:100%;overflow:visible}
-.ic .t{fill:rgba(196,80,29,.2)}
+.ic .t{fill:rgba(217,97,26,.22)}
 button.p .ic .t,button.g .ic .t,#tabbar button.on .ic .t,header#top button.on .ic .t,.obar .ic .t,.scanbar .ic .t{fill:rgba(255,255,255,.3)}
 button.hasic{display:inline-flex;align-items:center;justify-content:center}
 h3.hasic{display:flex;align-items:center}h3.hasic .ic{width:1.35em;height:1.35em}
@@ -399,8 +399,8 @@ header#top button.hasic .ic{width:1.15em;height:1.15em}
 #modal button.hasic .ic{width:22px;height:22px;margin-right:.8em}button.hasic .ic{width:1.45em;height:1.45em}
 
 /* ===== v0.15 NEUMORPHIC THEMES: light (Warm Sand) and dark (Midnight Soft), switchable ===== */
-html:root{--bg:#e8ddd0;--hi:#fbf6ee;--lo:#c5b6a4;--ink:#2d1a14;--mut:#6d5348;--acc:#c4501d;--onacc:#fff;--blk:#2d1a14;--onblk:#fff;--card:#e8ddd0;--cut:#e8ddd0;--line:rgba(109,74,61,.22);--acc2:#e8ddd0;--paper:#fffdf9;--paperink:#2d1a14;--rs:7px 7px 15px var(--lo),-7px -7px 15px var(--hi);--rss:4px 4px 9px var(--lo),-4px -4px 9px var(--hi);--ri:inset 4px 4px 9px var(--lo),inset -4px -4px 9px var(--hi)}
-html:root[data-theme=dark]{--bg:#2b2e36;--hi:#383c46;--lo:#1c1e24;--ink:#f2eee8;--mut:#a9a7b0;--acc:#f0a04b;--onacc:#1c1e24;--blk:#f0a04b;--onblk:#1c1e24;--card:#2b2e36;--cut:#2b2e36;--line:rgba(255,255,255,.12);--acc2:#2b2e36;color-scheme:dark}
+html:root{--bg:#dde3ea;--hi:#f8fbfe;--lo:#b4bdc9;--ink:#1d2733;--mut:#55616f;--acc:#d9611a;--onacc:#fff;--blk:#1d2733;--onblk:#fff;--card:#dde3ea;--cut:#dde3ea;--line:rgba(60,80,105,.22);--acc2:#dde3ea;--paper:#fffdf9;--paperink:#2d1a14;--rs:7px 7px 15px var(--lo),-7px -7px 15px var(--hi);--rss:4px 4px 9px var(--lo),-4px -4px 9px var(--hi);--ri:inset 4px 4px 9px var(--lo),inset -4px -4px 9px var(--hi)}
+html:root[data-theme=dark]{--bg:#1f2630;--hi:#2b3441;--lo:#141a22;--ink:#eef1f5;--mut:#9aa5b3;--acc:#ff9a4d;--onacc:#141a22;--blk:#ff9a4d;--onblk:#141a22;--card:#1f2630;--cut:#1f2630;--line:rgba(255,255,255,.12);--acc2:#1f2630;color-scheme:dark}
 html,html body,html body.homebg{background:var(--bg);color:var(--ink)}
 html body{background-image:none}
 html header#top{background:var(--bg);backdrop-filter:none;border-bottom:0;box-shadow:0 6px 14px var(--lo)}
@@ -441,7 +441,7 @@ html .paper *{color:inherit}html .paper th{color:#6d5348}html .paper td{border-c
 html .tag{background:var(--bg);box-shadow:var(--rss);color:var(--ink);border:0}
 html .tag.ok{color:#2fa84f}html .tag.warn{color:var(--acc)}html .tag.bad{color:#d23a2a}
 html .an-bar .tr{background:var(--bg);box-shadow:var(--ri)}html .an-bar .tr i{background:var(--acc)}
-html .an-tag.up{background:rgba(47,168,79,.18);color:#2fa84f}html .an-tag.hold{background:rgba(240,160,75,.2);color:var(--acc)}html .an-tag.low{background:rgba(210,58,42,.18);color:#d23a2a}
+html .an-tag.up{background:rgba(47,168,79,.18);color:#2fa84f}html .an-tag.hold{background:rgba(255,154,77,.2);color:var(--acc)}html .an-tag.low{background:rgba(210,58,42,.18);color:#d23a2a}
 html .ic .t{fill:color-mix(in srgb,var(--acc) 22%,transparent)}
 html .eyebrow{color:var(--acc);border-bottom-color:var(--acc)}
 html h1.big,html h1.mega,html h3,html label{color:var(--ink)}
@@ -457,23 +457,31 @@ html[data-theme=dark] .empty img,html[data-theme=dark] .empty svg{filter:brightn
 /* theme switch */
 #themebtn{position:fixed;z-index:60;top:28px;right:12px;width:38px;height:38px;min-height:38px;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0}
 #themebtn svg{width:19px;height:19px}
-@media(min-width:701px){html header#top nav.nr{padding-right:58px}#themebtn{top:14px;right:16px}}
+@media(min-width:701px){header#top nav.nr{flex-wrap:nowrap;gap:0}header#top nav.nr button{padding-left:10px;padding-right:10px}header#top nav.nr .themebtn{width:34px;height:34px;min-height:34px;padding:0;margin-left:4px}}
 
 html body.homebg .herocard,html body.homebg{background-image:none}
 html body.homebg .herocard{background:var(--bg);color:var(--ink);box-shadow:var(--rs)}
 html body.homebg .herocard .lb,html body.homebg .herocard .st{color:var(--mut)}
-html[data-theme=dark] #brandfox,html[data-theme=dark] header#top .brand img,html[data-theme=dark] header#top svg:not(.ic svg){filter:invert(1) brightness(1.15)}
-html .scanbar input{background:#f6f1ea;color:#2d1a14;box-shadow:none}
+html[data-theme=dark] header#top svg:not(.ic svg){filter:invert(1) brightness(1.15)}
+html .scanbar input{background:#f3f6f9;color:#1d2733;box-shadow:none}
 html .scanbar button{background:transparent;color:var(--onblk);box-shadow:none;border:1px solid currentColor}
 html[data-theme=dark] .scanbar{background:var(--bg);box-shadow:var(--ri);color:var(--ink)}
 html[data-theme=dark] .scanbar input{background:var(--bg);color:var(--ink);box-shadow:var(--ri)}
 html[data-theme=dark] .scanbar button{color:var(--acc)}
-html[data-theme=dark] .obar,html[data-theme=dark] .obar *{color:#1c1e24}
-html[data-theme=dark] .obar button{background:#1c1e24;color:#f2eee8;box-shadow:none}
-html .obar button{background:#fff;color:#1c1e24}
+html[data-theme=dark] .obar,html[data-theme=dark] .obar *{color:#141a22}
+html[data-theme=dark] .obar button{background:#141a22;color:#f2eee8;box-shadow:none}
+html .obar button{background:#fff;color:#141a22}
 html .paper{--bg:#fffdf9;--ink:#2d1a14;--mut:#6d5348;--line:#e3d5c3;--card:#fffdf9;--cut:#f6f1ea;--blk:#1f1a17;--onblk:#fff;--hi:#fff;--lo:#d9ccba}
 html .paper .scroll{background:transparent;box-shadow:none}
 html .paper table{background:transparent}
+
+.sbrow{display:flex;align-items:center;justify-content:space-between;gap:10px}.sbrow .sb{margin:0}
+.themebtn{width:40px;height:40px;min-height:40px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.themebtn.wide{width:100%;border-radius:14px;min-height:50px}
+html[data-theme=dark] header#top img.lg,html[data-theme=dark] header#top .brand img{filter:invert(1) brightness(1.2)}
+html[data-theme=dark] .announce{background:#10151b;color:#c9d0da}
+html[data-theme=dark] #toast{background:#10151b;color:#eef1f5}
+@media(min-width:701px){.sbrow .themebtn{display:none}}
 </style>
 </head>
 <body>
@@ -14567,7 +14575,7 @@ function tabbar(){
  t.innerHTML=b('book','Book')+b('orders','Orders')+b('customers','Customers')+`<button class="${MORE_TABS.includes(V.tab)?'on':''}" data-act="moremenu">More</button>`}
 function moreMenu(){
  const it=[['products','Products'],['qr','QR codes'],['dists','Distributors'],['rep','Reports']];if(isAdmin()){it.unshift(['an','Analysis']);it.push(['setup','Setup'])};
- modal(`<h3 style="margin-top:0">More</h3><div style="display:flex;flex-direction:column;gap:10px">${it.map(([k,l])=>`<button data-act="gotab" data-arg="${k}" style="justify-content:flex-start;min-height:52px;font-size:13px">${l}</button>`).join('')}</div><div class="row" style="margin-top:16px"><button data-act="closemodal">Close</button></div>`)}
+ modal(`<h3 style="margin-top:0">More</h3><div style="display:flex;flex-direction:column;gap:10px">${it.map(([k,l])=>`<button data-act="gotab" data-arg="${k}" style="justify-content:flex-start;min-height:52px;font-size:13px">${l}</button>`).join('')}</div><button class="themebtn wide" data-act="theme" data-label="1" style="margin-top:10px"></button><div class="row" style="margin-top:16px"><button data-act="closemodal">Close</button></div>`)}
 Object.assign(ACT,{moremenu:moreMenu,gotab(k){closeModal();V.tab=k;render()}});
 const CH={beige:'#d8c7a8',wood:'#7a5a3c',mouse:'#9a948c',pista:'#9aa77f',navy:'#2f3d5a',black:'#1f1f1f',white:'#f4f2ee',grey:'#9a9a9a',gray:'#9a9a9a',olive:'#6b6b3a',brown:'#6b4a32',khaki:'#b5a577',cream:'#efe4cc',blue:'#3b5f8a',green:'#4f7a52',maroon:'#6e2a35',charcoal:'#3d3d3d',sand:'#d4bf99',coffee:'#5a4030',tan:'#b89868',stone:'#b9b2a4',steel:'#7d8791',sky:'#9dc0dc',rust:'#a24e2c',mustard:'#c9a227',peach:'#eab69f',pink:'#e5aeb7',red:'#a63030',teal:'#3f7f7a',wine:'#5e2531',mint:'#b9d8c4',lavender:'#b9a9d0',ivory:'#f1ead6',silver:'#b8b8b8',taupe:'#8b7b6b',camel:'#b88a55',denim:'#41597f',coal:'#2b2b2b',ash:'#aaa8a2',lemon:'#e9dc8a',orange:'#d9803a',purple:'#6d4a7c',yellow:'#d9bf4a'};
 function colHex(n){const k=String(n||'').toLowerCase();if(CH[k])return CH[k];for(const w in CH)if(k.includes(w))return CH[w];let h=0;for(const c of k)h=(h*31+c.charCodeAt(0))%360;return'hsl('+(20+h%40)+',18%,'+(55+h%20)+'%)'}
@@ -14582,7 +14590,7 @@ function homeHead(){
  const tot=Object.values(sc).reduce((a,b)=>a+b,0),top=Object.keys(sc).sort((a,b)=>sc[b]-sc[a])[0];
  const rec=[...all].sort((a,b)=>(b.signedAt||'').localeCompare(a.signedAt||'')).slice(0,2);
  const dots=cols.slice(0,5).map(c=>`<span class="cdot" style="background:${colHex(c)}"></span>`).join('');
- return`<div class="homehead"><p class="sb">${fmtDate(td)} · ${esc(ex.name)} · ${esc(ex.city)}${ex.venue?' · '+esc(ex.venue):''}</p><h1 class="gm">${greet()}</h1></div>
+ return`<div class="homehead"><div class="sbrow"><p class="sb">${fmtDate(td)} · ${esc(ex.name)} · ${esc(ex.city)}${ex.venue?' · '+esc(ex.venue):''}</p><button class="themebtn" data-act="theme"></button></div><h1 class="gm">${greet()}</h1></div>
  <button class="findbar" data-act="qafind"><span>Find a customer to start an order</span><i>${IC.plus}</i></button>
  <div class="herocard"><div><div class="lb">Orders today</div><div class="bg">${os.length}</div><div class="st">${pcs.toLocaleString('en-IN')} pcs · ${new Set(os.map(o=>o.party&&o.party.id)).size} customers${dr?' · '+dr+' in progress':''}</div></div><div class="dots">${dots}</div></div>
  <div class="mini2"><div class="mc"><div class="lb">Dispatch pending</div><div class="mv">${pend.length} order${pend.length===1?'':'s'}</div><div class="st">${pend.length?'Next: '+fmtDate(pend[0].dispatch):'None set'}</div></div>
@@ -14598,7 +14606,7 @@ viewOrder=function(){const h=_viewOrder();const o=ord();if(!o||!o.work)return h;
  const n=linesPcs(o.work.lines.filter(l=>sumQ(l.q)>0));
  return h+`<div class="obar"><div class="t"><small>Order total</small><b>${n} pcs</b></div><button class="p" data-act="close" style="background:#fff;color:#1f1a17">Review &amp; close →</button></div>`};
 const _render=render;
-render=function(){_render();if(V.tab==='an'){const m=$('main');if(m)m.innerHTML=viewAnalysis()}const nr=$('header#top nav.nr');if(nr&&!nr.querySelector('[data-tab=an]')){const b=document.createElement('button');b.dataset.tab='an';b.textContent='Analysis';nr.insertBefore(b,nr.firstChild)}if(nr){const b=nr.querySelector('[data-tab=an]');if(b)b.style.display=(isAdmin()&&!needLogin())?'':'none'}$$('header#top button[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===V.tab));wafab();tabbar();document.body.classList.toggle('hasobar',!!$('.obar'));document.body.classList.toggle('inorder',V.tab==='book'&&!!V.cur);document.body.classList.toggle('homebg',V.tab==='book'&&!V.cur&&!needLogin());document.body.classList.toggle('sheetopen',!!$('.sheet'))};
+render=function(){_render();if(V.tab==='an'){const m=$('main');if(m)m.innerHTML=viewAnalysis()}const nr=$('header#top nav.nr');if(nr&&!nr.querySelector('.themebtn')){const tb=document.createElement('button');tb.className='themebtn';tb.dataset.act='theme';nr.appendChild(tb)}if(nr&&!nr.querySelector('[data-tab=an]')){const b=document.createElement('button');b.dataset.tab='an';b.textContent='Analysis';nr.insertBefore(b,nr.firstChild)}if(nr){const b=nr.querySelector('[data-tab=an]');if(b)b.style.display=(isAdmin()&&!needLogin())?'':'none'}$$('header#top button[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===V.tab));wafab();tabbar();document.body.classList.toggle('hasobar',!!$('.obar'));document.body.classList.toggle('inorder',V.tab==='book'&&!!V.cur);document.body.classList.toggle('homebg',V.tab==='book'&&!V.cur&&!needLogin());document.body.classList.toggle('sheetopen',!!$('.sheet'))};
 const _ut2=updTotals;
 updTotals=function(){_ut2();const b=$('.obar .t b'),o=ord();if(b&&o&&o.work)b.textContent=linesPcs(o.work.lines.filter(l=>sumQ(l.q)>0))+' pcs'};
 
@@ -14694,7 +14702,7 @@ function anPDF(){
  const np=()=>{if(pg)doc.addPage();pg++;bg();doc.setFont('times','bold').setFontSize(11).setTextColor(45,26,20).text('AFOX · '+E.name,M,10);doc.setFont('times','normal').setFontSize(8).setTextColor(109,74,61).text('Page '+pg,W-M,10,{align:'right'});doc.setDrawColor(200,175,150).line(M,12,W-M,12);y=20};
  const need=h=>{if(y+h>H-14)np()};
  const T=(t,sz,b)=>{doc.setFont('times',b?'bold':'normal').setFontSize(sz).setTextColor(45,26,20)};
- const H2=t=>{need(18);y+=6;T(0,15,1);doc.text(t,M,y);y+=2;doc.setDrawColor(196,80,29).setLineWidth(.6).line(M,y,M+22,y);y+=6};
+ const H2=t=>{need(18);y+=6;T(0,15,1);doc.text(t,M,y);y+=2;doc.setDrawColor(217,97,26).setLineWidth(.6).line(M,y,M+22,y);y+=6};
  const P=(t,sz)=>{T(0,sz||10);doc.setTextColor(80,55,45);doc.splitTextToSize(t,CW).forEach(l=>{need(5);doc.text(l,M,y);y+=4.6});y+=1};
  const bars=(rows,fmt)=>{const mx=Math.max(1,...rows.map(r=>r.v));rows.forEach(r=>{need(7);T(0,9.5);doc.text(String(r.l).slice(0,34),M,y+3.2);const bx=M+62,bw=CW-62-34;doc.setFillColor(232,218,200).roundedRect(bx,y,bw,4,2,2,'F');doc.setFillColor(196,80,29).roundedRect(bx,y,Math.max(1.5,bw*r.v/mx),4,2,2,'F');doc.text(fmt?fmt(r):String(r.v),W-M,y+3.2,{align:'right'});y+=7})};
  const tbl=(head,rows,cw)=>{const row=(c,b,fill)=>{need(7);if(fill){doc.setFillColor(238,225,208).rect(M,y-4.2,CW,6.6,'F')}T(0,9,b);let x=M+1.5;c.forEach((t,i)=>{doc.text(String(t).slice(0,Math.floor(cw[i]/1.9)),x,y);x+=cw[i]});y+=6.6};row(head,1,1);rows.forEach(r=>row(r))};
@@ -14925,18 +14933,20 @@ function iconize(){
   const f=[...el.childNodes].find(c=>c.nodeType===3&&c.nodeValue.trim());if(f)f.nodeValue=f.nodeValue.replace(/^[\s⬇⬆＋+✔✓←↶↷✕✖⚠☁▸▾✎✏]+/,'');
   el.insertAdjacentHTML('afterbegin',icSVG(n));el.classList.add('hasic')});
  document.querySelectorAll('h3').forEach(h=>{if(h.querySelector(':scope > .ic'))return;const t=h.textContent;const m=ICH.find(x=>x[0].test(t));if(m){h.insertAdjacentHTML('afterbegin',icSVG(m[1]));h.classList.add('hasic')}})}
-new MutationObserver(()=>{if(!icPend){icPend=1;requestAnimationFrame(()=>{icPend=0;try{iconize()}catch(e){}})}}).observe(document.body,{childList:true,subtree:true});
+new MutationObserver(()=>{if(!icPend){icPend=1;requestAnimationFrame(()=>{icPend=0;try{iconize();themeSync()}catch(e){}})}}).observe(document.body,{childList:true,subtree:true});
 try{iconize()}catch(e){}
 
 /* ---------- light / dark switch (v0.15) ---------- */
 ICN.moon='<path class="t" d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>';
 function themeGet(){try{return localStorage.getItem('afox_theme')||'light'}catch(e){return'light'}}
-function themeApply(t){document.documentElement.setAttribute('data-theme',t);const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='dark'?'#2b2e36':'#e8ddd0';
- let b=document.getElementById('themebtn');if(!b){b=document.createElement('button');b.id='themebtn';b.dataset.act='theme';document.body.appendChild(b)}
- b.setAttribute('aria-label',t==='dark'?'Switch to light theme':'Switch to dark theme');b.title=b.getAttribute('aria-label');
- b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+(t==='dark'?ICN.sun:ICN.moon)+'</svg>'}
+function themeSync(){const t=document.documentElement.getAttribute('data-theme')||'light',lbl=t==='dark'?'Switch to light theme':'Switch to dark theme';
+ document.querySelectorAll('.themebtn').forEach(b=>{const k=t+(b.dataset.label?'L':'');if(b.dataset.k===k)return;b.dataset.k=k;b.setAttribute('aria-label',lbl);
+  b.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+(t==='dark'?ICN.sun:ICN.moon)+'</svg>'+(b.dataset.label?'<span style="margin-left:.6em">'+lbl+'</span>':'')})}
+function themeApply(t){document.documentElement.setAttribute('data-theme',t);const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='dark'?'#1f2630':'#dde3ea';const o=document.getElementById('themebtn');if(o)o.remove();themeSync()}
 function themeToggle(){const t=themeGet()==='dark'?'light':'dark';try{localStorage.setItem('afox_theme',t)}catch(e){}themeApply(t)}
 ACT.theme=themeToggle;
+const _vcl2=viewCloudLogin;viewCloudLogin=function(){return _vcl2()+'<div class="row" style="margin-top:12px"><button class="themebtn wide" data-act="theme" data-label="1"></button></div>'};
+if(typeof viewLogin==='function'){const _vl2=viewLogin;viewLogin=function(){return _vl2()+'<div class="row" style="margin-top:12px"><button class="themebtn wide" data-act="theme" data-label="1"></button></div>'}}
 themeApply(themeGet());
 
 (async()=>{
