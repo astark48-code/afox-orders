@@ -132,7 +132,7 @@ body.camopen main{padding-bottom:340px}
 table.grid td:first-child,table.grid th:first-child{position:sticky;left:0;z-index:2;background:#fafaf8;min-width:34px}
 table.grid td:nth-child(2),table.grid th:nth-child(2){position:sticky;left:34px;z-index:2;background:#fafaf8;box-shadow:1px 0 0 #e2e0da}
 table.grid tr.ah td{position:static!important;z-index:auto;background:var(--blk)!important;color:#fff;min-width:0}
-@media(max-width:700px){
+@media(max-width:1100px){
  main{padding:18px 14px 80px}.announce{padding:6px 14px}.announce>span:first-child{display:none}.announce{justify-content:flex-end}
  header#top{padding:0 10px;min-height:0}header#top button{padding:12px 9px 10px;font-size:10px;letter-spacing:.1em}
  .brand{padding:10px 0 4px}.scanbar{top:0;padding:10px 12px;gap:10px}.scanbar input{font-size:16px;padding:12px;min-width:0;flex-basis:100%}
@@ -162,7 +162,7 @@ table.grid tr.ah td{position:static!important;z-index:auto;background:var(--blk)
 .dcard[data-act]:hover{outline:2px solid var(--blk)}
 
 /* ===== PHONE-FIRST (v0.9.4) ===== */
-@media(max-width:700px){
+@media(max-width:1100px){
  body{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
  header#top{display:block;padding:0;min-height:0}
  .brand{padding:8px 0 6px;gap:2px}.brand i{display:none}
@@ -229,7 +229,7 @@ body:has(.sheet){padding-bottom:0}
 .lc .lch{padding-bottom:6px;border-bottom:1px solid var(--line);margin-bottom:4px}
 .lc .lr{display:flex;align-items:center;gap:10px;min-height:52px;border-bottom:1px solid #eceae3}
 .lc .lr:last-child{border-bottom:0}.lc .ld{flex:1;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0}.lc .ln{font-size:20px}
-@media(max-width:700px){
+@media(max-width:1100px){
  body.camopen #camdock{inset:0;width:auto;max-height:none;padding:0;background:#0c0c0c;z-index:40;box-shadow:none}
  body.camopen .camwrap{position:absolute;inset:0}
  body.camopen #camvid{width:100%;height:100%;max-height:none;object-fit:cover}
@@ -278,7 +278,7 @@ header#top button.on{border-bottom-color:var(--acc);color:var(--acc)}
 .qa .ic{display:flex;width:44px;height:44px;border-radius:14px;background:var(--acc2);align-items:center;justify-content:center}
 /* bottom tab bar + order bar are phone-only */
 #tabbar,.obar{display:none}
-@media(max-width:700px){
+@media(max-width:1100px){
  header#top nav,header#top nav.nr{display:none!important}
  body{padding-bottom:calc(88px + env(safe-area-inset-bottom))}
  #tabbar{display:grid;grid-template-columns:1fr 1fr 74px 1fr 1fr;align-items:end;position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fffdf9;border-top:1px solid var(--line);border-radius:22px 22px 0 0;padding:6px 6px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -6px 22px rgba(60,40,20,.08)}
@@ -300,7 +300,7 @@ header#top button.on{border-bottom-color:var(--acc);color:var(--acc)}
  .homehead .nm{font-size:28px}
 }
 #mbox{border-radius:20px}
-@media(max-width:700px){#mbox{border-radius:24px 24px 0 0}}
+@media(max-width:1100px){#mbox{border-radius:24px 24px 0 0}}
 .dsp.need{border-color:var(--acc);background:#fbf3e8}
 .dsp .chip{padding:9px 14px;min-height:40px}
 /* ---- v0.10 peach glass home + dock ---- */
@@ -317,7 +317,7 @@ header#top button.on{border-bottom-color:var(--acc);color:var(--acc)}
 .mc .st{font-size:12px;color:#6d4a3d}
 .recent{margin-bottom:12px}.recent .li{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-top:1px solid rgba(109,74,61,.18)}.recent .li b{font-weight:500}
 .qa2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}.qa2 button{min-height:48px;border-radius:24px}
-@media(max-width:700px){
+@media(max-width:1100px){
  .homehead .gm{font-family:var(--serif);font-weight:600;font-size:46px;line-height:1.02;color:var(--ink);margin:4px 0 8px}
  .homehead .sb{font-size:12px;color:#6d4a3d}
  body.homebg{background:radial-gradient(ellipse at 50% 100%,#d9826e 0%,#ebaa94 30%,transparent 62%),linear-gradient(#f6dfd2,#f1bba5 55%,#e79a83) fixed}
@@ -375,14 +375,14 @@ body.homebg .herocard,.herocard{background:rgba(255,250,246,.88);color:var(--ink
 #wafab{position:fixed;right:16px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:39;width:60px;height:60px;min-height:60px;padding:0;border-radius:50%;border:0;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(20,90,50,.4)}
 #wafab:active{transform:scale(.94)}
 body.hasobar #wafab{bottom:calc(100px + env(safe-area-inset-bottom))}
-@media(min-width:701px){#wafab{bottom:28px;right:28px}}
+@media(min-width:1101px){#wafab{bottom:28px;right:28px}}
 
 /* v0.12 */
 .sdot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:baseline}
 .sdot.green{background:#2fa84f}.sdot.amber{background:#e0a21b}.sdot.red{background:#d23a2a}.sdot.grey{background:#9a948c}
 .hist{padding:10px 14px}.hist .row{gap:10px}
 #undochip{position:fixed;left:16px;bottom:calc(100px + env(safe-area-inset-bottom));z-index:39;min-height:44px;padding:0 16px;border-radius:22px;border:0;background:#fff;color:var(--ink);box-shadow:0 6px 16px rgba(80,40,20,.25);font-weight:600}
-@media(min-width:701px){#undochip{bottom:28px}}
+@media(min-width:1101px){#undochip{bottom:28px}}
 /* v0.14 icons */
 .ic{display:inline-flex;width:1.3em;height:1.3em;margin-right:.55em;vertical-align:-.3em;flex:none}
 .ic svg{width:100%;height:100%;overflow:visible}
@@ -457,7 +457,7 @@ html[data-theme=dark] .empty img,html[data-theme=dark] .empty svg{filter:brightn
 /* theme switch */
 #themebtn{position:fixed;z-index:60;top:28px;right:12px;width:38px;height:38px;min-height:38px;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0}
 #themebtn svg{width:19px;height:19px}
-@media(min-width:701px){header#top nav.nr{flex-wrap:nowrap;gap:0}header#top nav.nr button{padding-left:10px;padding-right:10px}header#top nav.nr .themebtn{width:34px;height:34px;min-height:34px;padding:0;margin-left:4px}}
+@media(min-width:1101px){header#top nav.nr{flex-wrap:nowrap;gap:0}header#top nav.nr button{padding-left:10px;padding-right:10px}header#top nav.nr .themebtn{width:34px;height:34px;min-height:34px;padding:0;margin-left:4px}}
 
 html body.homebg .herocard,html body.homebg{background-image:none}
 html body.homebg .herocard{background:var(--bg);color:var(--ink);box-shadow:var(--rs)}
@@ -481,13 +481,13 @@ html .paper table{background:transparent}
 html[data-theme=dark] header#top img.lg,html[data-theme=dark] header#top .brand img{filter:invert(1) brightness(1.2)}
 html[data-theme=dark] .announce{background:#10151b;color:#c9d0da}
 html[data-theme=dark] #toast{background:#10151b;color:#eef1f5}
-@media(min-width:701px){.sbrow .themebtn{display:none}}
+@media(min-width:1101px){.sbrow .themebtn{display:none}}
 .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:8px}
 .tile{flex-direction:column;gap:12px;min-height:118px;border-radius:22px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;background:var(--bg);color:var(--ink);box-shadow:var(--rs)}
 .tile .ic{width:34px;height:34px}.tile .ic svg{width:34px;height:34px}
 .tile.wide{grid-column:1/-1;min-height:96px;flex-direction:row;background:var(--acc);color:var(--onacc,#fff)}
 .tile.wide .ic svg{width:30px;height:30px}
-@media(min-width:701px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr));max-width:960px;margin-left:auto;margin-right:auto}.tile.wide{grid-column:span 2}}
+@media(min-width:600px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr));max-width:960px;margin-left:auto;margin-right:auto}.tile.wide{grid-column:span 2}}
 .dinfo{display:flex;flex-wrap:wrap;gap:22px;align-items:center;padding:20px}
 .dinfo .dl2{width:110px;height:90px;display:flex;align-items:center;justify-content:center;background:var(--cut);border-radius:14px}.dinfo .dl2 img{max-width:80%;max-height:70px}
 .dinfo .dtext{flex:1;min-width:200px}.dinfo .drow{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}.dinfo .drow span{color:var(--mut)}
@@ -505,9 +505,14 @@ html .themebtn.wide{width:100%;justify-content:space-between;padding:10px 6px;bo
 html[data-theme=dark] .tsw .kn{transform:translateX(32px)}
 html[data-theme=dark] .tsw .ks,html:not([data-theme=dark]) .tsw .km{display:none}
 html .themebtn:active .kn{filter:brightness(.92)}
-@media(min-width:701px){header#top nav.nr .themebtn{width:auto;height:auto;margin-left:8px}}
+@media(min-width:1101px){header#top nav.nr .themebtn{width:auto;height:auto;margin-left:8px}}
 html[data-theme=dark] img.lg.faded{filter:invert(1);opacity:.35}
-@media(min-width:701px){header#top nav.nl{flex-wrap:nowrap}header#top nav button{padding-left:9px;padding-right:9px;letter-spacing:.1em}}
+@media(min-width:1101px){header#top nav.nl{flex-wrap:nowrap}header#top nav button{padding-left:9px;padding-right:9px;letter-spacing:.1em}}
+html .dcard{border-radius:20px;overflow:hidden;background:var(--bg);box-shadow:var(--rs);border:0}
+html .dcard .dl{height:84px;background:var(--bg);box-shadow:var(--ri);margin:14px 14px 0;border-radius:14px}
+html .dcard .dl img{max-height:48px}
+html[data-theme=dark] .dcard .dl img.lg{filter:invert(1);opacity:.45}
+html .dcard .df{border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -13343,6 +13348,7 @@ const sumQ=q=>Object.values(q||{}).reduce((a,b)=>a+(+b||0),0);
 const linesPcs=ls=>(ls||[]).reduce((a,l)=>a+sumQ(l.q),0);
 const pad=(n,l=2)=>String(n).padStart(l,'0');
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+const dayOf=o=>{const t=o.signedAt;if(t){const d=new Date(t);if(!isNaN(d))return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}return(o.date||'').slice(0,10)};
 const fmtDate=i=>i?i.split('-').reverse().join('-'):'';
 const key=l=>l.art+'|'+l.col;
 const clone=x=>JSON.parse(JSON.stringify(x));
@@ -13439,7 +13445,7 @@ function camLoop(){
 
 /* ================= render root ================= */
 function phoneTables(){
- if(!window.matchMedia||!matchMedia('(max-width:700px)').matches)return;
+ if(!window.matchMedia||!matchMedia('(max-width:1100px)').matches)return;
  $$('#main table:not(.grid)').forEach(t=>{
   const th=[...t.querySelectorAll('thead th')];
   if(!th.length||th.length>10||t.dataset.card)return;
@@ -13780,7 +13786,7 @@ function viewCustomers(){
  const list=S.parties.filter(p=>(!V.cu.st||p.state===V.cu.st)&&(!V.cu.d||(V.cu.d==='none'?!p.distId:p.distId===V.cu.d))&&(!q||[p.name,p.city,p.state,p.phone,p.gst,distName(p.distId)].join(' ').toLowerCase().includes(q)));
  const states=[...new Set(S.parties.map(p=>p.state))].filter(Boolean).sort();
  const k=(v,l)=>`<div class="kpi"><b>${v}</b><span>${l}</span></div>`;
- return pagehead('Directory','Retailers',`<button class="p" data-act="cedit" data-arg="">＋ Add retailer</button><label class="filebtn">Import list<input type="file" id="imp-parties" accept=".xlsx,.xls,.csv"></label><button data-act="tplparty">Template</button><button data-act="expcust">⬇ Export retailers</button><button data-act="expcontacts">⬇ WhatsApp contacts (CSV)</button>`)+
+ return pagehead('Directory','Retailers',`<button class="p" data-act="cadd">＋ Add retailer</button><label class="filebtn">Import list<input type="file" id="imp-parties" accept=".xlsx,.xls,.csv"></label><button data-act="tplparty">Template</button><button data-act="expcust">⬇ Export retailers</button><button data-act="expcontacts">⬇ WhatsApp contacts (CSV)</button>`)+
  `<div class="kpis">${k(S.parties.length,'retailers on file')}${k(S.parties.filter(p=>p.src==='exhibition').length,'added at exhibitions')}${k(Object.keys(st).length,'with confirmed orders')}${k([...new Set(S.parties.map(p=>p.city))].filter(Boolean).length,'cities')}</div>
  <div class="row card" style="margin-top:16px"><label style="flex:1;min-width:240px">Search<input id="cu-q" value="${esc(V.cu.q)}" placeholder="name, city, distributor or number"></label>
  <label>Distributor<select id="cu-d"><option value="">All</option>${S.settings.distributors.map(d=>`<option value="${d.id}" ${d.id===V.cu.d?'selected':''}>${esc(d.name)}</option>`).join('')}<option value="none" ${V.cu.d==='none'?'selected':''}>Not assigned</option></select></label>
@@ -14608,7 +14614,7 @@ function colHex(n){const k=String(n||'').toLowerCase();if(CH[k])return CH[k];for
 function greet(){const h=new Date().getHours();return h<12?'Good morning.':h<17?'Good afternoon.':'Good evening.'}
 function homeHead(){
  const ex=S.exhibitions.find(e=>e.id===(V.np&&V.np.exh))||S.exhibitions[0];if(!ex)return'';
- const all=S.orders.filter(o=>o.exhId===ex.id&&o.status==='confirmed'),td=today(),os=all.filter(o=>(o.signedAt||o.date||'').slice(0,10)===td||o.date===td);
+ const all=S.orders.filter(o=>o.exhId===ex.id&&o.status==='confirmed'),td=today(),os=all.filter(o=>dayOf(o)===td||o.date===td);
  const pcs=os.reduce((a,o)=>a+linesPcs(o.lines),0),dr=S.orders.filter(o=>o.exhId===ex.id&&o.status==='draft').length;
  const cols=[];all.forEach(o=>o.lines.forEach(l=>{if(l.colName&&!cols.includes(l.colName))cols.push(l.colName)}));
  const pend=all.filter(o=>o.dispatch&&o.dispatch>=td).sort((a,b)=>a.dispatch.localeCompare(b.dispatch));
@@ -14666,7 +14672,7 @@ function anCompute(exId){
  const conf=S.orders.filter(o=>o.status==='confirmed'&&(!exId||o.exhId===exId));
  const stf={},hr={},art={},col={},setm={},size={},day={},state={},city={},dist={},dmon={},parties={};let pcs=0,val=0,setPcs=0,custPcs=0;
  const add=(m,k,n,x)=>{const e=m[k]||(m[k]={k,pcs:0,orders:new Set(),...(x||{})});e.pcs+=n;return e};
- conf.forEach(o=>{const p=o.party||{},d=(o.signedAt||o.date||'').slice(0,10),pk=(p.id||p.name||'')+'|'+(p.city||'');
+ conf.forEach(o=>{const p=o.party||{},d=dayOf(o),pk=(p.id||p.name||'')+'|'+(p.city||'');
   const n0=linesPcs(o.lines);pcs+=n0;parties[pk]=(parties[pk]||0)+n0;
   {const b=o.signedBy||o.by||'—';add(stf,b,n0).orders.add(o.id);if(o.signedAt){const h=new Date(o.signedAt).getHours();add(hr,h,n0).orders.add(o.id)}}
   if(d)add(day,d,n0).orders.add(o.id);add(state,p.state||'—',n0).orders.add(o.id);add(city,(p.city||'—')+(p.state?', '+p.state:''),n0).orders.add(o.id);
@@ -14824,7 +14830,7 @@ Object.assign(ACT,{oftoday(){V.of.today=!V.of.today;render()},ofmy(){V.of.my=!V.
  copylast(){copyLast()},tagtog(x){const o=ord();if(!o||!o.work)return;const t=o.work.tags=o.work.tags||[];const i=t.indexOf(x);if(i>=0)t.splice(i,1);else t.push(x);save();render()},
  eodsend(){eodSend()}});
 /* 8. end-of-day summary: one tap, text + Excel to your WhatsApp */
-function eodData(day,exId){const O=S.orders.filter(o=>o.status==='confirmed'&&(!exId||o.exhId===exId)&&(o.signedAt||o.date||'').slice(0,10)===day);
+function eodData(day,exId){const O=S.orders.filter(o=>o.status==='confirmed'&&(!exId||o.exhId===exId)&&dayOf(o)===day);
  const rows=[],art={},staff={};let pcs=0;
  O.forEach(o=>{const n=linesPcs(o.lines);pcs+=n;const b=o.signedBy||o.by||'—';(staff[b]=staff[b]||{o:0,p:0}).o++;staff[b].p+=n;
   o.lines.forEach(l=>{const q=sumQ(l.q);art[l.art]=(art[l.art]||0)+q;rows.push([o.no,o.party.name,o.party.city,o.party.state,l.art,l.colName,(l.sets||[]).map(x=>setLbl(x.q)+' ×'+x.n).join(' + ')||'exact pieces',q,o.dispatch?fmtDate(o.dispatch):'',(o.tags||[]).join(', '),o.note||'',b])})});
@@ -14999,7 +15005,7 @@ viewDists=function(){
  const D=S.settings.distributors;
  if(V.dd&&D.some(d=>d.id===V.dd))return distDetail(V.dd);V.dd='';
  const m={};S.orders.filter(o=>o.status==='confirmed').forEach(o=>{const e=m[o.distId]||(m[o.distId]={n:0,p:0});e.n++;e.p+=linesPcs(o.lines)});
- return pagehead('Network','Distributors',`<button class="p" data-act="dedit" data-arg="">＋ Add distributor</button>`)+
+ return pagehead('Network','Distributors',`<button class="p" data-act="dadd">＋ Add distributor</button>`)+
  (D.length?`<div class="dgrid">${D.map(d=>{const e=m[d.id]||{n:0,p:0},c=S.parties.filter(p=>p.distId===d.id).length;return`<div class="dcard" data-act="dopen" data-arg="${d.id}" style="cursor:pointer"><div class="dl">${d.logo?`<img src="${d.logo}">`:LG(34,'mark','faded')}</div><div class="db"><div class="dn">${esc(d.name)}</div>
  <div class="muted">${esc([d.city,d.phone].filter(Boolean).join(' · ')||'No contact details yet')}</div>
  <div class="dm"><div><b>${c}</b><span>Retailers</span></div><div><b>${e.n}</b><span>Orders</span></div><div><b>${e.p}</b><span>Pieces</span></div></div></div>
@@ -15018,6 +15024,8 @@ function distDetail(id){
 Object.assign(ACT,{dopen(id){V.dd=id;V.tab='dists';render();window.scrollTo(0,0)},dback(){V.dd='';render()},
  dcadd(id){custForm('');const s=$('#cf-dist');if(s)s.value=id},
  dstart(id){V.tab='book';V.hm=false;V.cur=null;V.np=null;render();ACT.pickparty(id)}});
+
+ICA.dadd='plus';ICA.cadd='plus';Object.assign(ACT,{dadd(){distForm('')},cadd(){custForm('')}});
 
 (async()=>{
  try{S=await DB.get('state')}catch(e){}
