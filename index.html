@@ -13436,6 +13436,7 @@ function resolve(code){
  return null}
 function setMsg(c,t){V.msg={c,t};const m=$('#msg');if(m){m.className=c;m.textContent=t}const k=$('#camcap');if(k){k.className=c;k.textContent=t}}
 function handleScan(v){
+ if(V.chk)return chkHit(v);
  if(V.sc&&V.tab==='qr')return scanCheckHit(v);
  const o=ord();if(!o||!o.work||V.review||V.tab!=='book')return setMsg('warn','Start or open an order first');
  const r=resolve(v);
@@ -13463,7 +13464,7 @@ async function camStart(){
  try{const t=CAM.stream.getVideoTracks()[0],cp=t.getCapabilities?t.getCapabilities():{};if(cp.focusMode&&cp.focusMode.includes('continuous'))await t.applyConstraints({advanced:[{focusMode:'continuous'}]})}catch(e){}
  if(window.BarcodeDetector&&!CAM.bd){try{CAM.bd=new BarcodeDetector({formats:['qr_code']})}catch(e){CAM.bd=null}}
  CAM.on=true;CAM.last='';$('#camdock').classList.add('on');document.body.classList.add('camopen');camLoop()}
-function camStop(){V.sc=null;CAM.on=false;cancelAnimationFrame(CAM.raf);if(CAM.stream)CAM.stream.getTracks().forEach(t=>t.stop());CAM.stream=null;const d=$('#camdock');if(d)d.classList.remove('on');document.body.classList.remove('camopen')}
+function camStop(){V.sc=null;V.chk=null;CAM.on=false;cancelAnimationFrame(CAM.raf);if(CAM.stream)CAM.stream.getTracks().forEach(t=>t.stop());CAM.stream=null;const d=$('#camdock');if(d)d.classList.remove('on');document.body.classList.remove('camopen')}
 let camT=0,camBusy=false;
 function camHit(d){if(!d)return;const t=Date.now();const fresh=d!==CAM.last||t-CAM.seen>1300;CAM.seen=t;if(fresh){CAM.last=d;if(navigator.vibrate)navigator.vibrate(50);handleScan(d)}}
 async function camDecode(src,w,h){
@@ -13496,7 +13497,7 @@ function phoneTables(){
   t.setAttribute('data-card','1')})}
 function render(){
  ensure();chrome();
- if(CAM.on&&!(V.tab==='book'&&V.cur&&!V.review)&&!(V.sc&&V.tab==='qr'))camStop();
+ if(CAM.on&&!(V.tab==='book'&&V.cur&&!V.review)&&!(V.sc&&V.tab==='qr')&&!(V.chk&&V.tab==='book'))camStop();
  {const _g=needLogin();$$('header#top button[data-tab]').forEach(b=>{b.style.display=_g?'none':''})}
  if(needLogin()){$$('header#top button[data-tab]').forEach(b=>b.classList.remove('on'));$('#main').innerHTML=viewLogin();return}
  $$('header#top button[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===V.tab));
@@ -13614,7 +13615,8 @@ function viewReview(){
  <table style="margin-bottom:8px"><tr><td><b>Party:</b> ${esc(p.name)}<br><b>Phone:</b> ${esc(showPhone(w.waNumber))}<br><b>City / State:</b> ${esc(p.city)}, ${esc(p.state)}<br><b>Address:</b> ${esc(p.address)}</td>
  <td><b>Order no:</b> ${esc(o.no)}${o.status==='confirmed'?' (revision R'+(o.rev+1)+')':''}<br><b>Date:</b> ${fmtDate(o.date)}<br><b>Dispatch date:</b> ${w.dispatch?fmtDate(w.dispatch):'—'}<br><b>Distributor:</b> ${esc(d.name)}</td></tr></table>
  ${(w.tags&&w.tags.length)||w.note?`<p style="margin:0 0 8px"><b>Note:</b> ${esc([...(w.tags||[]),w.note||''].filter(Boolean).join(' – '))}</p>`:''}${tableHTML(w.lines)}</div>
- <div class="card" style="margin-top:12px"><h3>Buyer's signature</h3><canvas id="sig"></canvas>
+ <div class="row noprint" style="margin-top:12px"><button data-act="revprint">Print</button><button data-act="revpdf">Save as PDF</button><button class="g" data-act="waorder">Share on WhatsApp</button></div>
+ <div class="card noprint" style="margin-top:12px"><h3>Buyer's signature</h3><canvas id="sig"></canvas>
  <div class="row" style="margin-top:8px"><button data-act="sigclear">Clear</button><button class="g" data-act="sign">✔ Confirm &amp; sign order</button></div></div>`}
 function initSig(){
  const c=$('#sig');if(!c)return;const r=c.getBoundingClientRect();c.width=r.width*2;c.height=r.height*2;
@@ -14577,6 +14579,7 @@ function advHTML(o,w,gs){
    <td class="n"><b>${sumQ(l.q)}</b></td><td style="white-space:nowrap"><button class="sm" data-act="same" data-arg="${esc(key(l))}">↑ same</button> <button class="sm" data-act="usesel" data-arg="${esc(key(l))}">→ sel</button> <button class="sm" data-act="dbl" data-arg="${esc(key(l))}">×2</button></td></tr>`).join('')).join(''):`<tr><td colspan="${SIZES.length+4}" class="muted">No colours booked yet.</td></tr>`}
  </tbody></table></div>`}
 function handleScan(v){
+ if(V.chk)return chkHit(v);
  if(V.sc&&V.tab==='qr')return scanCheckHit(v);
  const o=ord();if(!o||!o.work||V.review||V.tab!=='book')return setMsg('warn','Start or open an order first');
  const r=resolve(v);
@@ -15033,7 +15036,7 @@ function homeTiles(){
  const ex=S.exhibitions[0],adm=isAdmin();
  const t=(act,arg,ic,lb,cls)=>`<button class="tile ${cls||''}" data-act="${act}"${arg?` data-arg="${arg}"`:''}>${icSVG(ic)}<span>${lb}</span></button>`;
  return`<div class="homehead"><div class="sbrow"><p class="sb">${ex?esc(ex.name)+' · '+esc(ex.city):'AFOX exhibition order desk'}</p><button class="themebtn" data-act="theme"></button></div></div>
- <div class="tiles">${t('neworder','','plus','New order','wide')}${t('gotab','orders','orders','Orders')}${t('gotab','customers','users','Retailers')}${t('gotab','dists','truck','Distributors')}${t('gotab','products','trousers','Products')}${t('gotab','qr','qr','QR codes')}${t('gotab','rep','report','Reports')}${adm?t('gotab','an','chart','Analysis')+t('gotab','setup','sliders','Setup'):''}${bioShow()?(bioMine()?t('biooff','','faceid','Face ID: on'):t('bioon','','faceid','Face ID sign-in')):''}${t('logout','','logout','Sign out')}</div>`}
+ <div class="tiles">${t('neworder','','plus','New order','wide')}${t('gotab','orders','orders','Orders')}${t('gotab','customers','users','Retailers')}${t('gotab','dists','truck','Distributors')}${t('gotab','products','trousers','Products')}${t('gotab','qr','qr','QR codes')}${t('gotab','rep','report','Reports')}${adm?t('gotab','an','chart','Analysis')+t('gotab','setup','sliders','Setup'):''}${t('homescan','','camera','Scan QR')}${bioShow()?(bioMine()?t('biooff','','faceid','Face ID: on'):t('bioon','','faceid','Face ID sign-in')):''}${t('logout','','logout','Sign out')}</div>`}
 const _vStart2=viewStart;
 viewStart=function(){
  const h=_vStart2();
@@ -15074,6 +15077,15 @@ ICA.dadd='plus';ICA.cadd='plus';Object.assign(ACT,{dadd(){distForm('')},cadd(){c
 /* sign out / face id from tiles and More: close any open menu first */
 {const _lo=ACT.logout;ACT.logout=function(){try{closeModal()}catch(e){}V.hm=true;_lo()};
  for(const k of ['bioon','biooff']){const f=ACT[k];ACT[k]=function(){try{closeModal()}catch(e){}return f()}}}
+
+/* ---- scan check from home: read any QR and say what the app makes of it ---- */
+function chkHit(v){const r=resolve(v);V.chk.n++;
+ if(r){V.chk.ok++;beep(1);const d=r.col?r.art.code+' · '+r.col.name+' (colour)':r.art.code+' (article)';setMsg('ok','✓ '+d+(r.art.mrp?' · MRP '+r.art.mrp:'')+' — read: "'+String(v).slice(0,40)+'"')}
+ else{V.chk.bad++;beep(0);setMsg('bad','✗ Read "'+String(v).slice(0,60)+'" but it is not in the product list')}}
+async function homeScan(){V.chk={n:0,ok:0,bad:0};V.tab='book';render();await camStart();if(!CAM.on){V.chk=null;return}
+ const a=$('#camcust');if(a)a.textContent='Scan check';const b=$('#camord');if(b)b.textContent='Close';setMsg('muted','Point at any tag – the app shows what it reads')}
+function reviewPDF(){const o=ord(),w=o.work;const s={no:o.no,date:o.date,party:w.party,lines:w.lines.filter(l=>sumQ(l.q)>0),sig:null,signedAt:null,rev:o.rev||0,dispatch:w.dispatch||'',tags:w.tags||[],note:w.note||'',dist:distOf(o),exh:exhOf(o),draft:true};const f=pdfFile(s);dl(f,f.name);toast('PDF saved (not yet signed)',2500)}
+Object.assign(ACT,{homescan(){homeScan()},revprint(){window.print()},revpdf(){if(!linesPcs(ord().work.lines))return toast('Add some pieces first');reviewPDF()}});
 
 (async()=>{
  try{S=await DB.get('state')}catch(e){}
