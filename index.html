@@ -549,6 +549,12 @@ html .sheet .scp{background:var(--bg);border:0;box-shadow:var(--ri);border-radiu
 html .sheet .sr,html .lc .lr{border-color:var(--line)}
 html .sheet .grab{background:var(--mut);opacity:.5}
 html .sheet .muted,html .sheet .sd span{color:var(--mut)}
+/* order screen: note strip, flash highlight, dispatch prompt follow the theme */
+html .notechip{background:var(--bg);color:var(--ink);border:0;border-radius:14px;box-shadow:var(--ri);padding:12px 16px}
+html .notechip b{color:var(--acc)}html .notechip a{color:var(--acc)}
+html[data-theme=dark] tr.flash td,html[data-theme=dark] tr.flash{background:rgba(255,154,77,.22)!important;color:var(--ink)}
+html .dsp.need{background:var(--bg);border-color:var(--acc)}
+html[data-theme=dark] .bk{background:var(--acc);color:#141a22;border-radius:10px}
 </style>
 </head>
 <body>
