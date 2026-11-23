@@ -540,6 +540,15 @@ html .lg.nm i{background:linear-gradient(145deg,var(--mut),var(--ink))}
 html .lg.nm{filter:drop-shadow(-2px -2px 2px var(--hi)) drop-shadow(2px 3px 3px var(--lo))}
 html[data-theme=dark] .lg.nm{filter:drop-shadow(-2px -2px 2px rgba(255,255,255,.10)) drop-shadow(2px 3px 3px rgba(0,0,0,.65))}
 html header#top .brand{padding:8px 26px;border-radius:18px}
+/* size-set sheet: follow the theme (chips were hardcoded white / square) */
+html .sheet .sc,html .sheet .ss,html .sheet .sz{background:var(--bg);color:var(--ink);border:0;border-radius:14px;box-shadow:var(--rss)}
+html .sheet .sc.on,html .sheet .ss.on,html .sheet .sz.on,html .sheet .sm.on{background:var(--bg);color:var(--acc);box-shadow:var(--ri);font-weight:700}
+html .sheet .slab{color:var(--mut)}html .sheet .slab b,html .sheet .sd b,html .sheet b,html .sheet .sh b{color:var(--ink)}
+html .sheet .sc i{color:#fff}
+html .sheet .scp{background:var(--bg);border:0;box-shadow:var(--ri);border-radius:14px}
+html .sheet .sr,html .lc .lr{border-color:var(--line)}
+html .sheet .grab{background:var(--mut);opacity:.5}
+html .sheet .muted,html .sheet .sd span{color:var(--mut)}
 </style>
 </head>
 <body>
@@ -14103,7 +14112,8 @@ $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()})
 /* ================= boot ================= */
 /* ================= v0.8 additions ================= */
 const hsh=s=>{let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return h};
-function ensure(){if(S&&S.presets&&!S.presetsV){if(S.presets.map(p=>p.name).join(',')==='28×34,30×36,32×38,32×40,30×40,34×42')S.presets=[[28,34],[30,36],[32,38],[32,40],[40,46],[40,44]].map(([a,b])=>{const q={};for(let s=a;s<=b;s+=2)q[s]=1;return{id:'ps'+a+'_'+b,name:a+'×'+b,q}});S.presetsV=2}S.cloud=S.cloud||{on:false,names:[]};S.cloud.meta=S.cloud.meta||{};S.cloud.since=S.cloud.since||0;S.staff=S.staff||[];S.audit=S.audit||[];S.visitors=S.visitors||[];S.follow=S.follow||{};
+function ensure(){if(S&&S.presets&&!S.presetsV){if(S.presets.map(p=>p.name).join(',')==='28×34,30×36,32×38,32×40,30×40,34×42')S.presets=[[28,34],[30,36],[32,38],[32,40],[40,46],[40,44]].map(([a,b])=>{const q={};for(let s=a;s<=b;s+=2)q[s]=1;return{id:'ps'+a+'_'+b,name:a+'×'+b,q}});S.presetsV=2}
+ if(S&&S.presets&&S.presetsV<3){const want=[[28,34],[30,36],[32,38],[40,46],[40,44],[32,40]],mk=([a,b])=>{const q={};for(let s=a;s<=b;s+=2)q[s]=1;return{id:'ps'+a+'_'+b,name:a+'×'+b,q}},seen=new Set(),keyOf=p=>Object.keys(p.q||{}).sort((x,y)=>x-y).join(),oldNames=['30×40','34×42'];const base=want.map(mk);base.forEach(p=>seen.add(keyOf(p)));const extra=[];(S.presets||[]).forEach(p=>{const k=keyOf(p);if(k&&!seen.has(k)&&!oldNames.includes(p.name)){seen.add(k);extra.push(p)}});S.presets=base.concat(extra);S.presetsV=3}S.cloud=S.cloud||{on:false,names:[]};S.cloud.meta=S.cloud.meta||{};S.cloud.since=S.cloud.since||0;S.staff=S.staff||[];S.audit=S.audit||[];S.visitors=S.visitors||[];S.follow=S.follow||{};
  const st=S.settings;st.plan=st.plan||{buffer:0,roundTo:1,minColour:0};st.lastBackupAt=st.lastBackupAt||0;st.lastBackupSig=st.lastBackupSig||''}
 function bookDownload(name,sheets){const wb=XLSX.utils.book_new();const used=new Set();
  sheets.forEach(([n,a])=>{let s=String(n).replace(/[\\\/?*\[\]:]/g,'').slice(0,28)||'Sheet',k=s,i=2;while(used.has(k.toLowerCase()))k=s+' '+i++;used.add(k.toLowerCase());XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(a),k)});
