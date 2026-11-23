@@ -548,7 +548,7 @@ html header#top .brand{padding:8px 26px;border-radius:18px}
 <div class="brand"><span id="brandfox"></span><i>Trousers &amp; Beyond</i></div>
 <nav class="nr"><button data-tab="customers">Retailers</button><button data-tab="dists">Distributors</button><button data-tab="rep">Reports</button><button data-tab="setup">Setup</button></nav></header>
 <main id="main"></main>
-<div id="camdock"><div class="camtop"><b id="camcust">Camera scanner</b><button class="sm" data-act="camstop"><span id="camord">Close</span> ›</button></div><div class="camwrap"><video id="camvid" playsinline muted></video><div class="camframe"></div></div><div id="camcap" class="muted">Point the camera at a QR code</div></div>
+<div id="camdock"><div class="camtop"><b id="camcust">Camera scanner</b><button class="sm" data-act="camstop"><span id="camord">Close</span> ›</button></div><div class="camwrap"><video id="camvid" playsinline muted></video><div class="camframe"></div></div><div id="camcap" class="muted">Point the camera at a QR code · hold 15–25 cm away · tap the picture to focus</div><label class="filebtn sm" style="margin:8px 12px 12px;justify-content:center">Scan from photo<input type="file" id="camfile" accept="image/*" capture="environment" hidden></label></div>
 <div id="modal"><div class="box" id="mbox"></div></div>
 <div id="toast"></div>
 <script>/*! xlsx.js (C) 2013-present SheetJS -- http://sheetjs.com */
@@ -13455,20 +13455,35 @@ let focusScan=()=>{const s=$("#scan");if(s)s.focus()};
 const CAM={on:false,stream:null,last:'',seen:0,raf:0,cv:null};
 async function camStart(){
  if(CAM.on)return camStop();
- if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return toast('Camera not available here – open the tool in Chrome (or host it on https)',3500);
- try{CAM.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280}},audio:false})}catch(e){return toast('Camera blocked – please allow camera access',3500)}
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return toast(window.isSecureContext===false?'Camera needs the secure address – open https://orders.afoxclothing.com':'Camera not available in this browser – use Chrome, or scan from photo',4500);
+ const tries=[{video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false},{video:{facingMode:'environment'},audio:false},{video:true,audio:false}];
+ let err=null;for(const c of tries){try{CAM.stream=await navigator.mediaDevices.getUserMedia(c);err=null;break}catch(e){err=e;if(e&&e.name==='NotAllowedError')break}}
+ if(!CAM.stream){const n=err&&err.name;return toast(n==='NotAllowedError'?'Camera is blocked for this site – allow Camera in the browser / phone settings, then try again':n==='NotFoundError'?'No camera found on this phone':n==='NotReadableError'?'Camera is being used by another app – close it and retry':'Camera could not start – use “Scan from photo” instead',5500)}
  const v=$('#camvid');v.srcObject=CAM.stream;try{await v.play()}catch(e){}
+ try{const t=CAM.stream.getVideoTracks()[0],cp=t.getCapabilities?t.getCapabilities():{};if(cp.focusMode&&cp.focusMode.includes('continuous'))await t.applyConstraints({advanced:[{focusMode:'continuous'}]})}catch(e){}
+ if(window.BarcodeDetector&&!CAM.bd){try{CAM.bd=new BarcodeDetector({formats:['qr_code']})}catch(e){CAM.bd=null}}
  CAM.on=true;CAM.last='';$('#camdock').classList.add('on');document.body.classList.add('camopen');camLoop()}
 function camStop(){V.sc=null;CAM.on=false;cancelAnimationFrame(CAM.raf);if(CAM.stream)CAM.stream.getTracks().forEach(t=>t.stop());CAM.stream=null;const d=$('#camdock');if(d)d.classList.remove('on');document.body.classList.remove('camopen')}
-let camT=0;
-function camLoop(){
+let camT=0,camBusy=false;
+function camHit(d){if(!d)return;const t=Date.now();const fresh=d!==CAM.last||t-CAM.seen>1300;CAM.seen=t;if(fresh){CAM.last=d;if(navigator.vibrate)navigator.vibrate(50);handleScan(d)}}
+async function camDecode(src,w,h){
+ if(CAM.bd){try{const r=await CAM.bd.detect(src);if(r&&r.length&&r[0].rawValue)return r[0].rawValue}catch(e){}}
+ const c=CAM.cv||(CAM.cv=document.createElement('canvas'));c.width=w;c.height=h;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(src,0,0,w,h);
+ let r=jsQR(x.getImageData(0,0,w,h).data,w,h,{inversionAttempts:'attemptBoth'});if(r&&r.data)return r.data;
+ const cw=Math.round(w*.6),ch=Math.round(h*.6),cx=Math.round((w-cw)/2),cy=Math.round((h-ch)/2);r=jsQR(x.getImageData(cx,cy,cw,ch).data,cw,ch,{inversionAttempts:'attemptBoth'});return r&&r.data||''}
+async function camLoop(){
  if(!CAM.on)return;CAM.raf=requestAnimationFrame(camLoop);
- const now=performance.now();if(now-camT<110)return;camT=now;
+ const now=performance.now();if(camBusy||now-camT<120)return;camT=now;
  const v=$('#camvid');if(!v||v.readyState<2||!v.videoWidth)return;
- const w=Math.min(640,v.videoWidth),h=Math.round(v.videoHeight*w/v.videoWidth),c=CAM.cv||(CAM.cv=document.createElement('canvas'));c.width=w;c.height=h;
- const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(v,0,0,w,h);
- const r=jsQR(x.getImageData(0,0,w,h).data,w,h,{inversionAttempts:'attemptBoth'});
- if(r&&r.data){const t=Date.now();const fresh=r.data!==CAM.last||t-CAM.seen>1300;CAM.seen=t;if(fresh){CAM.last=r.data;if(navigator.vibrate)navigator.vibrate(50);handleScan(r.data)}}}
+ camBusy=true;try{const w=Math.min(960,v.videoWidth),h=Math.round(v.videoHeight*w/v.videoWidth);camHit(await camDecode(v,w,h))}catch(e){}camBusy=false}
+async function camPhoto(f){
+ if(!f)return;toast('Reading photo…',1500);
+ try{const bm=await createImageBitmap(f);const w=Math.min(1600,bm.width),h=Math.round(bm.height*w/bm.width);const d=await camDecode(bm,w,h);
+  if(d)handleScan(d);else{beep(0);setMsg('bad','No QR found in that photo – move closer, keep it flat and try again')}}
+ catch(e){setMsg('bad','Could not read that photo')}}
+async function camFocus(){try{const t=CAM.stream&&CAM.stream.getVideoTracks()[0];if(t&&t.getCapabilities&&(t.getCapabilities().focusMode||[]).includes('single-shot')){await t.applyConstraints({advanced:[{focusMode:'single-shot'}]});setTimeout(()=>t.applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(()=>{}),900)}}catch(e){}}
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('.camwrap'))camFocus()});
+document.addEventListener('change',e=>{if(e.target&&e.target.id==='camfile'){camPhoto(e.target.files[0]);e.target.value=''}});
 
 /* ================= render root ================= */
 function phoneTables(){
@@ -13869,7 +13884,7 @@ function saveDist(){
 /* ================= products & QR ================= */
 const LBL={s:{w:30,h:38,q:22,f1:6.5,f2:5,mc:16,n:'Small 30×38 mm'},m:{w:40,h:48,q:32,f1:8,f2:6,mc:22,n:'Medium 40×48 mm'},l:{w:55,h:64,q:47,f1:10,f2:7.5,mc:30,n:'Large 55×64 mm'}};
 V.pr={q:'',sel:new Set()};V.qr={sel:null,art:true,col:true,size:'m',mrp:true,copies:1,extra:[]};
-function qrSvg(t){const q=qrcode(0,'M');q.addData(String(t));q.make();return q.createSvgTag({cellSize:4,margin:0,scalable:true})}
+function qrSvg(t){const q=qrcode(0,'M');q.addData(String(t));q.make();return q.createSvgTag({cellSize:4,margin:8,scalable:true})}
 const qrOf=a=>a.barcode||a.code, qrOfC=(a,c)=>c.barcode||(a.code+'-'+c.code);
 const stockNum=c=>c.stock!==''&&c.stock!=null&&!isNaN(+c.stock)?+c.stock:0;
 function qrItems(codes,o){
